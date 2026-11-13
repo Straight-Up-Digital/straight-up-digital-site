@@ -16,7 +16,9 @@ const site =
 export default defineConfig({
   site,
   output: "static",
-  trailingSlash: "never",
+  // Netlify's static directory hosting resolves nested routes with a trailing
+  // slash; keep page canonicals and sitemap URLs aligned with those 200 URLs.
+  trailingSlash: "always",
   compressHTML: true,
   build: {
     format: "directory",

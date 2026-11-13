@@ -15,22 +15,22 @@
 
 [[redirects]]
   from = "/audit"
-  to = "/digital-audit"
+  to = "/digital-audit/"
   status = 301
 
 [[redirects]]
   from = "/audit-request"
-  to = "/digital-audit#request"
+  to = "/digital-audit/#request"
   status = 301
 
 [[redirects]]
   from = "/privacy-notice"
-  to = "/privacy"
+  to = "/privacy/"
   status = 301
 
 [[redirects]]
   from = "/terms-and-conditions"
-  to = "/terms"
+  to = "/terms/"
   status = 301
 
 [[redirects]]
