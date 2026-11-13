@@ -1,0 +1,40 @@
+---
+interface Props {
+  title?: string;
+  body?: string;
+  primaryLabel?: string;
+  primaryHref?: string;
+  secondaryLabel?: string;
+  secondaryHref?: string;
+  caption?: string;
+}
+
+const {
+  title = "Start with a clear read of where you stand.",
+  body = "Request a digital audit and get a plain-language report: what is strong, what is missing and what to fix first.",
+  primaryLabel = "Request your digital audit",
+  primaryHref = "/digital-audit#request",
+  secondaryLabel = "See what the audit covers",
+  secondaryHref = "/digital-audit#what-we-check",
+  caption = "No obligation. Scope, cost and timing are confirmed in writing before any work starts.",
+} = Astro.props;
+---
+
+<section class="cta-band">
+  <div class="container">
+    <h2>{title}</h2>
+    <p>{body}</p>
+    <div class="cta-band__actions">
+      <a class="btn btn--primary" href={primaryHref}>
+        {primaryLabel}
+        <svg class="btn__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg>
+      </a>
+      {
+        secondaryLabel && secondaryHref && (
+          <a class="btn btn--secondary" href={secondaryHref}>{secondaryLabel}</a>
+        )
+      }
+    </div>
+    {caption && <p class="caption">{caption}</p>}
+  </div>
+</section>

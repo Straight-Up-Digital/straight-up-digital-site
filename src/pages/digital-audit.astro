@@ -1,0 +1,315 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import EnquiryForm from "../components/EnquiryForm.astro";
+import FaqList from "../components/FaqList.astro";
+import ReportPreview from "../components/ReportPreview.astro";
+import ScoreRing from "../components/ScoreRing.astro";
+import {
+  categories,
+  exampleCoverage,
+  exampleScore,
+  notVerifiedDefinition,
+} from "../data/categories";
+import { auditFaqs } from "../data/faqs";
+
+const description =
+  "What the Straight Up Digital audit checks, how the six categories are scored, why a category can be Not verified, what you receive and what the audit cannot measure. Request an audit on the page.";
+
+const faqJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: auditFaqs.map((faq) => ({
+    "@type": "Question",
+    name: faq.question,
+    acceptedAnswer: { "@type": "Answer", text: faq.answer },
+  })),
+};
+
+const serviceJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  name: "Digital presence audit",
+  serviceType: "Digital presence audit",
+  description:
+    "A six-category audit of a business's public digital presence, with a score, coverage and confidence notes and prioritised recommendations.",
+  provider: { "@type": "Organization", name: "Straight Up Digital" },
+};
+
+const receive = [
+  {
+    title: "A written report",
+    body: "A PDF you can read, share with a partner and keep. No login required.",
+  },
+  {
+    title: "A score you can explain",
+    body: "One overall score, a score for each verified category and the reasoning behind both.",
+  },
+  {
+    title: "Coverage and confidence",
+    body: "How many categories were verified, what could not be checked and how much weight the score deserves.",
+  },
+  {
+    title: "Prioritised next actions",
+    body: "What to fix first, what can wait and roughly how much effort each item takes.",
+  },
+];
+---
+
+<BaseLayout
+  title="Digital audit"
+  description={description}
+  canonicalPath="/digital-audit"
+  jsonLd={[serviceJsonLd, faqJsonLd]}
+  showStickyAudit={false}
+>
+  <section class="page-hero">
+    <div class="container page-hero__inner">
+      <div>
+        <p class="kicker">Digital audit</p>
+        <h1 class="page-hero__title">
+          Know what your digital presence is doing — and what it is not.
+        </h1>
+        <div class="page-hero__actions">
+          <a class="btn btn--primary" href="#request">
+            Request your digital audit
+            <svg class="btn__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg>
+          </a>
+          <a class="btn btn--secondary" href="#what-we-check">See what is checked</a>
+        </div>
+      </div>
+      <p class="page-hero__lede">
+        Six categories, scored from public evidence. Where the evidence is not
+        there, the report says so instead of filling the gap.
+      </p>
+    </div>
+  </section>
+
+  <section class="section" id="what-we-check" aria-labelledby="checks-title">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <p class="kicker"><span>01</span> The six categories</p>
+          <h2 class="h2" id="checks-title" style="margin-top: 14px; max-width: 16ch;">
+            What the audit investigates.
+          </h2>
+        </div>
+        <p class="lede">
+          Each category answers a question a customer would ask, in plain
+          language. The checks below are the public signals used to answer it.
+        </p>
+      </div>
+
+      <div class="audit-table">
+        {
+          categories.map((category, index) => (
+            <article class="audit-row" id={category.id}>
+              <div class="audit-row__index">{String(index + 1).padStart(2, "0")}</div>
+              <div>
+                <h3 class="h3">{category.name}</h3>
+                <p class="audit-row__question">{category.question}</p>
+                <p class="audit-row__summary">{category.summary}</p>
+              </div>
+              <ul class="checks">
+                {category.checks.map((check) => <li>{check}</li>)}
+              </ul>
+            </article>
+          ))
+        }
+      </div>
+
+      <p style="margin-top: 32px;">
+        <a class="btn btn--primary" href="#request">
+          Request your digital audit
+          <svg class="btn__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg>
+        </a>
+      </p>
+    </div>
+  </section>
+
+  <section class="section" id="scoring" aria-labelledby="scoring-title">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <p class="kicker"><span>02</span> How the score works</p>
+          <h2 class="h2" id="scoring-title" style="margin-top: 14px; max-width: 14ch;">
+            Honest maths, not a black box.
+          </h2>
+        </div>
+        <p class="lede">
+          The overall score is the average of the categories that could be
+          verified. A category that could not be checked is left out — never
+          counted as zero.
+        </p>
+      </div>
+
+      <div class="score-grid">
+        <div class="score-grid__cell">
+          <h3>Verified categories only</h3>
+          <p>
+            Each assessed category is scored from 0 to 100. The overall score is
+            the average of those, so a missing profile does not silently drag the
+            number down.
+          </p>
+        </div>
+        <div class="score-grid__cell">
+          <h3>Coverage</h3>
+          <p>
+            Coverage shows how many of the six categories were verified. <strong>4 of 6</strong>
+            is a different claim from 6 of 6, and the report never blurs the
+            difference.
+          </p>
+        </div>
+        <div class="score-grid__cell">
+          <h3>Confidence</h3>
+          <p>
+            Confidence reflects how much public evidence was available. Low
+            confidence is stated plainly, with the reason, rather than hidden
+            behind a decimal point.
+          </p>
+        </div>
+      </div>
+
+      <div class="example-reading">
+        <ScoreRing value={exampleScore} size={168} />
+        <div class="example-reading__meta">
+          <span class="example-tag">Example</span>
+          <h3>What a reading looks like</h3>
+          <p>
+            This example scores <strong>{exampleScore} out of 100</strong> with{" "}
+            <strong>{exampleCoverage.verified} of {exampleCoverage.total}</strong>{" "}
+            categories verified and <strong>{exampleCoverage.confidence}</strong>{" "}
+            confidence. The categories marked Not verified are left out of the
+            average.
+          </p>
+          <p>{notVerifiedDefinition}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="example-report" aria-labelledby="report-title">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <p class="kicker"><span>03</span> The report</p>
+          <h2 class="h2" id="report-title" style="margin-top: 14px;">
+            A sample report, clearly labelled.
+          </h2>
+        </div>
+        <p class="lede">
+          The layout below is the real structure of the report. The business and
+          the scores are made up.
+        </p>
+      </div>
+
+      <ReportPreview />
+
+      <p style="margin-top: 32px;">
+        <a class="btn btn--primary" href="#request">
+          Request your digital audit
+          <svg class="btn__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg>
+        </a>
+      </p>
+    </div>
+  </section>
+
+  <section class="section" id="what-you-receive" aria-labelledby="receive-title">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <p class="kicker"><span>04</span> What you receive</p>
+          <h2 class="h2" id="receive-title" style="margin-top: 14px; max-width: 14ch;">
+            A report, and a conversation.
+          </h2>
+        </div>
+        <p class="lede">
+          The document is the start, not the deliverable. The walkthrough is where
+          the priorities become a decision.
+        </p>
+      </div>
+
+      <div class="factor-grid">
+        {
+          receive.map((item) => (
+            <article class="factor">
+              <h3>{item.title}</h3>
+              <p>{item.body}</p>
+            </article>
+          ))
+        }
+      </div>
+
+      <div class="limits" style="margin-top: 40px;">
+        <h3>The limits, in plain words</h3>
+        <ul>
+          <li>
+            The audit is directional. It does not measure traffic, search volume,
+            revenue or conversions.
+          </li>
+          <li>
+            It does not guarantee rankings, enquiries or sales, and it does not
+            imply any affiliation with Google or another platform.
+          </li>
+          <li>
+            It reflects public information at the time of the audit. Profiles and
+            search results change.
+          </li>
+          <li>
+            It is not legal, financial or accounting advice, and it does not
+            replace your own analytics.
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="request" aria-labelledby="request-title">
+    <div class="container contact-layout">
+      <EnquiryForm
+        variant="audit"
+        heading="Request your digital audit"
+        intro="Six fields and a consent box. We use these details to assess the public presence and reply with the next step — nothing else."
+        submitLabel="Send my audit request"
+      />
+
+      <aside class="contact-aside">
+        <div class="info-panel">
+          <h3>What happens next</h3>
+          <ol>
+            <li>A person reads the request and checks the public details.</li>
+            <li>We confirm the scope, the cost and the timing in writing.</li>
+            <li>You decide whether to go ahead. Nothing is charged before then.</li>
+          </ol>
+        </div>
+        <div class="info-panel">
+          <h3>What to include</h3>
+          <p>
+            The website address and a sentence about what is not working. If you
+            do not have a website, say so — that is part of the picture.
+          </p>
+        </div>
+        <div class="info-panel" data-placeholder="business-email">
+          <h3>Prefer email?</h3>
+          <p>
+            A direct email address will be published once confirmed. Until then,
+            the form is the reliable route and it reaches the same place.
+          </p>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="faq-title">
+    <div class="container container--narrow">
+      <div class="section-head" style="grid-template-columns: 1fr;">
+        <div>
+          <p class="kicker"><span>05</span> Questions</p>
+          <h2 class="h2" id="faq-title" style="margin-top: 14px;">
+            The things people ask first.
+          </h2>
+        </div>
+      </div>
+      <FaqList items={auditFaqs} />
+    </div>
+  </section>
+</BaseLayout>

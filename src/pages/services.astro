@@ -1,0 +1,174 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import CtaBand from "../components/CtaBand.astro";
+import {
+  services,
+  serviceStatusMeta,
+  type ServiceStatus,
+} from "../data/services";
+
+const description =
+  "Six services from Straight Up Digital: digital presence audits, website design and development, on-page improvements, Google Business Profile support, content and reputation checks. Each carries an honest status.";
+
+const statuses: ServiceStatus[] = ["available", "on-request", "planned"];
+
+const serviceJsonLd = services.map((service) => ({
+  "@context": "https://schema.org",
+  "@type": "Service",
+  name: service.title,
+  description: service.summary,
+  serviceType: service.title,
+  provider: {
+    "@type": "Organization",
+    name: "Straight Up Digital",
+  },
+}));
+---
+
+<BaseLayout
+  title="Services"
+  description={description}
+  canonicalPath="/services"
+  jsonLd={serviceJsonLd}
+>
+  <section class="page-hero">
+    <div class="container page-hero__inner">
+      <div>
+        <p class="kicker"><span>Services</span></p>
+        <h1 class="page-hero__title">
+          Six ways to make the presence work harder.
+        </h1>
+        <div class="page-hero__actions">
+          <a class="btn btn--primary" href="/digital-audit#request">
+            Request your digital audit
+            <svg class="btn__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg>
+          </a>
+          <a class="btn btn--secondary" href="#digital-presence-audits">Start with the audit</a>
+        </div>
+      </div>
+      <p class="page-hero__lede">
+        Everything starts with the audit. After that you choose the work that is
+        worth doing. Nothing here is labelled available unless it is.
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--tight" aria-labelledby="status-title">
+    <div class="container">
+      <h2 class="visually-hidden" id="status-title">How service statuses work</h2>
+      <div class="status-legend">
+        {
+          statuses.map((status) => (
+            <div class="status-legend__item">
+              <span class:list={["status", `status--${status}`]}>
+                {serviceStatusMeta[status].label}
+              </span>
+              <p>{serviceStatusMeta[status].description}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--flush" aria-label="Services in detail">
+    <div class="container services-layout" data-placeholder="service-statuses">
+      <nav class="services-index" aria-label="Services on this page" data-services-index>
+        {
+          services.map((service, index) => (
+            <a href={`#${service.slug}`} data-service-link={service.slug}>
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              {service.title}
+            </a>
+          ))
+        }
+      </nav>
+
+      <div>
+        {
+          services.map((service, index) => (
+            <article class="service-detail" id={service.slug}>
+              <div class="service-detail__head">
+                <h2 class="service-detail__title">{service.title}</h2>
+                <span class:list={["status", `status--${service.status}`]}>
+                  {serviceStatusMeta[service.status].label}
+                </span>
+              </div>
+              <p class="service-detail__summary">{service.summary}</p>
+
+              <div class="service-detail__grid">
+                <div class="stack--lg">
+                  <div class="detail-block">
+                    <h3>Who it is for</h3>
+                    <p>{service.forWho}</p>
+                  </div>
+                  <div class="detail-block">
+                    <h3>The business value</h3>
+                    <p>{service.value}</p>
+                  </div>
+                </div>
+
+                <div class="detail-block">
+                  <h3>What you receive</h3>
+                  <ul>
+                    {service.receive.map((item) => <li>{item}</li>)}
+                  </ul>
+                </div>
+              </div>
+
+              {service.note && <p class="service-note">{service.note}</p>}
+
+              {index === 0 && (
+                <p style="margin-top: 24px;">
+                  <a class="link-arrow" href="/digital-audit#what-we-check">
+                    See what the audit checks
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg>
+                  </a>
+                </p>
+              )}
+            </article>
+          ))
+        }
+
+        <p class="small" style="margin-top: 28px;">
+          A client portal for reports and project updates is planned. At launch,
+          reports are delivered as a PDF and discussed directly.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand
+    title="Not sure which service you need?"
+    body="That is what the audit is for. It shows what is actually holding the presence back, so the next step is based on evidence rather than guesswork."
+    secondaryLabel="See how the audit works"
+    secondaryHref="/digital-audit"
+  />
+</BaseLayout>
+
+<script>
+  const links = Array.from(
+    document.querySelectorAll<HTMLAnchorElement>("[data-service-link]"),
+  );
+  const sections = links
+    .map((link) => document.getElementById(link.dataset.serviceLink ?? ""))
+    .filter((section): section is HTMLElement => Boolean(section));
+
+  if (sections.length > 0 && "IntersectionObserver" in window) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          links.forEach((link) => {
+            const isCurrent = link.dataset.serviceLink === entry.target.id;
+            if (isCurrent) link.setAttribute("aria-current", "true");
+            else link.removeAttribute("aria-current");
+          });
+        });
+      },
+      { rootMargin: "-30% 0px -60% 0px" },
+    );
+
+    sections.forEach((section) => observer.observe(section));
+  }
+</script>

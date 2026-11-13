@@ -1,0 +1,32 @@
+---
+interface Props {
+  value: number;
+  caption?: string;
+  size?: number;
+}
+
+const { value, caption = "out of 100", size = 168 } = Astro.props;
+const radius = 54;
+const circumference = 2 * Math.PI * radius;
+const dash = (circumference * value) / 100;
+---
+
+<div class="score-ring" style={`width:${size}px;height:${size}px`} role="img" aria-label={`Example score: ${value} ${caption}`}>
+  <svg viewBox="0 0 128 128" aria-hidden="true">
+    <circle cx="64" cy="64" r={radius} fill="none" stroke="rgba(201,207,203,0.16)" stroke-width="3"></circle>
+    <circle
+      cx="64"
+      cy="64"
+      r={radius}
+      fill="none"
+      stroke="#A8FF65"
+      stroke-width="3.5"
+      stroke-linecap="round"
+      stroke-dasharray={`${dash} ${circumference}`}
+      transform="rotate(-90 64 64)"></circle>
+  </svg>
+  <div class="score-ring__value">
+    <strong>{value}</strong>
+    <span>{caption}</span>
+  </div>
+</div>

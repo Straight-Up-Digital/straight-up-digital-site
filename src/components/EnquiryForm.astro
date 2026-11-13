@@ -1,0 +1,549 @@
+---
+/**
+ * Enquiry form, used on the Digital audit and Contact pages.
+ *
+ * Delivery modes (build-time env):
+ *  - PUBLIC_FORM_MODE=netlify (default): Netlify Forms receives the submission.
+ *    Works without any third-party account, stores submissions in the Netlify
+ *    dashboard and can email the owner from there.
+ *  - PUBLIC_FORM_MODE=email: the Netlify Function validates the submission and
+ *    sends it through the configured email adapter. Turnstile is used when a
+ *    site key is present.
+ *
+ * Both paths keep the same payload shape so the private CRM can be connected
+ * later without changing the form.
+ */
+import { serviceOptions } from "../data/services";
+
+interface Props {
+  variant: "audit" | "contact";
+  heading: string;
+  intro: string;
+  submitLabel: string;
+  id?: string;
+}
+
+const { variant, heading, intro, submitLabel, id = "request" } = Astro.props;
+const isAudit = variant === "audit";
+const formName = isAudit ? "audit-request" : "contact-enquiry";
+
+const formMode =
+  import.meta.env.PUBLIC_FORM_MODE === "email" ? "email" : "netlify";
+const turnstileKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? "";
+const action =
+  formMode === "email" ? "/.netlify/functions/submit-enquiry" : "/thank-you";
+
+const options = [...serviceOptions, "Not sure yet", "Something else"];
+const consentVersion = "privacy-draft-2026-11";
+---
+
+<section class="form-panel" id={id} aria-labelledby={`${id}-heading`} data-enquiry-root data-form-mode={formMode}>
+  <h2 id={`${id}-heading`}>{heading}</h2>
+  <p class="form-panel__intro">{intro}</p>
+
+  <div class="form-alert" data-form-alert role="alert" hidden>
+    <p data-form-alert-text></p>
+  </div>
+
+  <form
+    name={formName}
+    method="POST"
+    action={action}
+    data-netlify={formMode === "netlify" ? "true" : undefined}
+    netlify-honeypot={formMode === "netlify" ? "company_website_confirm" : undefined}
+    data-enquiry-form
+    data-form-name={formName}
+    data-form-type={variant}
+    data-consent-version={consentVersion}
+    novalidate
+  >
+    <input type="hidden" name="form-name" value={formName} />
+    <input type="hidden" name="form_type" value={variant} />
+    <input type="hidden" name="source" value={Astro.url.pathname} data-source />
+    <input type="hidden" name="started_at" value="" data-started-at />
+    <input type="hidden" name="consent_text_version" value={consentVersion} />
+
+    <div class="honeypot" aria-hidden="true">
+      <label for={`${id}-company-confirm`}>Leave this field empty</label>
+      <input
+        id={`${id}-company-confirm`}
+        name="company_website_confirm"
+        type="text"
+        tabindex="-1"
+        autocomplete="off"
+      />
+    </div>
+
+    <div class="form-grid">
+      {
+        !isAudit && (
+          <div class="field">
+            <label for={`${id}-name`}>Your name</label>
+            <input
+              id={`${id}-name`}
+              name="name"
+              type="text"
+              autocomplete="name"
+              maxlength="120"
+              required
+              aria-describedby={`${id}-name-error`}
+            />
+            <p class="field__error" id={`${id}-name-error`} data-error-for="name" data-visible="false">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="8" cy="8" r="6.4"></circle><path d="M8 4.6v4.2M8 11.3v.1"></path></svg>
+              <span></span>
+            </p>
+          </div>
+        )
+      }
+
+      <div class="field">
+        <label for={`${id}-business`}>Business name</label>
+        <input
+          id={`${id}-business`}
+          name="business_name"
+          type="text"
+          autocomplete="organization"
+          maxlength="120"
+          required
+          aria-describedby={`${id}-business-error`}
+        />
+        <p class="field__error" id={`${id}-business-error`} data-error-for="business_name" data-visible="false">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="8" cy="8" r="6.4"></circle><path d="M8 4.6v4.2M8 11.3v.1"></path></svg>
+          <span></span>
+        </p>
+      </div>
+
+      <div class="field">
+        <label for={`${id}-website`}>Website address</label>
+        <input
+          id={`${id}-website`}
+          name="website_url"
+          type="text"
+          autocomplete="url"
+          inputmode="url"
+          placeholder="yourbusiness.co.za"
+          maxlength="300"
+          aria-describedby={`${id}-website-hint ${id}-website-error`}
+        />
+        <p class="field__hint" id={`${id}-website-hint`}>
+          A domain is enough. No website yet? Say so in the message.
+        </p>
+        <p class="field__error" id={`${id}-website-error`} data-error-for="website_url" data-visible="false">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="8" cy="8" r="6.4"></circle><path d="M8 4.6v4.2M8 11.3v.1"></path></svg>
+          <span></span>
+        </p>
+      </div>
+
+      <div class="field">
+        <label for={`${id}-email`}>Email address</label>
+        <input
+          id={`${id}-email`}
+          name="email"
+          type="email"
+          autocomplete="email"
+          inputmode="email"
+          maxlength="200"
+          required
+          aria-describedby={`${id}-email-error`}
+        />
+        <p class="field__error" id={`${id}-email-error`} data-error-for="email" data-visible="false">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="8" cy="8" r="6.4"></circle><path d="M8 4.6v4.2M8 11.3v.1"></path></svg>
+          <span></span>
+        </p>
+      </div>
+
+      <div class="field">
+        <label for={`${id}-phone`}>Phone <span class="optional">(optional)</span></label>
+        <input
+          id={`${id}-phone`}
+          name="phone"
+          type="tel"
+          autocomplete="tel"
+          maxlength="40"
+          aria-describedby={`${id}-phone-error`}
+        />
+        <p class="field__error" id={`${id}-phone-error`} data-error-for="phone" data-visible="false">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="8" cy="8" r="6.4"></circle><path d="M8 4.6v4.2M8 11.3v.1"></path></svg>
+          <span></span>
+        </p>
+      </div>
+
+      <div class="field">
+        <label for={`${id}-service`}>Service of interest</label>
+        <select
+          id={`${id}-service`}
+          name="service_of_interest"
+          required
+          aria-describedby={`${id}-service-error`}
+        >
+          <option value="">Choose a service</option>
+          {options.map((option) => <option value={option}>{option}</option>)}
+        </select>
+        <p class="field__error" id={`${id}-service-error`} data-error-for="service_of_interest" data-visible="false">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="8" cy="8" r="6.4"></circle><path d="M8 4.6v4.2M8 11.3v.1"></path></svg>
+          <span></span>
+        </p>
+      </div>
+
+      <div class="field field--full">
+        <label for={`${id}-message`}>
+          {isAudit ? "Anything we should know?" : "Message"}
+          {isAudit && <span class="optional">(optional)</span>}
+        </label>
+        <textarea
+          id={`${id}-message`}
+          name="message"
+          rows="4"
+          maxlength="2000"
+          required={!isAudit}
+          placeholder={isAudit ? "What is not working, and what would a good result look like?" : "Tell us what you need help with, and anything we should look at first."}
+          aria-describedby={`${id}-message-error`}
+        ></textarea>
+        <p class="field__error" id={`${id}-message-error`} data-error-for="message" data-visible="false">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="8" cy="8" r="6.4"></circle><path d="M8 4.6v4.2M8 11.3v.1"></path></svg>
+          <span></span>
+        </p>
+      </div>
+
+      <div class="field field--full">
+        <div class="consent">
+          <input
+            id={`${id}-consent`}
+            name="consent_given"
+            type="checkbox"
+            value="yes"
+            required
+            aria-describedby={`${id}-consent-error`}
+          />
+          <label for={`${id}-consent`}>
+            I agree that Straight Up Digital may use these details to respond to
+            this enquiry, as described in the <a href="/privacy">privacy notice</a>.
+          </label>
+        </div>
+        <p class="field__error" id={`${id}-consent-error`} data-error-for="consent_given" data-visible="false">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="8" cy="8" r="6.4"></circle><path d="M8 4.6v4.2M8 11.3v.1"></path></svg>
+          <span></span>
+        </p>
+      </div>
+
+      {
+        turnstileKey && formMode === "email" && (
+          <div class="field field--full">
+            <div
+              class="cf-turnstile"
+              data-turnstile
+              data-sitekey={turnstileKey}
+              data-theme="dark"
+              data-language="en"
+            />
+            <noscript>
+              <p class="field__hint">
+                The spam check needs JavaScript. Please enable it, or email us
+                through the address on the Contact page.
+              </p>
+            </noscript>
+          </div>
+        )
+      }
+    </div>
+
+    <div class="form-submit">
+      <button class="btn btn--primary" type="submit" data-submit>
+        {submitLabel}
+      </button>
+      <p class="form-submit__note">
+        No obligation. We confirm scope, cost and timing in writing before any
+        work starts.
+      </p>
+    </div>
+  </form>
+
+  <div class="form-success" data-form-success hidden role="status" tabindex="-1">
+    <h2>{isAudit ? "Request received." : "Message received."}</h2>
+    <p>
+      {isAudit
+        ? "Thank you. Your audit request is in, and a person will read it — not a bot."
+        : "Thank you. Your message is in, and a person will read it — not a bot."}
+    </p>
+    <p>What happens next:</p>
+    <ol>
+      <li>We check that the business and website details match what is public.</li>
+      <li>We come back to you with a clear next step, and any questions we need answered first.</li>
+      <li>If work is involved, we confirm scope, cost and timing in writing before anything starts.</li>
+    </ol>
+    <p class="small">
+      Nothing is charged before you agree to a written scope. If you need to add
+      something, send another message and mention this request.
+    </p>
+    <p>
+      <a class="link-arrow" href="/how-it-works">
+        See the full process
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg>
+      </a>
+    </p>
+  </div>
+</section>
+
+<script>
+  type FieldName =
+    | "name"
+    | "business_name"
+    | "website_url"
+    | "email"
+    | "phone"
+    | "service_of_interest"
+    | "message"
+    | "consent_given";
+
+  const root = document.querySelector<HTMLElement>("[data-enquiry-root]");
+  const form = root?.querySelector<HTMLFormElement>("[data-enquiry-form]");
+  const alertBox = root?.querySelector<HTMLElement>("[data-form-alert]");
+  const alertText = root?.querySelector<HTMLElement>("[data-form-alert-text]");
+  const success = root?.querySelector<HTMLElement>("[data-form-success]");
+  const submitButton = form?.querySelector<HTMLButtonElement>("[data-submit]");
+  const mode = (root?.dataset.formMode ?? "netlify") as "netlify" | "email";
+  const isAuditForm = form?.dataset.formType === "audit";
+
+  const messages: Record<FieldName, string> = {
+    name: "Enter your name so we know who we are replying to.",
+    business_name: "Enter your business name.",
+    website_url:
+      "Enter your website address, for example yourbusiness.co.za. If you do not have a site yet, say so in the message.",
+    email: "Enter your email address so we can reply.",
+    phone: "Check the phone number, or leave it empty.",
+    service_of_interest: "Choose the service you are interested in.",
+    message: "Tell us a little about what you need.",
+    consent_given: "Please confirm you agree to the privacy notice.",
+  };
+
+  const started = form?.querySelector<HTMLInputElement>("[data-started-at]");
+  if (started) started.value = String(Date.now());
+
+  const source = form?.querySelector<HTMLInputElement>("[data-source]");
+  if (source && !source.value) source.value = window.location.pathname;
+
+  const field = (name: FieldName) =>
+    form?.querySelector<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>(
+      `[name="${name}"]`,
+    ) ?? null;
+
+  const errorFor = (name: FieldName) =>
+    root?.querySelector<HTMLElement>(`[data-error-for="${name}"]`) ?? null;
+
+  const setError = (name: FieldName, message: string | null) => {
+    const input = field(name);
+    const error = errorFor(name);
+    if (!input || !error) return;
+    const text = error.querySelector("span");
+    if (message) {
+      input.setAttribute("aria-invalid", "true");
+      error.dataset.visible = "true";
+      if (text) text.textContent = message;
+    } else {
+      input.removeAttribute("aria-invalid");
+      error.dataset.visible = "false";
+      if (text) text.textContent = "";
+    }
+  };
+
+  const normalizeUrl = (value: string) =>
+    /^https?:\/\//i.test(value) ? value : `https://${value}`;
+
+  const isEmail = (value: string) =>
+    /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test(value.trim());
+
+  const isWebsite = (value: string) => {
+    try {
+      const url = new URL(normalizeUrl(value.trim()));
+      const host = url.hostname;
+      return host.includes(".") && !host.startsWith(".") && !host.endsWith(".");
+    } catch {
+      return false;
+    }
+  };
+
+  const validate = (): FieldName[] => {
+    const invalid: FieldName[] = [];
+    const check = (name: FieldName, valid: boolean) => {
+      if (!valid) invalid.push(name);
+      setError(name, valid ? null : messages[name]);
+    };
+
+    const nameInput = field("name") as HTMLInputElement | null;
+    if (nameInput) check("name", nameInput.value.trim().length >= 2);
+
+    const business = (field("business_name") as HTMLInputElement | null)?.value ?? "";
+    check("business_name", business.trim().length >= 2);
+
+    const messageInput = field("message") as HTMLTextAreaElement | null;
+    const message = messageInput?.value.trim() ?? "";
+
+    const websiteInput = field("website_url") as HTMLInputElement | null;
+    const website = websiteInput?.value.trim() ?? "";
+    const websiteOk =
+      website.length === 0
+        ? !isAuditForm || message.length >= 3
+        : isWebsite(website);
+    check("website_url", websiteOk);
+
+    const emailInput = field("email") as HTMLInputElement | null;
+    check("email", isEmail(emailInput?.value ?? ""));
+
+    const phone = (field("phone") as HTMLInputElement | null)?.value.trim() ?? "";
+    const digits = phone.replace(/\D/g, "");
+    check("phone", phone.length === 0 || digits.length >= 7);
+
+    const service = (field("service_of_interest") as HTMLSelectElement | null)?.value ?? "";
+    check("service_of_interest", service.length > 0);
+
+    if (messageInput?.required) check("message", message.length >= 10);
+    else check("message", message.length <= 2000);
+
+    const consent = form?.querySelector<HTMLInputElement>('[name="consent_given"]');
+    check("consent_given", Boolean(consent?.checked));
+
+    return invalid;
+  };
+
+  const showAlert = (message: string) => {
+    if (!alertBox || !alertText) return;
+    alertText.textContent = message;
+    alertBox.hidden = false;
+  };
+
+  const hideAlert = () => {
+    if (alertBox) alertBox.hidden = true;
+  };
+
+  form?.querySelectorAll<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>(
+    "input, select, textarea",
+  ).forEach((input) => {
+    input.addEventListener("input", () => {
+      if (input.getAttribute("aria-invalid") === "true") {
+        setError(input.name as FieldName, null);
+      }
+    });
+  });
+
+  form?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    hideAlert();
+
+    if (submitButton?.disabled) return;
+
+    const invalid = validate();
+    if (invalid.length > 0) {
+      const first = field(invalid[0]);
+      first?.focus();
+      showAlert(
+        invalid.length === 1
+          ? "One field needs attention. Check the highlighted field below."
+          : `${invalid.length} fields need attention. Check the highlighted fields below.`,
+      );
+      return;
+    }
+
+    if (!form) return;
+
+    const originalLabel = submitButton?.textContent ?? "Send";
+    if (submitButton) {
+      submitButton.disabled = true;
+      submitButton.setAttribute("aria-busy", "true");
+      submitButton.textContent = "Sending…";
+    }
+
+    const formData = new FormData(form);
+    const payload: Record<string, string | boolean> = {};
+    formData.forEach((value, key) => {
+      payload[key] = typeof value === "string" ? value : "";
+    });
+    payload.consent_given = Boolean(
+      form.querySelector<HTMLInputElement>('[name="consent_given"]')?.checked,
+    );
+    payload.consent_timestamp = new Date().toISOString();
+    payload.form_type = form.dataset.formType ?? "contact";
+
+    const turnstileToken = form.querySelector<HTMLInputElement>('[name="cf-turnstile-response"]');
+    if (turnstileToken) payload.turnstile_token = turnstileToken.value;
+
+    try {
+      let response: Response;
+
+      if (mode === "email") {
+        response = await fetch("/.netlify/functions/submit-enquiry", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+      } else {
+        const body = new URLSearchParams();
+        Object.entries(payload).forEach(([key, value]) => {
+          if (key === "consent_given") {
+            if (value) body.set(key, "yes");
+          } else if (key === "consent_timestamp") {
+            body.set(key, String(value));
+          } else if (typeof value === "string" && value.trim() !== "") {
+            body.set(key, value);
+          }
+        });
+        if (!body.has("form-name")) body.set("form-name", form.dataset.formName ?? "");
+        response = await fetch("/", {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: body.toString(),
+        });
+      }
+
+      if (!response.ok) {
+        const detail = await response.json().catch(() => null);
+        const message =
+          detail && typeof detail.message === "string"
+            ? detail.message
+            : "Something went wrong on our side. Nothing was sent. Please try again, or use the contact details on the Contact page if it keeps happening.";
+        throw new Error(message);
+      }
+
+      form.hidden = true;
+      hideAlert();
+      if (success) {
+        success.hidden = false;
+        success.focus();
+        success.scrollIntoView({ block: "center", behavior: "smooth" });
+      }
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Something went wrong. Nothing was sent. Please try again.";
+      showAlert(message);
+      form.scrollIntoView({ block: "start", behavior: "smooth" });
+    } finally {
+      if (submitButton) {
+        submitButton.disabled = false;
+        submitButton.removeAttribute("aria-busy");
+        submitButton.textContent = originalLabel;
+      }
+    }
+  });
+
+  // Cloudflare Turnstile is loaded only when a site key is configured.
+  const widget = root?.querySelector<HTMLElement>("[data-turnstile]");
+  if (widget) {
+    const script = document.createElement("script");
+    script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
+    script.async = true;
+    script.defer = true;
+    script.onload = () => {
+      const w = window as unknown as {
+        turnstile?: { render: (element: HTMLElement, options: Record<string, unknown>) => void };
+      };
+      w.turnstile?.render(widget, { sitekey: widget.dataset.sitekey, theme: "dark" });
+    };
+    script.onerror = () => {
+      showAlert(
+        "The spam check could not load. Please refresh the page, or use the contact details on the Contact page.",
+      );
+    };
+    document.head.appendChild(script);
+  }
+</script>

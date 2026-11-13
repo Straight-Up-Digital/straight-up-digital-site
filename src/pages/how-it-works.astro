@@ -1,0 +1,177 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import CtaBand from "../components/CtaBand.astro";
+import { steps } from "../data/steps";
+
+const description =
+  "The six-step Straight Up Digital process: tell us about the business, we assess the presence, identify strengths and gaps, deliver a clear report, help implement the fixes and support the growth that follows.";
+---
+
+<BaseLayout
+  title="How it works"
+  description={description}
+  canonicalPath="/how-it-works"
+>
+  <section class="page-hero">
+    <div class="container page-hero__inner">
+      <div>
+        <p class="kicker">How it works</p>
+        <h1 class="page-hero__title">
+          From a vague worry to a written plan.
+        </h1>
+        <div class="page-hero__actions">
+          <a class="btn btn--primary" href="/digital-audit#request">
+            Request your digital audit
+            <svg class="btn__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg>
+          </a>
+         </div>
+      </div>
+      <p class="page-hero__lede">
+        Six steps, each with a clear job for you and a clear job for us. No
+        retainer you did not ask for, and no work that starts before the scope is
+        agreed.
+      </p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="journey-title">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <p class="kicker"><span>01</span> The journey</p>
+          <h2 class="h2" id="journey-title" style="margin-top: 14px;">
+            What happens, in order.
+          </h2>
+        </div>
+        <p class="lede">
+          The first two steps are mostly ours. The third and fourth give you
+          something concrete to decide on. The last two only happen if they earn
+          their place.
+        </p>
+      </div>
+
+      <div class="journey">
+        {
+          steps.map((step) => (
+            <article class="journey__step">
+              <div class="journey__num">{step.number}</div>
+              <div class="journey__body">
+                <h3 class="journey__title">{step.title}</h3>
+                <div class="journey__cols">
+                  <div class="journey__col">
+                    <h4>You</h4>
+                    <p>{step.client}</p>
+                  </div>
+                  <div class="journey__col">
+                    <h4>We</h4>
+                    <p>{step.we}</p>
+                  </div>
+                </div>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="need-title">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <p class="kicker"><span>02</span> Before we start</p>
+          <h2 class="h2" id="need-title" style="margin-top: 14px;">
+            What we need from you.
+          </h2>
+        </div>
+        <p class="lede">
+          Less than you would expect. The audit works from public information, so
+          there is no long questionnaire and no access to your accounts for the
+          first pass.
+        </p>
+      </div>
+
+      <div class="factor-grid">
+        <article class="factor">
+          <h3>The website address</h3>
+          <p>
+            A domain is enough. If there is no website yet, say so — that becomes
+            part of the finding rather than a reason to wait.
+          </p>
+        </article>
+        <article class="factor">
+          <h3>The business name and location</h3>
+          <p>
+            The name as customers see it, and the town or area the business
+            actually serves. This is what we use to match listings and profiles.
+          </p>
+        </article>
+        <article class="factor">
+          <h3>What is not working</h3>
+          <p>
+            A sentence is enough. Few enquiries, wrong enquiries, an outdated
+            site, no-shows from Maps — the symptom usually points to the category
+            worth reading first.
+          </p>
+        </article>
+        <article class="factor">
+          <h3>Access, only when needed</h3>
+          <p>
+            For implementation work we may need access to a website, hosting or a
+            business profile. We ask for the narrowest access that does the job,
+            and never before the scope is agreed.
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="limits-title">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <p class="kicker"><span>03</span> The honest part</p>
+          <h2 class="h2" id="limits-title" style="margin-top: 14px; max-width: 16ch;">
+            What this process cannot do.
+          </h2>
+        </div>
+        <p class="lede">
+          It cannot see your bank account, your analytics or your competitors'
+          private data. It cannot promise a position in search results. It can
+          show what is publicly visible and what to do about it.
+        </p>
+      </div>
+
+      <div class="limits">
+        <ul>
+          <li>
+            It does not measure traffic, search volume, revenue or conversions.
+          </li>
+          <li>
+            It does not guarantee rankings, enquiries or sales. Search results
+            change for reasons outside anyone's control.
+          </li>
+          <li>
+            It reflects public information at the time of the audit. A profile
+            can change the day after the report is written.
+          </li>
+          <li>
+            It is not a substitute for legal, financial or accounting advice.
+          </li>
+        </ul>
+      </div>
+
+      <p class="body" style="margin-top: 28px;">
+        Sending an enquiry is free. Any paid work is confirmed in writing before
+        it starts, with the scope, the cost and the timing in one place.
+      </p>
+    </div>
+  </section>
+
+  <CtaBand
+    title="Ready to see what is actually there?"
+    body="Send the website address and a sentence about what is not working. We will take it from there."
+    secondaryLabel="What the audit checks"
+    secondaryHref="/digital-audit#what-we-check"
+  />
+</BaseLayout>

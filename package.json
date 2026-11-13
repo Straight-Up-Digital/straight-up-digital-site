@@ -1,0 +1,30 @@
+{
+  "name": "straight-up-digital-site",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Public marketing website for Straight Up Digital. Static Astro frontend with Netlify Functions for enquiry handling.",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "test": "node --test tests/enquiry.test.mjs tests/function.test.mjs",
+    "netlify:dev": "netlify dev",
+    "test:links": "node scripts/check-links.mjs"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.4",
+    "astro": "^7.4.11"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "@netlify/functions": "^6.1.1",
+    "netlify-cli": "^27.17.0",
+    "typescript": "^5.9.3"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

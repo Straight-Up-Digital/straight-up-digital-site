@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+.astro/
+
+# Netlify CLI state and local functions build
+.netlify/
+.netlify-cli/
+
+# Environment files (never commit secrets)
+.env
+.env.*
+!.env.example
+
+# Working files and test evidence
+.work/
+test-results/
+playwright-report/
+lighthouse/
+
+# OS and editor noise
+.DS_Store
+Thumbs.db
+*.log
+.vscode/*
+!.vscode/extensions.json
+
+# Editor transfer artefacts
+.manus-*.tmp

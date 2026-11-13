@@ -1,0 +1,44 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const description = "Your enquiry has been received. Here is what happens next.";
+---
+
+<BaseLayout
+  title="Request received"
+  description={description}
+  canonicalPath="/thank-you"
+  noindex
+  showStickyAudit={false}
+>
+  <section class="section">
+    <div class="container">
+      <div class="center-page">
+        <p class="error-code">CONFIRMATION</p>
+        <h1>Request received.</h1>
+        <p>
+          Thank you. Your details are in, and a person will read them — not a bot.
+        </p>
+
+        <div class="form-success" style="text-align: left;">
+          <h2 class="h3">What happens next</h2>
+          <ol>
+            <li>We check that the business and website details match what is public.</li>
+            <li>We come back with a clear next step, and any questions we need answered first.</li>
+            <li>If work is involved, we confirm scope, cost and timing in writing before anything starts.</li>
+          </ol>
+        </div>
+
+        <p class="small">
+          Nothing is charged before you agree to a written scope. If you need to add
+          something, send another message and mention this request.
+        </p>
+
+        <div class="center-page__actions">
+          <a class="btn btn--secondary" href="/">Back to home</a>
+          <a class="btn btn--secondary" href="/how-it-works">See the full process</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

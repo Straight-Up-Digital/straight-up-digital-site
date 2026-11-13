@@ -1,0 +1,41 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const description = "The page you were looking for does not exist.";
+---
+
+<BaseLayout
+  title="Page not found"
+  description={description}
+  canonicalPath="/404"
+  noindex
+  showStickyAudit={false}
+>
+  <section class="section">
+    <div class="container">
+      <div class="center-page">
+        <p class="error-code">ERROR 404</p>
+        <h1>That page is not here.</h1>
+        <p>
+          The link may be old, or the address may have a typo. These pages are the
+          fastest way back to something useful.
+        </p>
+
+        <div class="center-page__actions">
+          <a class="btn btn--primary" href="/digital-audit">
+            Request a digital audit
+            <svg class="btn__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg>
+          </a>
+          <a class="btn btn--secondary" href="/">Back to home</a>
+        </div>
+
+        <ul class="site-footer__list" style="margin-top: 16px;">
+          <li><a href="/services">Services</a></li>
+          <li><a href="/how-it-works">How it works</a></li>
+          <li><a href="/pricing">Pricing</a></li>
+          <li><a href="/contact">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

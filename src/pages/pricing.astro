@@ -1,0 +1,171 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import CtaBand from "../components/CtaBand.astro";
+import FaqList from "../components/FaqList.astro";
+import {
+  costFactors,
+  packageSlots,
+  pricingPrinciples,
+} from "../data/pricing";
+import { pricingFaqs } from "../data/faqs";
+
+const description =
+  "How Straight Up Digital prices work: scope first, one written quote, no surprise extras. Packages and prices are published once approved. Request a quote for your business.";
+---
+
+<BaseLayout
+  title="Pricing"
+  description={description}
+  canonicalPath="/pricing"
+>
+  <section class="page-hero">
+    <div class="container page-hero__inner">
+      <div>
+        <p class="kicker">Pricing</p>
+        <h1 class="page-hero__title">
+          Clear scope. Written quotes. No surprise invoices.
+        </h1>
+        <div class="page-hero__actions">
+          <a class="btn btn--primary" href="/contact">
+            Get a quote
+            <svg class="btn__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg>
+          </a>
+          <a class="btn btn--secondary" href="#packages">See the package grid</a>
+        </div>
+      </div>
+      <p class="page-hero__lede">
+        Packages and prices have not been approved for publication. Rather than
+        publish a number that later changes, every project is scoped and quoted in
+        writing.
+      </p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="principles-title">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <p class="kicker"><span>01</span> How pricing works</p>
+          <h2 class="h2" id="principles-title" style="margin-top: 14px; max-width: 14ch;">
+            Three rules, every time.
+          </h2>
+        </div>
+        <p class="lede">
+          The quote is not a sales document. It is the agreement about what will
+          be done, what it costs and when it will be finished.
+        </p>
+      </div>
+
+      <div class="pricing-principles">
+        {
+          pricingPrinciples.map((principle) => (
+            <article>
+              <h3>{principle.title}</h3>
+              <p>{principle.body}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="factors-title">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <p class="kicker"><span>02</span> What affects cost</p>
+          <h2 class="h2" id="factors-title" style="margin-top: 14px; max-width: 14ch;">
+            Six things change the number.
+          </h2>
+        </div>
+        <p class="lede">
+          None of them are secrets. Knowing them in advance is why the quote can
+          be fixed rather than “estimated”.
+        </p>
+      </div>
+
+      <div class="factor-grid">
+        {
+          costFactors.map((factor) => (
+            <article class="factor">
+              <h3>{factor.title}</h3>
+              <p>{factor.body}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section ivory" id="packages" aria-labelledby="packages-title">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <p class="kicker"><span>03</span> Packages</p>
+          <h2 class="h2" id="packages-title" style="margin-top: 14px;">
+            The grid is ready. The details are not.
+          </h2>
+        </div>
+        <p class="body">
+          Package names, inclusions and prices are being approved. Until they are,
+          the honest route is a written quote for the work you actually need.
+        </p>
+      </div>
+
+      <div class="package-grid" data-placeholder="pricing-packages">
+        {
+          packageSlots.map((slot) => (
+            <article class="package-slot">
+              <span class="package-slot__num">{slot.id}</span>
+              <h3>Package details to follow</h3>
+              <p>
+                Scope and price are agreed in a written quote for now, so nothing
+                here is a guess dressed up as a package.
+              </p>
+              <a class="link-arrow" href="/contact">
+                Request a quote
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg>
+              </a>
+            </article>
+          ))
+        }
+      </div>
+
+      <p class="small" style="margin-top: 28px; max-width: 60ch;">
+        Why this looks unfinished: it is. Publishing invented package names or
+        prices would be worse than saying plainly that they are not ready. The
+        grid will be filled once the details are final.
+      </p>
+
+      <p style="margin-top: 32px;">
+        <a class="btn btn--primary btn--on-ivory" href="/contact">
+          Get a written quote
+          <svg class="btn__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg>
+        </a>
+      </p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="pricing-faq-title">
+    <div class="container container--narrow">
+      <div class="section-head" style="grid-template-columns: 1fr;">
+        <div>
+          <p class="kicker"><span>04</span> Questions</p>
+          <h2 class="h2" id="pricing-faq-title" style="margin-top: 14px;">
+            Before you ask for a quote.
+          </h2>
+        </div>
+      </div>
+      <FaqList items={pricingFaqs} />
+    </div>
+  </section>
+
+  <CtaBand
+    title="Tell us the scope. We will put a number on it."
+    body="Send the website address and what you want fixed. You will get one written quote with the deliverables, cost and timing."
+    primaryLabel="Get a quote"
+    primaryHref="/contact"
+    secondaryLabel="Start with an audit"
+    secondaryHref="/digital-audit"
+  />
+</BaseLayout>

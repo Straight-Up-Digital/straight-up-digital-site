@@ -1,0 +1,289 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Core from "../components/Core.astro";
+import CtaBand from "../components/CtaBand.astro";
+import { categories, exampleCoverage, exampleScore } from "../data/categories";
+import { services, serviceStatusMeta } from "../data/services";
+import { steps } from "../data/steps";
+import { site } from "../data/site";
+
+const description =
+  "Straight Up Digital audits the digital presence of small and growing businesses: six categories, an honest score, coverage and confidence notes, and a prioritised plan. Intelligence. Visibility. Growth.";
+
+const outcomes = [
+  {
+    index: "01",
+    title: "Understand",
+    body: "See how your website, Google listing, social profiles, content, reputation and business identity look to a customer who has never heard of you.",
+  },
+  {
+    index: "02",
+    title: "Improve",
+    body: "Get a prioritised list of fixes, ordered by what is likely to make the biggest difference — not a ninety-page document nobody reads.",
+  },
+  {
+    index: "03",
+    title: "Grow",
+    body: "Put the fundamentals in place that make it easier for customers to find you, trust you and get in touch.",
+  },
+];
+
+const trustPoints = [
+  {
+    title: "We will not promise a ranking.",
+    body: "Search results change with location, device, competition and decisions we do not control. The audit shows what can be improved, never a guaranteed position.",
+  },
+  {
+    title: "We will not invent numbers.",
+    body: "The audit does not measure traffic, search volume, revenue or conversions. It says so in the report instead of dressing up a guess as data.",
+  },
+  {
+    title: "We will not hide what we could not check.",
+    body: "Every category is marked Assessed or Not verified. Coverage and confidence are shown next to the score, so you know what it is built on.",
+  },
+  {
+    title: "We will not pad a report.",
+    body: "Recommendations are ordered by what is likely to matter most, with the effort each one takes. If something can wait, it is listed as something that can wait.",
+  },
+];
+---
+
+<BaseLayout
+  title={site.name}
+  description={description}
+  canonicalPath="/"
+>
+  <section class="hero">
+    <div class="container hero__grid">
+      <div class="hero__copy">
+        <p class="hero__intro">Digital intelligence for small and growing businesses</p>
+        <h1 class="hero__title">
+          Your digital presence should work as hard as your business does.
+        </h1>
+        <p class="hero__lede">
+          We identify digital weaknesses, uncover opportunities and help
+          businesses improve their online presence — starting with an honest
+          audit of what is already there.
+        </p>
+
+        <div class="hero__actions">
+          <a class="btn btn--primary" href="/digital-audit#request">
+            Request your digital audit
+            <svg class="btn__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg>
+          </a>
+          <a class="btn btn--secondary" href="/services">Explore our services</a>
+        </div>
+
+        <ul class="hero__facts">
+          <li>Six audit categories</li>
+          <li>Coverage and confidence shown</li>
+          <li>Reviewed by a person</li>
+        </ul>
+      </div>
+
+      <div class="hero__visual">
+        <Core uid="hero" />
+        <p class="hero__visual-caption">
+          <strong>The Digital Intelligence Core.</strong> It opens into an example
+          reading when you reach the audit section. Example data only — never a
+          client.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="outcomes-title">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <p class="kicker"><span>01</span> What you get</p>
+          <h2 class="h2" id="outcomes-title" style="margin-top: 14px; max-width: 16ch;">
+            A clear read, then a plan you can act on.
+          </h2>
+        </div>
+        <p class="lede">
+          Most businesses do not need another dashboard. They need to know what
+          is broken, what is working and what to do next.
+        </p>
+      </div>
+
+      <div class="outcomes">
+        {
+          outcomes.map((outcome) => (
+            <article class="outcome">
+              <span class="outcome__index">{outcome.index}</span>
+              <h3 class="h3">{outcome.title}</h3>
+              <p>{outcome.body}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="steps-title">
+    <div class="container">
+      <div class="steps-split">
+        <div class="steps-split__aside">
+          <p class="kicker"><span>02</span> How it works</p>
+          <h2 class="h2" id="steps-title" style="margin-top: 14px; max-width: 12ch;">
+            Six steps, no mystery.
+          </h2>
+          <p class="body" style="margin-top: 18px;">
+            You always know what is happening, who does it and what it costs
+            before it happens.
+          </p>
+          <p style="margin-top: 24px;">
+            <a class="link-arrow" href="/how-it-works">
+              See the full process
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg>
+            </a>
+          </p>
+        </div>
+
+        <ol class="steps-rail">
+          {
+            steps.map((step) => (
+              <li class="steps-rail__item">
+                <span class="steps-rail__num">{step.number}</span>
+                <div>
+                  <h3>{step.title}</h3>
+                  <p>{step.short}</p>
+                </div>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="what-we-check" aria-labelledby="audit-title">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <p class="kicker"><span>03</span> What the audit checks</p>
+          <h2 class="h2" id="audit-title" style="margin-top: 14px; max-width: 16ch;">
+            Six categories. One honest score.
+          </h2>
+        </div>
+        <p class="lede">
+          A category is only scored when there is enough public evidence. What
+          cannot be verified is named, not guessed.
+        </p>
+      </div>
+
+      <div class="audit-core">
+        <div class="audit-core__visual">
+          <Core
+            uid="audit"
+            openOnView
+            label={`Illustration of the Digital Intelligence Core, open, showing an example audit score of ${exampleScore} out of 100 with ${exampleCoverage.verified} of ${exampleCoverage.total} categories verified.`}
+          />
+          <p class="audit-core__caption">
+            Example reading. The six markers around the score show which
+            categories were verified.
+          </p>
+          <div class="score-summary">
+            <span><strong>{exampleScore}</strong> / 100 example score</span>
+            <span><strong>{exampleCoverage.verified} of {exampleCoverage.total}</strong> categories verified</span>
+            <span><strong>{exampleCoverage.confidence}</strong> confidence</span>
+          </div>
+        </div>
+
+        <ol class="category-list">
+          {
+            categories.map((category) => (
+              <li class:list={["category", category.example === null && "category--unverified"]}>
+                <div class="category__head">
+                  <h3 class="category__name">{category.name}</h3>
+                  <span class="category__state">
+                    {category.example === null ? "Not verified" : "Assessed"}
+                  </span>
+                </div>
+                <p class="category__note">{category.question}</p>
+                {category.example === null && category.exampleNote && (
+                  <p class="category__note">{category.exampleNote}</p>
+                )}
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+
+      <p style="margin-top: 32px;">
+        <a class="link-arrow" href="/digital-audit#what-we-check">
+          See exactly what each category checks
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg>
+        </a>
+      </p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="services-title">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <p class="kicker"><span>04</span> Services</p>
+          <h2 class="h2" id="services-title" style="margin-top: 14px; max-width: 14ch;">
+            Fix what the audit finds.
+          </h2>
+        </div>
+        <p class="lede">
+          Start with the audit. Then choose only the work that moves the business
+          forward. Every service carries an honest status.
+        </p>
+      </div>
+
+      <div class="service-list">
+        {
+          services.map((service) => (
+            <a class="service-list__row" href={`/services#${service.slug}`}>
+              <span class="service-list__name">{service.title}</span>
+              <span class="service-list__desc">{service.summary}</span>
+              <span class="service-list__meta">
+                <span class:list={["status", `status--${service.status}`]}>
+                  {serviceStatusMeta[service.status].label}
+                </span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg>
+              </span>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section trust" aria-labelledby="trust-title">
+    <div class="container">
+      <div class="trust__head">
+        <div>
+          <p class="kicker"><span>05</span> Straight answers</p>
+          <h2 class="h2" id="trust-title" style="margin-top: 14px;">
+            What we will not claim.
+          </h2>
+        </div>
+        <p class="body">
+          Trust is easier to build when the limits are on the table. These four
+          promises are the ones we can keep every time.
+        </p>
+      </div>
+
+      <div class="trust__grid">
+        {
+          trustPoints.map((point) => (
+            <article class="trust__item">
+              <h3>{point.title}</h3>
+              <p>{point.body}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <CtaBand
+    title="Start with a clear read of where you stand."
+    body="Request a digital audit and get a plain-language report: what is strong, what is missing and what to fix first."
+  />
+</BaseLayout>

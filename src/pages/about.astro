@@ -1,0 +1,214 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import CtaBand from "../components/CtaBand.astro";
+
+const description =
+  "Straight Up Digital gives small and growing businesses a clear, evidence-based read of their digital presence, then helps fix what matters. Practical digital intelligence, without the theatre.";
+
+const principles = [
+  {
+    number: "01",
+    title: "Evidence before opinion",
+    body: "A hunch is a starting point, not a finding. Every category is scored from public evidence, and anything that cannot be verified is named as such.",
+  },
+  {
+    number: "02",
+    title: "Plain language",
+    body: "If a sentence needs a glossary, it is not finished. Reports are written for the person who runs the business, not for another agency.",
+  },
+  {
+    number: "03",
+    title: "Show the limits",
+    body: "Coverage, confidence and what the audit cannot measure belong in the report, not in a footnote. The limits are part of the product.",
+  },
+  {
+    number: "04",
+    title: "Priority beats volume",
+    body: "A short list that gets done is worth more than a long list that does not. Recommendations are ordered by what is likely to matter most.",
+  },
+];
+
+const working = [
+  {
+    title: "One point of contact",
+    body: "You deal with the person doing the work, not an account manager relaying messages. Questions get answered by someone who has read the file.",
+  },
+  {
+    title: "Scope in writing",
+    body: "What is included, what is not, what it costs and when it lands — in one place, before the work starts. If the scope changes, the change is agreed first.",
+  },
+  {
+    title: "Leave you more capable",
+    body: "The work should make the business easier to run, not more dependent on us. Where it makes sense, we explain what was done so your team can keep it up.",
+  },
+];
+---
+
+<BaseLayout title="About" description={description} canonicalPath="/about">
+  <section class="page-hero">
+    <div class="container page-hero__inner">
+      <div>
+        <p class="kicker">About</p>
+        <h1 class="page-hero__title">
+          Practical digital intelligence, without the theatre.
+        </h1>
+        <div class="page-hero__actions">
+          <a class="btn btn--primary" href="/digital-audit#request">
+            Request your digital audit
+            <svg class="btn__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg>
+          </a>
+        </div>
+      </div>
+      <p class="page-hero__lede">
+        Straight Up Digital helps small and growing businesses understand what
+        their online presence is really saying, then fix the parts that are
+        costing them work.
+      </p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="why-title">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <p class="kicker"><span>01</span> Why an audit first</p>
+          <h2 class="h2" id="why-title" style="margin-top: 14px; max-width: 14ch;">
+            Stop guessing. Start with what is there.
+          </h2>
+        </div>
+        <p class="lede">
+          Most small businesses are sold tactics before anyone looks at the
+          evidence. A new website, a content calendar, an ad budget: each can be
+          right, but not before the gaps are known.
+        </p>
+      </div>
+
+      <div class="service-detail__grid">
+        <div class="prose" style="color: var(--silver);">
+          <p>
+            A customer deciding whether to call you sees a handful of public
+            signals: a website, a Google listing, a social profile, a few reviews,
+            a contact page that may or may not work. They form an opinion in
+            seconds. The audit looks at the same signals, in the same order, and
+            writes down what it finds.
+          </p>
+          <p>
+            That is why the audit comes first. It is the cheapest way to replace
+            “I think the website is the problem” with a specific, ordered list.
+          </p>
+        </div>
+        <div class="prose" style="color: var(--silver);">
+          <p>
+            The order matters. A business with a broken contact page does not need
+            more content. A business with no Google listing does not need a
+            redesign first. A business with strong pages and a weak profile needs
+            a different plan again.
+          </p>
+          <p>
+            The report is designed to make that distinction clear, without a
+            fifty-slide deck or a score that cannot be explained.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="principles-title">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <p class="kicker"><span>02</span> Principles</p>
+          <h2 class="h2" id="principles-title" style="margin-top: 14px;">
+            Four rules we can be held to.
+          </h2>
+        </div>
+        <p class="lede">
+          These are not values on a wall. They are the reasons the report looks
+          the way it does.
+        </p>
+      </div>
+
+      <div class="journey">
+        {
+          principles.map((principle) => (
+            <article class="journey__step">
+              <div class="journey__num">{principle.number}</div>
+              <div class="journey__body">
+                <h3 class="journey__title">{principle.title}</h3>
+                <div class="journey__cols">
+                  <div class="journey__col" style="grid-column: 1 / -1;">
+                    <p>{principle.body}</p>
+                  </div>
+                </div>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="work-title">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <p class="kicker"><span>03</span> How we work</p>
+          <h2 class="h2" id="work-title" style="margin-top: 14px; max-width: 12ch;">
+            Few promises. Kept ones.
+          </h2>
+        </div>
+      </div>
+
+      <div class="factor-grid">
+        {
+          working.map((item) => (
+            <article class="factor">
+              <h3>{item.title}</h3>
+              <p>{item.body}</p>
+            </article>
+          ))
+        }
+        <article class="factor">
+          <h3>No invented proof</h3>
+          <p>
+            No testimonials, client logos or case studies appear on this site until
+            real ones exist with permission. An empty space is more honest than a
+            borrowed quote.
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section ivory" aria-labelledby="founder-title">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <p class="kicker"><span>04</span> Who is behind it</p>
+          <h2 class="h2" id="founder-title" style="margin-top: 14px;">
+            A name, a face, a short history.
+          </h2>
+        </div>
+        <p class="body">
+          This section is reserved for the founder’s name, a short biography and a
+          photograph. It will be published once approved — not filled in with a
+          story that did not happen.
+        </p>
+      </div>
+
+      <div class="founder-panel" data-placeholder="founder-profile">
+        <p class="caption">Founder profile</p>
+        <p>
+          A full profile is being prepared. Until it is published here, every
+          enquiry is read and answered by the person responsible for the work —
+          not passed to a call centre.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand
+    title="See the evidence for yourself."
+    body="Request an audit and get a report that shows its work: category scores, coverage, confidence and a short list of what to do next."
+  />
+</BaseLayout>

@@ -1,0 +1,188 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { ownerSupplied, placeholderKeys } from "../data/site";
+
+const description =
+  "Draft privacy notice for Straight Up Digital, covering what personal information is collected through the website, why, how long it is kept and how to exercise your rights under POPIA.";
+---
+
+<BaseLayout
+  title="Privacy notice"
+  description={description}
+  canonicalPath="/privacy"
+  noindex
+>
+  <section class="legal">
+    <div class="container legal__inner">
+      <div class="legal__banner" role="note">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4Z"></path><path d="M12 8v4M12 15v.5"></path></svg>
+        <p>
+          <strong>Draft for review.</strong> This notice has not been approved by a
+          lawyer and is not final. It is published as a working draft so the
+          wording can be reviewed against POPIA before the site collects real
+          enquiries.
+        </p>
+      </div>
+
+      <h1>Privacy notice</h1>
+      <p class="legal__meta">Version privacy-draft-2026-11 · Last updated 13 November 2026</p>
+
+      <div class="prose">
+        <p>
+          This notice explains what personal information Straight Up Digital
+          collects through this website, why it is collected, who it is shared
+          with and what you can ask us to do with it. It is written to be read,
+          not to hide behind.
+        </p>
+
+        <h2>1. Who is responsible</h2>
+        <p>
+          The responsible party is <strong>Straight Up Digital</strong>. The
+          registered legal entity name, registration number and registered address
+          are still to be confirmed.
+        </p>
+        <div class="placeholder-note" data-placeholder={placeholderKeys.legalEntity}>
+          <strong>Owner to supply:</strong> legal entity name, registration number
+          and registered address.
+        </div>
+        <p>
+          Privacy questions and requests can be sent through the{" "}
+          <a href="/contact">enquiry form</a> until a dedicated privacy contact is
+          published.
+        </p>
+
+        <h2>2. What we collect</h2>
+        <p>When you submit an enquiry or audit request, we collect:</p>
+        <ul>
+          <li>Your name, if you provide it.</li>
+          <li>Your business name and website address.</li>
+          <li>Your email address and, if you choose to provide it, your phone number.</li>
+          <li>The service you are interested in and the message you write.</li>
+          <li>The date and time you gave consent, and the version of this notice you agreed to.</li>
+        </ul>
+        <p>
+          The web host also records standard technical information such as the IP
+          address, browser type and pages requested, in server logs used for
+          security and troubleshooting.
+        </p>
+        <p>
+          We do not ask for identity numbers, card details, passwords or special
+          personal information through this website. Please do not send them.
+        </p>
+
+        <h2>3. Why we collect it</h2>
+        <ul>
+          <li>To read and respond to your enquiry.</li>
+          <li>To prepare an audit, quote or proposal you have asked for.</li>
+          <li>To deliver work you have agreed to and to keep the records the law requires.</li>
+          <li>To keep the website secure and prevent abuse of the forms.</li>
+        </ul>
+        <p>
+          Under POPIA, we rely on your consent for the enquiry, on the steps needed
+          to prepare or perform a contract, and on our legitimate interest in
+          running a secure website. You can withdraw consent at any time by asking
+          us to delete your enquiry.
+        </p>
+
+        <h2>4. Who we share it with</h2>
+        <p>
+          We do not sell personal information. We share it only with service
+          providers that help run the website and the business:
+        </p>
+        <ul>
+          <li>
+            <strong>Netlify</strong> — website hosting and form submission
+            handling.
+          </li>
+          <li>
+            <strong>An email provider</strong> — used to deliver enquiries to the
+            business inbox. The provider has not been selected yet.
+          </li>
+          <li>
+            Professional advisers or authorities, where the law requires it.
+          </li>
+        </ul>
+        <p>
+          Some providers may process information outside South Africa. Where that
+          happens, we require protections that are at least equivalent to POPIA.
+        </p>
+
+        <h2>5. How long we keep it</h2>
+        <p>
+          Enquiries are kept only as long as needed to respond, to deliver any work
+          agreed, and to meet record-keeping obligations. A fixed retention period
+          has not been approved yet.
+        </p>
+        <div class="placeholder-note">
+          <strong>Owner to confirm:</strong> the retention period for enquiries,
+          quotes and client records, and how records are deleted.
+        </div>
+
+        <h2>6. Cookies and analytics</h2>
+        <p>
+          This site does not set advertising or tracking cookies. Analytics is
+          switched off until a privacy-friendly tool is chosen and approved. If
+          analytics is enabled later, this notice will say which tool is used and
+          the site will ask for consent where the law requires it.
+        </p>
+        <div class="placeholder-note" data-placeholder={placeholderKeys.analytics}>
+          <strong>Owner to confirm:</strong> the analytics tool (or a decision to
+          use none) and the cookie notice wording.
+        </div>
+
+        <h2>7. Your rights</h2>
+        <p>Under POPIA you may ask to:</p>
+        <ul>
+          <li>Be told what personal information we hold about you.</li>
+          <li>Correct information that is wrong or out of date.</li>
+          <li>Delete information we no longer have a lawful reason to keep.</li>
+          <li>Object to processing based on legitimate interest.</li>
+          <li>Withdraw consent for future processing.</li>
+        </ul>
+        <p>
+          Send the request through the <a href="/contact">enquiry form</a> and say
+          what you want us to do. We may need to confirm your identity before
+          acting. If you are not satisfied with our response, you may complain to
+          the Information Regulator (South Africa).
+        </p>
+
+        <h2>8. Security</h2>
+        <p>
+          Access to enquiries is limited to the people who need it to respond and
+          deliver the work. The website is served over HTTPS, and form submissions
+          are validated before they are accepted. No system is perfectly secure,
+          but we take reasonable steps to protect what you send.
+        </p>
+
+        <h2>9. Children</h2>
+        <p>
+          The website is intended for businesses and is not directed at children.
+          We do not knowingly collect information from anyone under 18.
+        </p>
+
+        <h2>10. Changes</h2>
+        <p>
+          When this notice changes, the version date at the top changes too. If the
+          change affects how consent works, the form will point to the new version
+          before it is submitted.
+        </p>
+
+        <h2>11. Contact</h2>
+        <p>
+          For any privacy question, use the <a href="/contact">enquiry form</a> and
+          mark the message “Privacy”. The Information Officer’s name and direct
+          details will be published once confirmed.
+        </p>
+        <div class="placeholder-note" data-placeholder={placeholderKeys.informationOfficer}>
+          <strong>Owner to supply:</strong> the Information Officer’s name and
+          contact details, as required by POPIA.
+        </div>
+        {
+          ownerSupplied.informationOfficer && (
+            <p>Information Officer: {ownerSupplied.informationOfficer}</p>
+          )
+        }
+      </div>
+    </div>
+  </section>
+</BaseLayout>

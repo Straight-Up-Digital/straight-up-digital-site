@@ -1,0 +1,265 @@
+---
+/**
+ * The Digital Intelligence Core.
+ *
+ * A lightweight SVG instrument panel: a steel vault that opens to reveal an
+ * example audit reading. No 3D library, no video, no layout shift.
+ *
+ * Behaviour:
+ *  - closed by default in the hero
+ *  - opens when scrolled into view (audit section) or when `openOnView` is set
+ *  - opens instantly for reduced-motion users, small screens and no-JS
+ */
+import { categories, exampleScore } from "../data/categories";
+
+interface Props {
+  uid: string;
+  /** Show the example reading without waiting for a scroll (static fallback). */
+  open?: boolean;
+  /** Add the scroll observer that opens the Core when it enters the viewport. */
+  openOnView?: boolean;
+  /** Accessible description. Pass an empty string to mark it decorative. */
+  label?: string;
+  class?: string;
+}
+
+const {
+  uid,
+  open = false,
+  openOnView = false,
+  label = "",
+  class: className = "",
+} = Astro.props;
+
+const radius = 132;
+const circumference = 2 * Math.PI * radius;
+const arc = (circumference * exampleScore) / 100;
+
+// Six markers around the reading, one per category.
+const markers = categories.map((category, index) => {
+  const angle = (-90 + index * 60) * (Math.PI / 180);
+  const r = 158;
+  return {
+    id: category.id,
+    cx: 360 + Math.cos(angle) * r,
+    cy: 360 + Math.sin(angle) * r,
+    verified: category.example !== null,
+  };
+});
+---
+
+<figure
+  class:list={["core", open && "core--open", className]}
+  data-core
+  data-open-on-view={openOnView ? "true" : undefined}
+  data-open={open ? "true" : undefined}
+  role={label ? "img" : undefined}
+  aria-label={label || undefined}
+  aria-hidden={label ? undefined : "true"}
+>
+  <svg
+    class="core__svg"
+    viewBox="0 0 720 720"
+    xmlns="http://www.w3.org/2000/svg"
+    focusable="false"
+  >
+    <defs>
+      <linearGradient id={`steel-${uid}`} x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#F2F4EF"></stop>
+        <stop offset="0.26" stop-color="#89918C"></stop>
+        <stop offset="0.52" stop-color="#252B27"></stop>
+        <stop offset="0.76" stop-color="#C7CEC8"></stop>
+        <stop offset="1" stop-color="#68716B"></stop>
+      </linearGradient>
+
+      <linearGradient id={`steel-dark-${uid}`} x1="0.1" y1="0" x2="0.9" y2="1">
+        <stop offset="0" stop-color="#9AA39D"></stop>
+        <stop offset="0.42" stop-color="#4C554E"></stop>
+        <stop offset="0.72" stop-color="#2C332E"></stop>
+        <stop offset="1" stop-color="#7C857E"></stop>
+      </linearGradient>
+
+      <radialGradient id={`chamber-${uid}`} cx="0.5" cy="0.42" r="0.72">
+        <stop offset="0" stop-color="#141A15"></stop>
+        <stop offset="0.68" stop-color="#0A0D0B"></stop>
+        <stop offset="1" stop-color="#050706"></stop>
+      </radialGradient>
+
+      <radialGradient id={`glow-${uid}`} cx="0.5" cy="0.5" r="0.5">
+        <stop offset="0" stop-color="#A8FF65" stop-opacity="0.42"></stop>
+        <stop offset="0.55" stop-color="#A8FF65" stop-opacity="0.12"></stop>
+        <stop offset="1" stop-color="#A8FF65" stop-opacity="0"></stop>
+      </radialGradient>
+
+      <linearGradient id={`seam-${uid}`} x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#A8FF65" stop-opacity="0"></stop>
+        <stop offset="0.2" stop-color="#A8FF65" stop-opacity="0.95"></stop>
+        <stop offset="0.8" stop-color="#A8FF65" stop-opacity="0.95"></stop>
+        <stop offset="1" stop-color="#A8FF65" stop-opacity="0"></stop>
+      </linearGradient>
+
+      <filter id={`blur-${uid}`} x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="9"></feGaussianBlur>
+      </filter>
+
+      <clipPath id={`casing-clip-${uid}`}>
+        <path d="M360 62 L515 106 L615 206 L659 360 L615 514 L515 614 L360 658 L205 614 L105 514 L61 360 L105 206 L205 106 Z"></path>
+      </clipPath>
+
+      <clipPath id={`door-clip-${uid}`}>
+        <circle cx="360" cy="360" r="196"></circle>
+      </clipPath>
+    </defs>
+
+    <!-- Cast shadow -->
+    <ellipse cx="360" cy="640" rx="210" ry="26" fill="#000" opacity="0.55" filter={`url(#blur-${uid})`}></ellipse>
+
+    <!-- Outer casing -->
+    <g class="core__casing">
+      <path
+        d="M360 44 L524 90 L630 196 L676 360 L630 524 L524 630 L360 676 L196 630 L90 524 L44 360 L90 196 L196 90 Z"
+        fill={`url(#steel-${uid})`}
+        stroke="#D5DBD5"
+        stroke-opacity="0.42"
+        stroke-width="1.4"></path>
+      <path
+        d="M360 78 L509 118 L602 211 L642 360 L602 509 L509 602 L360 642 L211 602 L118 509 L78 360 L118 211 L211 118 Z"
+        fill="#090C0A"
+        stroke="#3B433D"
+        stroke-width="1"></path>
+      <path
+        d="M360 96 L502 134 L586 218 L624 360 L586 502 L502 586 L360 624 L218 586 L134 502 L96 360 L134 218 L218 134 Z"
+        fill="none"
+        stroke="#C9CFCB"
+        stroke-opacity="0.14"
+        stroke-width="1"></path>
+
+      <!-- Machined tick ring -->
+      <g class="core__ticks" aria-hidden="true">
+        {
+          Array.from({ length: 60 }, (_, i) => {
+            const angle = (i * 6 * Math.PI) / 180;
+            const major = i % 5 === 0;
+            const inner = major ? 258 : 268;
+            const outer = major ? 284 : 278;
+            return (
+              <line
+                x1={360 + Math.cos(angle) * inner}
+                y1={360 + Math.sin(angle) * inner}
+                x2={360 + Math.cos(angle) * outer}
+                y2={360 + Math.sin(angle) * outer}
+                stroke={major ? "#F2F4EF" : "#C9CFCB"}
+                stroke-opacity={major ? 0.5 : 0.18}
+                stroke-width={major ? 1.4 : 1}
+              />
+            );
+          })
+        }
+      </g>
+    </g>
+
+    <!-- Chamber -->
+    <g class="core__chamber">
+      <circle cx="360" cy="360" r="196" fill={`url(#chamber-${uid})`} stroke="#333B35" stroke-width="1.2"></circle>
+      <circle cx="360" cy="360" r="178" fill="none" stroke="#C9CFCB" stroke-opacity="0.1" stroke-width="1"></circle>
+      <circle class="core__glow" cx="360" cy="360" r="190" fill={`url(#glow-${uid})`}></circle>
+
+      <g class="core__reading">
+        <circle cx="360" cy="360" r={radius} fill="none" stroke="#C9CFCB" stroke-opacity="0.16" stroke-width="2"></circle>
+        <circle
+          class="core__arc"
+          cx="360"
+          cy="360"
+          r={radius}
+          fill="none"
+          stroke="#A8FF65"
+          stroke-width="3.5"
+          stroke-linecap="round"
+          stroke-dasharray={`${arc} ${circumference}`}
+          transform="rotate(-90 360 360)"></circle>
+
+        {
+          markers.map((marker) => (
+            <circle
+              cx={marker.cx}
+              cy={marker.cy}
+              r="4"
+              fill={marker.verified ? "#C9CFCB" : "none"}
+              stroke="#C9CFCB"
+              stroke-opacity={marker.verified ? 0.9 : 0.45}
+              stroke-width="1.2"
+            />
+          ))
+        }
+
+        <text class="core__score" x="360" y="386" text-anchor="middle" fill="#F2F4EF">{exampleScore}</text>
+        <text class="core__outof" x="360" y="420" text-anchor="middle" fill="#C9CFCB">out of 100</text>
+        <text class="core__example" x="360" y="452" text-anchor="middle" fill="#9AA39D">EXAMPLE</text>
+      </g>
+    </g>
+
+    <!-- Vault doors, clipped to the casing so they retract into the frame -->
+    <g clip-path={`url(#casing-clip-${uid})`}>
+      <g class="core__door core__door--left">
+        <g clip-path={`url(#door-clip-${uid})`}>
+          <path d="M360 164 A196 196 0 0 0 360 556 Z" fill={`url(#steel-dark-${uid})`} stroke="#D5DBD5" stroke-opacity="0.3" stroke-width="1"></path>
+          <path d="M360 190 A170 170 0 0 0 360 530 Z" fill="#1A201B" stroke="#59635B" stroke-opacity="0.5" stroke-width="1"></path>
+          <path d="M188 300 H348 M188 360 H348 M188 420 H348" stroke="#080A09" stroke-opacity="0.55" stroke-width="2"></path>
+          <path d="M214 318 H330 M214 378 H330 M214 438 H330" stroke="#C9CFCB" stroke-opacity="0.12" stroke-width="1"></path>
+        </g>
+      </g>
+
+      <g class="core__door core__door--right">
+        <g clip-path={`url(#door-clip-${uid})`}>
+          <path d="M360 164 A196 196 0 0 1 360 556 Z" fill={`url(#steel-dark-${uid})`} stroke="#D5DBD5" stroke-opacity="0.3" stroke-width="1"></path>
+          <path d="M360 190 A170 170 0 0 1 360 530 Z" fill="#1A201B" stroke="#59635B" stroke-opacity="0.5" stroke-width="1"></path>
+          <path d="M372 300 H532 M372 360 H532 M372 420 H532" stroke="#080A09" stroke-opacity="0.55" stroke-width="2"></path>
+          <path d="M390 318 H506 M390 378 H506 M390 438 H506" stroke="#C9CFCB" stroke-opacity="0.12" stroke-width="1"></path>
+        </g>
+      </g>
+
+      <rect class="core__seam" x="357" y="170" width="6" height="380" fill={`url(#seam-${uid})`}></rect>
+    </g>
+
+    <!-- Fixed hub detail, visible over the seam -->
+    <circle cx="360" cy="360" r="7" fill="#0A0D0B" stroke="#C9CFCB" stroke-opacity="0.5" stroke-width="1" class="core__hub"></circle>
+  </svg>
+
+  {
+    openOnView && (
+      <button class="core__toggle" type="button" data-core-toggle hidden>
+        Show example reading
+      </button>
+    )
+  }
+</figure>
+
+<script>
+  // The audit Core opens once, when it is actually in view. The hero Core stays
+  // closed. Reduced-motion and no-JS visitors see the open reading instead.
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const cores = Array.from(
+    document.querySelectorAll<HTMLElement>("[data-core][data-open-on-view]"),
+  );
+
+  const openCore = (core: Element) => core.classList.add("core--open");
+
+  if (cores.length > 0) {
+    if (reduceMotion.matches || !("IntersectionObserver" in window)) {
+      cores.forEach(openCore);
+    } else {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            openCore(entry.target);
+            observer.unobserve(entry.target);
+          });
+        },
+        { threshold: 0.35 },
+      );
+
+      cores.forEach((core) => observer.observe(core));
+    }
+  }
+</script>

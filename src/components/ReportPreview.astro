@@ -1,0 +1,91 @@
+---
+import { categories, exampleCoverage, exampleScore } from "../data/categories";
+
+const actions = [
+  "Add pages for the three services that only appear in the menu.",
+  "Rewrite the home page title and opening paragraph around the main service.",
+  "Complete the Google profile: hours, service area and a working phone number.",
+  "Publish answers to the two questions customers ask before they call.",
+];
+---
+
+<figure class="report" aria-labelledby="report-caption">
+  <div class="report__cover">
+    <div class="report__brand">
+      <img src="/brand/symbol.png" width="26" height="26" alt="" />
+      <span>Straight Up Digital</span>
+    </div>
+
+    <div>
+      <p class="report__title">
+        <span>Example report</span>
+        Digital presence audit
+      </p>
+      <p class="caption" style="margin-top: 10px; color: var(--muted);">
+        Example Business (Pty) Ltd<br />
+        example-business.co.za
+      </p>
+    </div>
+
+    <div>
+      <div class="report__score">
+        <strong>{exampleScore}</strong>
+        <span>out of 100</span>
+      </div>
+      <div class="report__meta">
+        <span>Coverage: {exampleCoverage.verified} of {exampleCoverage.total} categories verified</span>
+        <span>Confidence: {exampleCoverage.confidence}</span>
+        <span>Prepared: 12 November 2026</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="report__page">
+    <div class="report__page-head">
+      <strong>Category scores</strong>
+      <span>Page 2 of 6</span>
+    </div>
+
+    <div class="report__rows">
+      {
+        categories.map((category) => (
+          <div class:list={["report__row", category.example === null && "report__row--unverified"]}>
+            <span>{category.name}</span>
+            <span style="text-align: right; font-variant-numeric: tabular-nums;">
+              {category.example ?? "—"}
+            </span>
+            <div class="report__row-bar">
+              {category.example !== null && (
+                <span style={`--value:${category.example}%`} />
+              )}
+            </div>
+            {category.example === null && (
+              <p style="grid-column: 1 / -1; margin-top: -6px; color: var(--on-ivory-muted); font-size: 0.75rem;">
+                Not verified — left out of the score.
+              </p>
+            )}
+          </div>
+        ))
+      }
+    </div>
+
+    <div class="report__actions">
+      <h3>Priority actions</h3>
+      <ol>
+        {
+          actions.map((action, index) => (
+            <li>
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <span>{action}</span>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </div>
+</figure>
+
+<p class="report-note">
+  <span id="report-caption">Example report with made-up business data. Not a real client.</span>
+  <span>Scores are directional, not a ranking guarantee.</span>
+</p>

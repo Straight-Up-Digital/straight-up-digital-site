@@ -1,0 +1,177 @@
+---
+import { isCurrent, primaryNav } from "../data/navigation";
+
+const pathname = Astro.url.pathname.replace(/\/+$/, "") || "/";
+const brandImg = "/brand/logo-horizontal-dark-compact.png";
+---
+
+<header class="site-header">
+  <div class="container site-header__inner">
+    <a class="brand" href="/" aria-label="Straight Up Digital — home">
+      <img
+        src={brandImg}
+        width="951"
+        height="216"
+        alt="Straight Up Digital"
+      />
+    </a>
+
+    <nav class="site-nav" aria-label="Primary">
+      <ul>
+        {
+          primaryNav.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                aria-current={isCurrent(pathname, item.href) ? "page" : undefined}
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <a class="btn btn--primary header-cta" href="/digital-audit#request">
+      Request your audit
+    </a>
+
+    <button
+      class="nav-toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="mobile-nav"
+      data-nav-toggle
+    >
+      <span class="visually-hidden">Open menu</span>
+      <svg class="nav-toggle__open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+        <path d="M3 7h18M3 12h18M3 17h18"></path>
+      </svg>
+      <svg class="nav-toggle__close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+        <path d="M5 5l14 14M19 5L5 19"></path>
+      </svg>
+    </button>
+  </div>
+</header>
+
+<div
+  class="mobile-nav"
+  id="mobile-nav"
+  data-open="false"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Site menu"
+  data-mobile-nav
+>
+  <div class="mobile-nav__top">
+    <a class="brand" href="/" aria-label="Straight Up Digital — home">
+      <img src={brandImg} width="951" height="216" alt="Straight Up Digital" />
+    </a>
+    <button class="nav-toggle" type="button" data-nav-close aria-label="Close menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+        <path d="M5 5l14 14M19 5L5 19"></path>
+      </svg>
+    </button>
+  </div>
+
+  <div class="mobile-nav__body">
+    <a class="btn btn--primary mobile-nav__cta" href="/digital-audit#request">
+      Request your digital audit
+    </a>
+
+    <nav class="mobile-nav__links" aria-label="Mobile">
+      {
+        primaryNav.map((item) => (
+          <a
+            href={item.href}
+            aria-current={isCurrent(pathname, item.href) ? "page" : undefined}
+          >
+            {item.label}
+            <span aria-hidden="true">→</span>
+          </a>
+        ))
+      }
+    </nav>
+  </div>
+
+  <div class="mobile-nav__foot">
+    <a href="/privacy">Privacy notice</a>
+    <a href="/terms">Terms of use</a>
+    <a href="/contact">Contact</a>
+  </div>
+</div>
+
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>("[data-nav-toggle]");
+  const panel = document.querySelector<HTMLElement>("[data-mobile-nav]");
+  const closeButton = panel?.querySelector<HTMLButtonElement>("[data-nav-close]");
+
+  if (toggle && panel && closeButton) {
+    let lastFocused: HTMLElement | null = null;
+
+    const focusables = () =>
+      Array.from(
+        panel.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        ),
+      ).filter((element) => element.offsetParent !== null);
+
+    const open = () => {
+      lastFocused = document.activeElement as HTMLElement | null;
+      panel.dataset.open = "true";
+      toggle.setAttribute("aria-expanded", "true");
+      document.body.style.overflow = "hidden";
+      closeButton.focus();
+    };
+
+    const close = (restoreFocus = true) => {
+      panel.dataset.open = "false";
+      toggle.setAttribute("aria-expanded", "false");
+      document.body.style.overflow = "";
+      if (restoreFocus) (lastFocused ?? toggle).focus();
+    };
+
+    toggle.addEventListener("click", () => {
+      if (panel.dataset.open === "true") close();
+      else open();
+    });
+
+    closeButton.addEventListener("click", () => close());
+
+    panel.querySelectorAll("a").forEach((link) => {
+      link.addEventListener("click", () => close(false));
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (panel.dataset.open !== "true") return;
+
+      if (event.key === "Escape") {
+        event.preventDefault();
+        close();
+        return;
+      }
+
+      if (event.key === "Tab") {
+        const items = focusables();
+        if (items.length === 0) return;
+        const first = items[0];
+        const last = items[items.length - 1];
+        const current = document.activeElement;
+
+        if (event.shiftKey && current === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && current === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      }
+    });
+
+    const desktop = window.matchMedia("(min-width: 1081px)");
+    desktop.addEventListener("change", (event) => {
+      if (event.matches && panel.dataset.open === "true") close(false);
+    });
+  }
+</script>
