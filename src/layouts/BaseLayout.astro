@@ -3,6 +3,8 @@ import "../styles/global.css";
 import SiteHeader from "../components/SiteHeader.astro";
 import SiteFooter from "../components/SiteFooter.astro";
 import StickyAuditBar from "../components/StickyAuditBar.astro";
+import WhatsAppButton from "../components/WhatsAppButton.astro";
+import BackToTopButton from "../components/BackToTopButton.astro";
 import { site } from "../data/site";
 
 interface Props {
@@ -70,21 +72,6 @@ const structuredData = [organization, ...jsonLd];
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
 
-    <link
-      rel="preload"
-      href="/fonts/archivo-latin.woff2"
-      as="font"
-      type="font/woff2"
-      crossorigin
-    />
-    <link
-      rel="preload"
-      href="/fonts/instrument-sans-latin.woff2"
-      as="font"
-      type="font/woff2"
-      crossorigin
-    />
-
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={site.name} />
     <meta property="og:title" content={pageTitle} />
@@ -127,5 +114,9 @@ const structuredData = [organization, ...jsonLd];
     </main>
     <SiteFooter />
     {showStickyAudit && <StickyAuditBar />}
+    <div class="floating-actions" role="group" aria-label="Quick contact and navigation">
+      <WhatsAppButton />
+      <BackToTopButton />
+    </div>
   </body>
 </html>

@@ -1,0 +1,31 @@
+<button
+  class="back-to-top"
+  type="button"
+  data-back-to-top
+  aria-label="Back to top"
+  title="Back to top"
+  hidden
+>
+  <img src="/brand/symbol.svg" width="36" height="36" alt="" aria-hidden="true" />
+</button>
+
+<script>
+  const button = document.querySelector<HTMLButtonElement>("[data-back-to-top]");
+
+  if (button) {
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const updateVisibility = () => {
+      button.hidden = window.scrollY <= 480;
+    };
+
+    window.addEventListener("scroll", updateVisibility, { passive: true });
+    updateVisibility();
+
+    button.addEventListener("click", () => {
+      window.scrollTo({
+        top: 0,
+        behavior: reducedMotion.matches ? "auto" : "smooth",
+      });
+    });
+  }
+</script>

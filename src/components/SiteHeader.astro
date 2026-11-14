@@ -2,16 +2,16 @@
 import { isCurrent, primaryNav } from "../data/navigation";
 
 const pathname = Astro.url.pathname.replace(/\/+$/, "") || "/";
-const brandImg = "/brand/logo-horizontal-dark-compact.png";
+const brandImg = "/brand/logo-horizontal-dark.png";
 ---
 
-<header class="site-header">
+<header class="site-header" data-scroll-state="visible">
   <div class="container site-header__inner">
     <a class="brand" href="/" aria-label="Straight Up Digital — home">
       <img
         src={brandImg}
-        width="951"
-        height="216"
+        width="1800"
+        height="440"
         alt="Straight Up Digital"
       />
     </a>
@@ -66,7 +66,7 @@ const brandImg = "/brand/logo-horizontal-dark-compact.png";
 >
   <div class="mobile-nav__top">
     <a class="brand" href="/" aria-label="Straight Up Digital — home">
-      <img src={brandImg} width="951" height="216" alt="Straight Up Digital" />
+      <img src={brandImg} width="1800" height="440" alt="Straight Up Digital" />
     </a>
     <button class="nav-toggle" type="button" data-nav-close aria-label="Close menu">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
@@ -103,9 +103,48 @@ const brandImg = "/brand/logo-horizontal-dark-compact.png";
 </div>
 
 <script>
+  const header = document.querySelector<HTMLElement>(".site-header");
   const toggle = document.querySelector<HTMLButtonElement>("[data-nav-toggle]");
   const panel = document.querySelector<HTMLElement>("[data-mobile-nav]");
   const closeButton = panel?.querySelector<HTMLButtonElement>("[data-nav-close]");
+
+  let headerIdleTimer = 0;
+  const showHeaderDuringActivity = () => {
+    if (!header) return;
+
+    header.dataset.scrollState = "visible";
+    window.clearTimeout(headerIdleTimer);
+
+    if (
+      window.scrollY <= 12 ||
+      header.matches(":focus-within") ||
+      panel?.dataset.open === "true"
+    ) {
+      return;
+    }
+
+    headerIdleTimer = window.setTimeout(() => {
+      if (
+        !header.matches(":focus-within") &&
+        panel?.dataset.open !== "true" &&
+        window.scrollY > 12
+      ) {
+        header.dataset.scrollState = "hidden";
+      }
+    }, 900);
+  };
+
+  if (header) {
+    window.addEventListener("scroll", showHeaderDuringActivity, { passive: true });
+    header.addEventListener("focusin", () => {
+      window.clearTimeout(headerIdleTimer);
+      header.dataset.scrollState = "visible";
+    });
+    header.addEventListener("focusout", () => {
+      window.setTimeout(showHeaderDuringActivity, 0);
+    });
+    window.setTimeout(showHeaderDuringActivity, 1000);
+  }
 
   if (toggle && panel && closeButton) {
     let lastFocused: HTMLElement | null = null;
@@ -120,6 +159,9 @@ const brandImg = "/brand/logo-horizontal-dark-compact.png";
     const open = () => {
       lastFocused = document.activeElement as HTMLElement | null;
       panel.dataset.open = "true";
+      document.body.classList.add("has-open-menu");
+      window.clearTimeout(headerIdleTimer);
+      if (header) header.dataset.scrollState = "visible";
       toggle.setAttribute("aria-expanded", "true");
       document.body.style.overflow = "hidden";
       closeButton.focus();
@@ -127,6 +169,7 @@ const brandImg = "/brand/logo-horizontal-dark-compact.png";
 
     const close = (restoreFocus = true) => {
       panel.dataset.open = "false";
+      document.body.classList.remove("has-open-menu");
       toggle.setAttribute("aria-expanded", "false");
       document.body.style.overflow = "";
       if (restoreFocus) (lastFocused ?? toggle).focus();
