@@ -1,0 +1,33 @@
+name: Netlify production deployment
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: netlify-production-main
+  cancel-in-progress: false
+
+jobs:
+  trigger-netlify:
+    name: Trigger Netlify production build
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Trigger build hook
+        env:
+          NETLIFY_BUILD_HOOK: ${{ secrets.NETLIFY_BUILD_HOOK }}
+        shell: bash
+        run: |
+          if [[ -z "${NETLIFY_BUILD_HOOK}" ]]; then
+            echo "::error::Missing repository secret NETLIFY_BUILD_HOOK"
+            exit 1
+          fi
+          curl --fail --silent --show-error --max-time 20 \
+            --request POST \
+            --output /dev/null \
+            "${NETLIFY_BUILD_HOOK}"
