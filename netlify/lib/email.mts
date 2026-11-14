@@ -1,19 +1,19 @@
 /**
  * Email delivery for enquiries, behind one small adapter.
  *
- * The owner has not chosen an email provider yet. Resend and Postmark are both
- * implemented so either can be switched on by setting environment variables;
- * nothing else in the code changes. `console` is a development-only transport
- * that never sends mail.
+ * Resend, Postmark and Zoho SMTP can be selected with environment variables;
+ * `console` is a development-only transport that never sends mail.
  *
  * Required variables:
- *   EMAIL_PROVIDER      resend | postmark | console
+ *   EMAIL_PROVIDER      resend | postmark | zoho-smtp | console
  *   ENQUIRY_TO_EMAIL    destination inbox
  *   ENQUIRY_FROM_EMAIL  verified sender on the provider
  *   RESEND_API_KEY      when EMAIL_PROVIDER=resend
  *   POSTMARK_SERVER_TOKEN when EMAIL_PROVIDER=postmark
+ *   ZOHO_SMTP_PASSWORD   app-specific password when EMAIL_PROVIDER=zoho-smtp
  */
 import type { CleanEnquiry } from "./validation.mts";
+import { createTransport } from "nodemailer";
 
 export type EnvReader = (key: string) => string | undefined;
 
@@ -29,11 +29,15 @@ const escapeHtml = (value: string): string =>
 
 const cleanHeader = (value: string): string => value.replace(/[\r\n]+/g, " ").trim();
 
-const labelForType = (type: CleanEnquiry["formType"]): string =>
-  type === "audit" ? "audit request" : "enquiry";
+const labelForType = (type: CleanEnquiry["formType"], service = ""): string =>
+  service === "Online audit report response"
+    ? "online audit report response"
+    : type === "audit"
+      ? "audit request"
+      : "enquiry";
 
 function buildContent(enquiry: CleanEnquiry) {
-  const label = labelForType(enquiry.formType);
+  const label = labelForType(enquiry.formType, enquiry.service);
   const subject = cleanHeader(
     `New ${label} — ${enquiry.businessName || "website visitor"}`,
   );
@@ -95,7 +99,7 @@ export async function sendEnquiryEmail(
     // Development only. No personal data is written to the log.
     console.log(
       JSON.stringify({
-        event: "enquiry_console_transport",
+        event: enquiry.service === "Online audit report response" ? "audit_report_response_console_transport" : "enquiry_console_transport",
         form_type: enquiry.formType,
         service: enquiry.service,
       }),
@@ -110,6 +114,32 @@ export async function sendEnquiryEmail(
   }
 
   const { subject, text, html } = buildContent(enquiry);
+
+  if (provider === "zoho-smtp") {
+    const host = (getEnv("ZOHO_SMTP_HOST") || "smtp.zoho.com").trim();
+    const port = Number(getEnv("ZOHO_SMTP_PORT") || "465");
+    const username = (getEnv("ZOHO_SMTP_USERNAME") || from).trim();
+    const password = getEnv("ZOHO_SMTP_PASSWORD") || "";
+    const secureSetting = (getEnv("ZOHO_SMTP_SECURE") || "").trim().toLowerCase();
+    if (!host || !Number.isInteger(port) || port < 1 || port > 65535 || !username || !password) {
+      throw new EmailConfigError("Zoho SMTP host, valid port, username and app-specific password are required.");
+    }
+    const transport = createTransport({
+      host,
+      port,
+      secure: secureSetting ? secureSetting === "true" : port === 465,
+      auth: { user: username, pass: password },
+      connectionTimeout: 8000,
+      greetingTimeout: 8000,
+      socketTimeout: 10000,
+    });
+    try {
+      await transport.sendMail({ from, to, replyTo: enquiry.email, subject, text, html });
+    } finally {
+      transport.close();
+    }
+    return { provider };
+  }
 
   if (provider === "resend") {
     const apiKey = getEnv("RESEND_API_KEY");
@@ -168,6 +198,58 @@ export async function sendEnquiryEmail(
   }
 
   throw new EmailConfigError(`Unknown EMAIL_PROVIDER "${provider}".`);
+}
+
+export interface ReportResponseEmail {
+  businessName: string;
+  website: string;
+  clientName: string;
+  clientEmail: string;
+  action: "proceed" | "meeting" | "question";
+  meetingWindow: string;
+  message: string;
+  reportDate: string;
+  consentTimestamp: string;
+  consentTextVersion: string;
+}
+
+/** Send a report response to the owner's specified inbox; the response itself is never logged. */
+export async function sendReportResponseEmail(
+  input: ReportResponseEmail,
+  getEnv: EnvReader,
+): Promise<{ provider: string }> {
+  const actionLabel = input.action === "proceed"
+    ? "Interested in discussing next steps"
+    : input.action === "meeting"
+      ? "Arrange a meeting"
+      : "Ask a question";
+  const message = [
+    `Chosen next step: ${actionLabel}`,
+    `Meeting preference: ${input.meetingWindow || "Not supplied"}`,
+    `Report date: ${input.reportDate}`,
+    `Response consent: ${input.consentTextVersion} at ${input.consentTimestamp}`,
+    "",
+    `Client message: ${input.message || "Not supplied"}`,
+    "",
+    "This response is not a purchase or binding acceptance. Agree any paid scope and price separately in writing.",
+  ].join("\n");
+  const enquiry = {
+    name: input.clientName,
+    businessName: input.businessName,
+    websiteUrl: input.website,
+    email: input.clientEmail,
+    phone: "",
+    service: "Online audit report response",
+    message,
+    consentGiven: true,
+    consentTextVersion: input.consentTextVersion,
+    consentTimestamp: input.consentTimestamp,
+    source: "/report",
+    formType: "contact",
+  } as CleanEnquiry;
+  const ownerEnvironment: EnvReader = (key) =>
+    key === "ENQUIRY_TO_EMAIL" ? "straightupdigital@zohomail.com" : getEnv(key);
+  return sendEnquiryEmail(enquiry, ownerEnvironment);
 }
 
 export async function verifyTurnstile(

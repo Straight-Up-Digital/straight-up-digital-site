@@ -1,0 +1,29 @@
+@font-face {
+  font-family: "Inter";
+  src: url("/fonts/straight-up-inter-latin.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Montserrat";
+  src: url("/fonts/straight-up-montserrat-latin.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+body,
+input,
+select,
+textarea {
+  font-family: "Inter", Arial, sans-serif;
+}
+
+h1,
+h2,
+h3,
+.brand-note {
+  font-family: "Montserrat", "Inter", Arial, sans-serif;
+}

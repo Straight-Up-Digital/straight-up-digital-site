@@ -2,19 +2,13 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import EnquiryForm from "../components/EnquiryForm.astro";
 import FaqList from "../components/FaqList.astro";
-import ReportPreview from "../components/ReportPreview.astro";
-import ScoreRing from "../components/ScoreRing.astro";
-import {
-  categories,
-  exampleCoverage,
-  exampleScore,
-  notVerifiedDefinition,
-} from "../data/categories";
+import ClientReportPreview from "../components/ClientReportPreview.astro";
+import { categories } from "../data/categories";
 import { auditFaqs } from "../data/faqs";
 import { contact, has } from "../data/site";
 
 const description =
-  "What the Straight Up Digital audit checks, how the six categories are scored, why a category can be Not verified, what you receive and what the audit cannot measure. Request an audit on the page.";
+  "Request an owner-run digital presence review. When the secure report service is enabled, receive a private online report explaining what was found, why it matters, and what to fix.";
 
 const faqJsonLd = {
   "@context": "https://schema.org",
@@ -32,26 +26,26 @@ const serviceJsonLd = {
   name: "Digital presence audit",
   serviceType: "Digital presence audit",
   description:
-    "A six-category audit of a business's public digital presence, with a score, coverage and confidence notes and prioritised recommendations.",
+    "An owner-run review of public digital evidence. When the secure report service is enabled, the customer receives a private online report explaining observed issues, their customer impact and practical fixes.",
   provider: { "@type": "Organization", name: "Straight Up Digital" },
 };
 
 const receive = [
   {
-    title: "A written report",
-    body: "A PDF you can read, share with a partner and keep. No login required.",
+    title: "A private online report",
+    body: "When the secure report service is enabled, open your reviewed findings in a browser from a private link. No PDF download or account is needed.",
   },
   {
-    title: "A score you can explain",
-    body: "One overall score, a score for each verified category and the reasoning behind both.",
+    title: "What was actually found",
+    body: "The online report describes evidence in everyday language. If something could not be verified, it says so rather than guessing.",
   },
   {
-    title: "Coverage and confidence",
-    body: "How many categories were verified, what could not be checked and how much weight the score deserves.",
+    title: "Why it matters and what to fix",
+    body: "Each customer-report finding explains how the issue may affect customers and gives you a practical next step.",
   },
   {
-    title: "Prioritised next actions",
-    body: "What to fix first, what can wait and roughly how much effort each item takes.",
+    title: "A clear next step",
+    body: "From the report page, ask a question, discuss recommendations or request a meeting. Any paid work is scoped and priced separately.",
   },
 ];
 ---
@@ -79,10 +73,11 @@ const receive = [
         </div>
       </div>
       <p class="page-hero__lede">
-        Business Auditor is Straight Up Digital's flagship product. Requests here
-        are for a human-reviewed digital presence audit; this website does not run
-        automated live audits. Findings are based on public evidence, and gaps are
-        reported rather than guessed.
+        Business Auditor is Straight Up Digital's flagship product. A person checks
+        the business details and runs the full audit privately. When the secure
+        report service is enabled, we share a private online report explaining the
+        real findings, why they matter and what to fix. Otherwise, we contact you
+        directly to arrange delivery. This website does not run instant audits.
       </p>
     </div>
   </section>
@@ -133,58 +128,54 @@ const receive = [
     <div class="container">
       <div class="section-head">
         <div>
-          <p class="kicker"><span>02</span> How the score works</p>
+          <p class="kicker"><span>02</span> How the review works</p>
           <h2 class="h2" id="scoring-title" style="margin-top: 14px; max-width: 14ch;">
-            Honest maths, not a black box.
+            Evidence first. Plain language next.
           </h2>
         </div>
         <p class="lede">
-          The overall score is the average of the categories that could be
-          verified. A category that could not be checked is left out — never
-          counted as zero.
+          The private Business Auditor uses structured checks to assess what could
+          be verified. Your online report focuses on the actual findings and
+          practical fixes, not an internal scorecard.
         </p>
       </div>
 
       <div class="score-grid">
         <div class="score-grid__cell">
-          <h3>Verified categories only</h3>
+          <h3>Evidence, not assumptions</h3>
           <p>
-            Each assessed category is scored from 0 to 100. The overall score is
-            the average of those, so a missing profile does not silently drag the
-            number down.
+            Recommendations are based on public information checked for your
+            business. The report separates confirmed observations from items that
+            need a manual check.
           </p>
         </div>
         <div class="score-grid__cell">
-          <h3>Coverage</h3>
+          <h3>Unknown stays unknown</h3>
           <p>
-            Coverage shows how many of the six categories were verified. <strong>4 of 6</strong>
-            is a different claim from 6 of 6, and the report never blurs the
-            difference.
+            If a listing, review, or website detail cannot be matched confidently,
+            it is not presented as fact and is not treated as proof that it does
+            not exist.
           </p>
         </div>
         <div class="score-grid__cell">
-          <h3>Confidence</h3>
+          <h3>No ranking promises</h3>
           <p>
-            Confidence reflects how much public evidence was available. Low
-            confidence is stated plainly, with the reason, rather than hidden
-            behind a decimal point.
+            The review does not measure sales, website traffic, search volume or
+            live Google rankings. It does not promise leads or ranking gains.
           </p>
         </div>
       </div>
 
-      <div class="example-reading">
-        <ScoreRing value={exampleScore} size={168} />
+      <div class="example-reading" style="grid-template-columns: minmax(0, 1fr);">
         <div class="example-reading__meta">
-          <span class="example-tag">Example</span>
-          <h3>What a reading looks like</h3>
+          <span class="example-tag">Customer view</span>
+          <h3>A report you can act on</h3>
           <p>
-            This example scores <strong>{exampleScore} out of 100</strong> with{" "}
-            <strong>{exampleCoverage.verified} of {exampleCoverage.total}</strong>{" "}
-            categories verified and <strong>{exampleCoverage.confidence}</strong>{" "}
-            confidence. The categories marked Not verified are left out of the
-            average.
+            The private audit and detailed scorecard stay with Straight Up Digital.
+            Your report gives you the findings that matter: what was observed, why
+            it may affect customers, and a clear first fix.
           </p>
-          <p>{notVerifiedDefinition}</p>
+          <p>No PDF download, confusing jargon or promise of guaranteed results.</p>
         </div>
       </div>
     </div>
@@ -196,16 +187,16 @@ const receive = [
         <div>
           <p class="kicker"><span>03</span> The report</p>
           <h2 class="h2" id="report-title" style="margin-top: 14px;">
-            A sample report, clearly labelled.
+            A sample customer report.
           </h2>
         </div>
         <p class="lede">
-          The layout below is the real structure of the report. The business and
-          the scores are made up.
+          This fictional example shows how an audit finding is translated into a
+          clear explanation and practical fix. It is not a real business review.
         </p>
       </div>
 
-      <ReportPreview />
+      <ClientReportPreview />
 
       <p style="margin-top: 32px;">
         <a class="btn btn--primary" href="#request">
@@ -222,12 +213,12 @@ const receive = [
         <div>
           <p class="kicker"><span>04</span> What you receive</p>
           <h2 class="h2" id="receive-title" style="margin-top: 14px; max-width: 14ch;">
-            A report, and a conversation.
+            A clear report and a useful next step.
           </h2>
         </div>
         <p class="lede">
-          The document is the start, not the deliverable. The walkthrough is where
-          the priorities become a decision.
+          When the secure report service is enabled, open the report on the website
+          and choose a next step. Otherwise, we follow up directly by email.
         </p>
       </div>
 
@@ -271,7 +262,7 @@ const receive = [
       <EnquiryForm
         variant="audit"
         heading="Request your digital audit"
-        intro="Six fields and a consent box. We use these details to assess the public presence and reply with the next step — nothing else."
+        intro="Send your business details and a short note. A person will verify the information and run the full audit privately; if suitable, we will share a clear online report with you."
         submitLabel="Send my audit request"
       />
 
@@ -279,9 +270,9 @@ const receive = [
         <div class="info-panel">
           <h3>What happens next</h3>
           <ol>
-            <li>A person reads the request and checks the public details.</li>
-            <li>We confirm the scope, the cost and the timing in writing.</li>
-            <li>You decide whether to go ahead. Nothing is charged before then.</li>
+            <li>A person checks the business details and runs the full audit privately.</li>
+            <li>You receive a private online report explaining the findings, impact and fixes.</li>
+            <li>Use the report page to ask a question or arrange a discussion. Paid work is agreed separately in writing.</li>
           </ol>
         </div>
         <div class="info-panel">

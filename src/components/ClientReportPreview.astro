@@ -1,0 +1,59 @@
+<figure class="client-report" aria-labelledby="client-report-caption">
+  <div class="client-report__browser">
+    <span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span>
+    <small>Private online report · example only</small>
+  </div>
+  <div class="client-report__content">
+    <p class="client-report__kicker">Business Auditor · Example Garden Services</p>
+    <h3 class="client-report__title">A clearer picture of your digital presence</h3>
+    <p class="client-report__intro">This review found a few practical improvements. Here is one example of how a finding is explained.</p>
+
+    <article class="client-report__finding">
+      <span class="client-report__priority">Start here</span>
+      <h4>Make it easier to ask for a quote</h4>
+      <div class="client-report__row">
+        <strong>What we found</strong>
+        <p>The main service information is available, but the next step to contact the business is not equally clear on every key page.</p>
+      </div>
+      <div class="client-report__row">
+        <strong>Why it matters</strong>
+        <p>A visitor who cannot quickly see how to ask a question or request a quote may leave without getting in touch.</p>
+      </div>
+      <div class="client-report__row client-report__row--fix">
+        <strong>What to do next</strong>
+        <p>Add a clear “Request a quote” link beside the service details and repeat it near the end of each important service page.</p>
+      </div>
+    </article>
+
+    <div class="client-report__next">
+      <div><strong>What would you like to do next?</strong><p>Discuss the recommendation, ask a question or arrange a meeting.</p></div>
+      <span class="client-report__button" aria-hidden="true">Send my response</span>
+    </div>
+    <p class="client-report__disclaimer">A response is not a purchase or binding acceptance. Any paid scope and price is agreed separately in writing.</p>
+  </div>
+  <figcaption id="client-report-caption">Illustrative example only. It does not describe a real business or a real audit finding.</figcaption>
+</figure>
+
+<style>
+  .client-report{max-width:880px;margin:0 auto;color:#101411;background:#fff;border:1px solid #dfe4dc;border-radius:16px;overflow:hidden;box-shadow:0 18px 50px #10141112}
+  .client-report__browser{height:46px;background:#eef1eb;display:flex;align-items:center;gap:7px;padding:0 16px;border-bottom:1px solid #dfe4dc}
+  .client-report__browser>span{width:9px;height:9px;border-radius:50%;background:#b5bdb3}
+  .client-report__browser small{margin-left:9px;color:#59635b;font-size:.76rem}
+  .client-report__content{padding:clamp(20px,5vw,42px)}
+  .client-report__kicker{margin:0 0 9px;color:#5f7200;font-size:.76rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
+  .client-report__title{margin:0;font-size:clamp(1.55rem,3.8vw,2.4rem);line-height:1.12;letter-spacing:-.03em}
+  .client-report__intro{max-width:65ch;color:#4e5950;margin:12px 0 24px}
+  .client-report__finding{padding:22px;border:1px solid #dfe4dc;border-radius:12px;background:#fff}
+  .client-report__priority{display:inline-block;background:#eef6bf;color:#283500;padding:4px 10px;border-radius:999px;font-size:.77rem;font-weight:800}
+  .client-report__finding h4{margin:10px 0 18px;font-size:1.28rem;line-height:1.25}
+  .client-report__row{border-top:1px solid #e6eae3;padding:14px 0 2px}
+  .client-report__row strong{font-size:.9rem}
+  .client-report__row p{margin:5px 0 10px;color:#39433b;line-height:1.6}
+  .client-report__row--fix{margin-top:5px;padding:14px 12px 4px;background:#f7fae8;border-radius:8px;border-top:0}
+  .client-report__next{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-top:18px;padding:18px 20px;border-radius:10px;background:#f3f5f1}
+  .client-report__next p{margin:4px 0 0;color:#59635b;font-size:.9rem}
+  .client-report__button{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:9px 17px;background:#d5f43b;border-radius:999px;font-weight:800;white-space:nowrap}
+  .client-report__disclaimer{color:#59635b;font-size:.84rem;margin:14px 0 0}
+  .client-report figcaption,.client-report>figcaption{padding:13px 20px;background:#f6f8f4;border-top:1px solid #e3e7e0;color:#59635b;font-size:.78rem}
+  @media(max-width:620px){.client-report{border-radius:12px}.client-report__finding{padding:16px}.client-report__next{align-items:flex-start;flex-direction:column}.client-report__browser{padding:0 12px}.client-report__browser small{font-size:.68rem}}
+</style>

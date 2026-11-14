@@ -15,14 +15,14 @@ export const auditFaqs: Faq[] = [
       "It does not measure traffic, search volume, revenue or conversions, and it does not guarantee rankings. It cannot see your analytics or sales data. The report states these limits rather than implying otherwise.",
   },
   {
-    question: "Why is a category sometimes marked Not verified?",
+    question: "Why might something be marked not verified?",
     answer:
-      "Sometimes there is not enough public information to score a category honestly — for example, no public profile can be confidently matched to the business. That category is left out of the overall score instead of being counted as zero. The report shows coverage, so you can see what the score is based on.",
+      "Sometimes public information is incomplete or cannot be matched confidently to the business. The report says when a check could not be verified; it does not treat that as proof the business has no profile or feature.",
   },
   {
     question: "What do I receive?",
     answer:
-      "A written report with the overall score, a score for each verified category, coverage and confidence notes, a prioritised list of recommendations and practical next steps. We then talk through the findings and answer questions.",
+      "After a person runs and reviews the full audit, you receive a private online report. It explains the findings in everyday language, why they may affect customers and what to fix next. The full internal scorecard is not shared and no PDF download is needed.",
   },
   {
     question: "How long does an audit take?",
@@ -42,7 +42,7 @@ export const auditFaqs: Faq[] = [
   {
     question: "What happens after I send the request?",
     answer:
-      "A person reads it, checks that the business and website details match what is public, and comes back with the next step. If work is involved, you receive a written scope, cost and timing before anything starts.",
+      "A person checks the business and website details, then runs the full audit privately. We share the customer-friendly report link when the online report service is enabled; otherwise, we contact you directly to agree how to deliver the findings. You can use the report page to ask a question or request a meeting. That response is not a purchase or acceptance of paid work; scope and price are agreed separately in writing.",
   },
 ];
 

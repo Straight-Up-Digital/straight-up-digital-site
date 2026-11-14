@@ -5,7 +5,7 @@ import {
   isImplausiblyFast,
   validateEnquiry,
 } from "../netlify/lib/validation.mts";
-import { EmailConfigError, sendEnquiryEmail } from "../netlify/lib/email.mts";
+import { EmailConfigError, sendEnquiryEmail, sendReportResponseEmail } from "../netlify/lib/email.mts";
 
 const validAudit = {
   business_name: "Example Business",
@@ -140,4 +140,47 @@ test("resend without an API key fails before any network call", async () => {
   };
 
   await assert.rejects(() => sendEnquiryEmail(body.value, env), EmailConfigError);
+});
+
+test("Zoho SMTP refuses to send until a password is configured", async () => {
+  const body = validateEnquiry(validAudit);
+  assert.equal(body.ok, true);
+  if (!body.ok) return;
+  const env = (key) => ({
+    EMAIL_PROVIDER: "zoho-smtp",
+    ENQUIRY_TO_EMAIL: "straightupdigital@zohomail.com",
+    ENQUIRY_FROM_EMAIL: "straightupdigital@zohomail.com",
+    ZOHO_SMTP_USERNAME: "straightupdigital@zohomail.com",
+    ZOHO_SMTP_PORT: "465",
+  })[key];
+  await assert.rejects(() => sendEnquiryEmail(body.value, env), EmailConfigError);
+});
+
+test("report responses use a PII-safe console event in local development", async () => {
+  const record = {
+    businessName: "Private Example Business",
+    website: "https://example.co.za",
+    clientName: "Client Name",
+    clientEmail: "client@example.co.za",
+    action: "meeting",
+    meetingWindow: "Weekday mornings",
+    message: "Sensitive client message",
+    reportDate: "2026-11-14",
+    consentTimestamp: "2026-11-14T12:00:00.000Z",
+    consentTextVersion: "report-response-v1",
+  };
+  const logs = [];
+  const originalLog = console.log;
+  console.log = (value) => logs.push(String(value));
+  try {
+    const result = await sendReportResponseEmail(record, (key) => key === "EMAIL_PROVIDER" ? "console" : undefined);
+    assert.equal(result.provider, "console");
+  } finally {
+    console.log = originalLog;
+  }
+  assert.equal(logs.length, 1);
+  assert.match(logs[0], /audit_report_response_console_transport/);
+  for (const personalValue of [record.businessName, record.clientName, record.clientEmail, record.message]) {
+    assert.equal(logs[0].includes(personalValue), false);
+  }
 });

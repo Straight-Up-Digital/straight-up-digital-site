@@ -1,8 +1,8 @@
 # Straight Up Digital — website
 
-The public marketing site for Straight Up Digital. **Business Auditor is the flagship product**, while this site currently accepts requests for human-reviewed digital presence audits; it does not run automated live audits or expose the separate private Python application.
+The public marketing site for Straight Up Digital. **Business Auditor is the flagship product.** The site accepts requests for owner-run digital presence audits and can display a customer-friendly online report after the owner manually runs and reviews the full audit in the private Python CRM. It does not run the audit engine for visitors or expose the CRM.
 
-This is a static Astro site with no client-side framework. Pages are pre-rendered, fonts are self-hosted, and Netlify hosts the public site. Netlify Forms is the default enquiry route; the private CRM remains deliberately disconnected.
+This is a static Astro site with no client-side framework. Pages are pre-rendered, fonts are self-hosted, and Netlify hosts the public site. Netlify Forms is the default enquiry route; a separate owner-authenticated Function accepts only the deliberately curated customer report from the private local CRM.
 
 ## Stack
 
@@ -10,10 +10,10 @@ This is a static Astro site with no client-side framework. Pages are pre-rendere
 | --- | --- | --- |
 | Framework | Astro 7, static output | Fast HTML, no runtime framework, small payload |
 | Styling | One hand-written CSS file | No utility framework or styling build dependency |
-| Type | Archivo + Instrument Sans, self-hosted WOFF2 | Approved brand typefaces, no font CDN requests |
+| Type | Montserrat + Inter, self-hosted WOFF2 | Approved brand typefaces, no font CDN requests |
 | Hosting | Netlify | Git deploys, Forms, headers and redirects |
 | Forms | Netlify Forms (default) | Submissions stored in Netlify; notifications are configured separately |
-| Optional forms | Netlify Function + Resend/Postmark | Alternative email transport, only when intentionally configured |
+| Optional email | Netlify Function + Zoho SMTP, Resend or Postmark | Alternative email transport, only when intentionally configured |
 | Analytics | None | Tracking remains disabled |
 
 ## Run it locally
@@ -58,11 +58,13 @@ There are two delivery modes, selected at build time by `PUBLIC_FORM_MODE`.
 
 **`netlify` (default).** Both forms are statically declared in `public/__forms.html` for Netlify's build-time detection; the browser submits URL-encoded fields to that static form endpoint. Submissions are stored under **Forms** in the Netlify dashboard. Form detection must be enabled in Netlify, and email notifications must be configured separately for `audit-request` and `contact-enquiry`. The notification recipient may need to be an active Netlify team member. A working inbox address on the website does not by itself create a Netlify notification.
 
-**`email`.** The form posts to `/.netlify/functions/submit-enquiry`. The function validates submissions and filters spam before sending through Resend or Postmark. Configure it with the variables in `.env.example`; it returns a clear error if no provider is configured.
+**`email`.** The form posts to `/.netlify/functions/submit-enquiry`. The function validates submissions and filters spam before sending through Zoho SMTP, Resend or Postmark. Configure it with the variables in `.env.example`; it returns a clear error if no provider is configured.
 
 Both modes share the form fields and consent version. The form validates in the browser; the optional function also validates server-side. Honeypot and timing checks are used, with rate limiting in the function path and optional Cloudflare Turnstile.
 
-The private CRM is **not** connected. `netlify/lib/crm.mts` documents a future payload shape and is deliberately disabled. No CRM URL, token or request exists in this public repository.
+Online customer reports are **owner-published only**. The private local CRM previews a strict issue/impact/fix report and, after explicit owner confirmation, sends that redacted payload to an authenticated Netlify Function. The site stores it behind a random, expiring, noindex link; client responses can be emailed to the owner. The complete audit, pricing, internal service-fit analysis and CRM records stay private. See [`docs/online-report-setup.md`](docs/online-report-setup.md) for configuration and owner workflow. The feature is disabled until its private environment variables are configured.
+
+The private CRM is not hosted by or exposed through this website. No public request can trigger a full audit or access CRM routes/data.
 
 ## Deployment and domain
 
@@ -76,7 +78,7 @@ The `netlify.toml` redirects `/audit`, `/privacy-notice` and `/terms-and-conditi
 
 ## Security and privacy
 
-This repository contains the public website only. It is not connected to the separate Python Business Auditor, its database or CRM, and must not be given a public endpoint into them. The website does not claim that visitors can run automated live audits.
+This repository contains the public website and the receiving side of a narrowly scoped report publisher. The private Python Business Auditor, its database and CRM remain local and are never publicly served. Only an owner-authenticated request can publish a whitelisted customer report; visitors cannot trigger the full audit engine. The website does not claim that visitors can run an instant live audit.
 
 There are no secrets in the repository. Function secrets belong in Netlify environment variables. The site sets a strict CSP, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`, `X-Frame-Options` and HSTS. The privacy notice and terms are still **drafts** and need appropriate South African legal review; owner identity/address, Information Officer details and record-retention decisions remain open.
 
@@ -84,4 +86,4 @@ See [`PLACEHOLDERS.md`](PLACEHOLDERS.md) for current owner actions and launch de
 
 ## Ownership
 
-The site, brand assets and copy are proprietary to Straight Up Digital. Archivo and Instrument Sans are licensed under the SIL Open Font License; its terms permit self-hosting.
+The site, brand assets and copy are proprietary to Straight Up Digital. Montserrat and Inter are self-hosted under the SIL Open Font License; the corresponding license files are included alongside the report's font assets.

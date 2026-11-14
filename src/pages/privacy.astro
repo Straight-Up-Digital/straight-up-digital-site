@@ -77,6 +77,7 @@ const description =
         <ul>
           <li>To read and respond to your enquiry.</li>
           <li>To prepare an audit, quote or proposal you have asked for.</li>
+          <li>When the online report feature is enabled, to publish the reviewed customer report and receive your chosen next step or message.</li>
           <li>To deliver work you have agreed to and to keep the records the law requires.</li>
           <li>To keep the website secure and prevent abuse of the forms.</li>
         </ul>
@@ -94,13 +95,25 @@ const description =
         </p>
         <ul>
           <li>
-            <strong>Netlify</strong> — website hosting and Netlify Forms submission
-            handling. Submissions are stored in the site's Netlify dashboard; email
-            notifications to the business inbox must be configured separately.
+            <strong>Netlify</strong> — website hosting, enquiry handling, serverless
+            functions and (when enabled) private online report storage. A report is
+            accessible to anyone who has its private link, is marked not to be
+            indexed by search engines and stops working after 30 days. Expired
+            records are removed by the daily cleanup job.
+            Initial audit requests use Netlify Forms; the owner must confirm its
+            email notification settings separately.
           </li>
           <li>
-            A separate email-delivery provider has not been selected. The site
-            currently uses Netlify Forms rather than the optional email function.
+            <strong>Zoho Mail</strong> — when the report-response feature is enabled,
+            it sends the business your name, email address, business and website,
+            selected next step, meeting preference, message and consent timestamp.
+            The configured recipient is straightupdigital@zohomail.com.
+          </li>
+          <li>
+            <strong>Straight Up Digital's private Business Auditor</strong> — the
+            owner runs the full audit and keeps its scorecard and detailed analysis
+            in the private CRM. Those internal details are not included in the
+            customer report.
           </li>
           <li>
             Professional advisers or authorities, where the law requires it.
@@ -113,9 +126,12 @@ const description =
 
         <h2>5. How long we keep it</h2>
         <p>
-          Enquiries are kept only as long as needed to respond, to deliver any work
-          agreed, and to meet record-keeping obligations. A fixed retention period
-          has not been approved yet.
+          When online reports are enabled, their private links are scheduled to
+          expire and the report records to be deleted after 30 days. The customer
+          response is sent to the business by email and is not stored in the
+          website's report store. Enquiries and email records are kept only as long
+          as needed to respond, deliver agreed work and meet record-keeping
+          obligations; a fixed retention period has not been approved yet.
         </p>
         <div class="placeholder-note">
           <strong>Owner to confirm:</strong> the retention period for enquiries,
