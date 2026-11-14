@@ -48,9 +48,9 @@ export const auditFaqs: Faq[] = [
 
 export const pricingFaqs: Faq[] = [
   {
-    question: "Why are there no prices on this page?",
+    question: "How are these prices determined?",
     answer:
-      "Because the packages have not been approved for publication yet. Publishing a number that later changes is worse than saying so plainly. Every project is scoped and quoted in writing instead.",
+      "The published rates mirror the existing Business Auditor proposal configuration. The audit proposal uses R40 per missing point out of 100; website builds, editing rates and the five monthly retainers are shown on this page. The written proposal confirms the exact scope and deliverables before work begins.",
   },
   {
     question: "How do I get a quote?",

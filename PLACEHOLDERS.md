@@ -1,40 +1,45 @@
-# Owner-supplied details
+# Owner-supplied details and launch checklist
 
-This file is the launch checklist for everything only the owner can provide. Nothing here has been invented or filled with example data. Until an item is supplied, the site either hides it or renders a neutral sentence that is true.
+This checklist records what the owner has now supplied, what the site reflects, and what still needs an owner or Netlify action. No legal identity, registration number, address, Information Officer, service area or retention period has been invented.
 
-## How placeholders behave
+## Confirmed and now reflected
 
-Empty strings in `src/data/site.ts` mean "not supplied". The contact page, footer and legal pages render a short neutral sentence instead of a fake address or phone number. Social links and service areas are hidden entirely while empty. The pricing page shows three empty package slots rather than invented packages. Each affected block also carries a `data-placeholder="..."` attribute so it can be found in the built HTML.
+| Item | Confirmed information | Where it is used |
+| --- | --- | --- |
+| Trading identity | Straight Up Digital | Site-wide branding and legal drafts |
+| Business email | `Hello@straightupdigital.co.za` | Contact page, footer, privacy notice |
+| Telephone | `062 065 3503`; international dialing format `+27 62 065 3503` | Contact page and footer; links use `tel:+27620653503` |
+| Country | South Africa | Site language and founder profile; no unconfirmed nationwide service claim |
+| Business structure | Owner describes the planned business as a sole proprietorship to be established through Capitec | Carefully qualified wording in draft legal pages; not described as a registered company |
+| Founder | St. John Ritchie | About page and site data |
+| Founder profile | Owner-approved business development and sales biography, approximately 20 years' experience | About page |
+| Pricing | Rates mirrored from `C:\Users\Saint\business_auditor\auditor_config.json` and the matching defaults in `business_auditor.py` | `src/data/pricing.ts`, pricing page and pricing FAQs |
+| Flagship product | Business Auditor | Homepage and digital-audit page; no automated public audit is claimed |
+| Audit PDF contact details | `prepared_by`, `contact_email` and `contact_phone` are now filled in the private Auditor runtime config; its website link remains blank until custom DNS resolves | Private Auditor runtime config, not the public website |
 
-## Launch checklist
+## Still to confirm or do
 
-| # | Item | Where it appears | What to supply | File or place to edit | Status |
-| --- | --- | --- | --- | --- | --- |
-| 1 | Business email | Contact page, footer, email replies | A monitored inbox, e.g. `hello@straightupdigital.co.za` | `src/data/site.ts` → `contact.email` | Not supplied |
-| 2 | Phone number | Contact page, footer | Public number, including country code if used internationally | `src/data/site.ts` → `contact.phone` | Not supplied |
-| 3 | Public address | Contact page, footer | Display-ready address, or a decision to publish none | `src/data/site.ts` → `contact.address` | Not supplied |
-| 4 | Business hours | Available for future use; not currently rendered | Hours, or "by appointment" | `src/data/site.ts` → `contact.hours` | Not supplied |
-| 5 | Legal entity | Privacy notice, terms, footer | Registered name, registration number and registered address | `src/data/site.ts` → `ownerSupplied.legalEntity`, then the legal pages | Not supplied |
-| 6 | Information Officer | Privacy notice | Name and direct contact details, as required by POPIA | `src/data/site.ts` → `ownerSupplied.informationOfficer` | Not supplied |
-| 7 | Founder profile | About page | Name, short biography and a photograph with permission to publish | `src/data/site.ts` and `src/pages/about.astro` | Placeholder panel |
-| 8 | Service areas | Not currently claimed anywhere | Towns, provinces or a radius, only if the owner wants location claims | `src/data/site.ts` → `ownerSupplied.serviceAreas` | Empty on purpose |
-| 9 | Social profiles | Footer or header, once real | LinkedIn, Facebook, Instagram or X URLs that the owner controls | `src/data/site.ts` → `socialProfiles` | Hidden |
-| 10 | Service statuses | Services page and home service list | Confirm each service as Available, On request or Planned | `src/data/services.ts` → `status` on each service | Conservative defaults |
-| 11 | Package names, inclusions and prices | Pricing page | Two to four approved packages, or a decision to sell by quote only | `src/data/pricing.ts` → `packageSlots` and the pricing page | Empty grid |
-| 12 | Analytics decision | Every page | Either "no analytics" or an approved privacy-friendly tool and its consent wording | `src/data/site.ts` → `analytics` | Disabled |
-| 13 | Domain name | Canonicals, sitemap, Open Graph | The final domain, connected in Netlify | Netlify domain settings, or `PUBLIC_SITE_URL` | Not connected |
-| 14 | Form notification inbox | Netlify Forms | The address that should receive each enquiry | Netlify dashboard → Forms → Settings | To set after deploy |
-| 15 | Email provider (optional) | Only if `PUBLIC_FORM_MODE=email` | Resend or Postmark account, verified sender and destination inbox | Netlify environment variables | Not selected |
-| 16 | Turnstile keys (optional) | Enquiry form | Site key and secret key if the challenge is wanted | Netlify environment variables | Not configured |
-| 17 | Data retention period | Privacy notice | How long enquiries, quotes and client records are kept | `src/pages/privacy.astro` | To confirm |
-| 18 | Legal review | Privacy notice and terms | A lawyer's review of both drafts, liability wording and governing law | `src/pages/privacy.astro`, `src/pages/terms.astro` | Draft |
-| 19 | Testimonials and case studies | Not published | Real quotes or projects, with written permission | New content, not yet built | None, deliberately |
-| 20 | CRM connection | Not connected | Phase 2 decision only, after the private CRM has authentication and a narrow intake endpoint | `netlify/lib/crm.mts` (disabled) | Disabled by design |
+| Item | Current status | Action |
+| --- | --- | --- |
+| Legal identity and address | Not supplied. Straight Up Digital is the public trading identity; no company number or registered address is claimed. | Confirm the proprietor's full legal name and any public service/contact address that should appear in final legal notices. |
+| Information Officer details | Not supplied or assumed. | Confirm the applicable Information Officer details and any registration/status with the Information Regulator or a South African legal adviser before finalising the privacy notice. |
+| Retention and deletion | No approved retention period or deletion schedule. | Decide how long enquiries, quotes and client records are kept and how they are removed. |
+| Legal review | Privacy notice and terms remain labelled drafts. | Obtain appropriate South African legal review before treating them as final. |
+| Custom domain and DNS | `straightupdigital.co.za` is the requested address, but DNS lookups for the apex and `www` returned NXDOMAIN on 14 November 2026. The live Netlify hostname remains the working address. | Confirm the domain is registered and configure DNS at its registrar; only then attach/verify it in Netlify and change canonical/sitemap configuration. Do not change mail records blindly. |
+| Netlify Forms setup | Detection is enabled. One email notification is configured for all forms at `Hello@straightupdigital.co.za`, but Netlify says it is waiting for the recipient to confirm. | Click the confirmation link in the business inbox. After the new deploy registers both forms, test each form and confirm the messages arrive. |
+| Git-connected deployments | Netlify’s native Git integration is configured to deploy `main`; the commit identity is standardized to the verified team account. Production is public and Deploy Previews are private. | Verify that the corrected-history push deploys successfully and future `main` pushes continue to trigger production builds. |
+| Founder photograph | Not supplied; no image is shown. | Optional: provide a photograph and permission to publish it. |
+| Service availability | Existing statuses are retained: digital presence audits Available; website design, on-page SEO, Google Business Profile support, and content/social support On request; reputation/review checks Planned. | Confirm these statuses still describe launch capacity. The planned reputation service must not be sold as currently available. |
+| Service area | South Africa is the supplied country; no towns/provinces/radius have been approved. | Supply locations only if specific service-area claims are wanted. |
+| Social profiles | No controlled URLs supplied; social links stay hidden. | Provide the exact public profiles, if any. |
+| Analytics | Tracking remains disabled. | Keep disabled or approve a specific tool and its privacy/consent wording. |
+| CRM | Integration remains intentionally disabled. | Do not connect until the private CRM has reviewed authentication, database and narrow intake endpoint requirements. |
+| Automated Business Auditor access | The Python application remains separate from the public website. | Do not advertise self-service/live automated audits until a secure public integration is deliberately built and tested. Current website requests are for human-reviewed audits. |
 
-## Design values awaiting approval
+## Pricing source and reconciliation
 
-Two supporting colours are proposals, kept in one place at the top of `src/styles/global.css`: silver `#C9CFCB` and muted `#9AA39D`. The approved palette — Obsidian `#080A09`, Graphite `#252B27`, Ivory `#F2F4EF`, Lime `#A8FF65` — is used as supplied.
+The website's former `packageSlots` were technical placeholders, not the full pricing source. The private Auditor's runtime `auditor_config.json` and its `DEFAULT_CONFIG` in `business_auditor.py` agree on the current rates. Those established figures are now shown in the website's pricing data and page. Keep `src/data/pricing.ts` synchronized if the private proposal configuration changes.
 
-## What is already final
+The published figures are: Business Auditor audit proposals at R40 per missing point out of 100; website build R1,500 once-off for up to five pages; hosting R99/month; hourly work R650/hour with the proposal estimator's two-hour minimum; once-off edits of R150 for a small text change, R150 for a photo swap, R350 for an additional form and R650 for a new page; and five monthly retainers—Fresh Start R200, Steady Presence R400, Local Growth R700, Content Partner R1,000 and Digital Partner R1,500—with their configured inclusions listed on the pricing page. Domain, email, paid plugins, substantial copywriting and major revisions may be extra as stated in the Auditor configuration.
 
-The six audit categories, the six-step process, the service descriptions, the report structure and the honest-limits wording are written and ready. The audit itself is marked Available because the engine exists. The other five services carry conservative statuses until the owner confirms what can be delivered at launch.
+The digital presence audit's Available status describes a service that can be requested and human-reviewed; it does not mean the private Python app is exposed. The public site does not expose the private app, database or CRM. Website enquiries use Netlify Forms by default; this is separate from the optional email-provider function.

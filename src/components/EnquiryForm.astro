@@ -34,7 +34,7 @@ const action =
   formMode === "email" ? "/.netlify/functions/submit-enquiry" : "/thank-you";
 
 const options = [...serviceOptions, "Not sure yet", "Something else"];
-const consentVersion = "privacy-draft-2026-11";
+const consentVersion = "privacy-draft-2026-11-14";
 ---
 
 <section class="form-panel" id={id} aria-labelledby={`${id}-heading`} data-enquiry-root data-form-mode={formMode}>
@@ -487,7 +487,7 @@ const consentVersion = "privacy-draft-2026-11";
           }
         });
         if (!body.has("form-name")) body.set("form-name", form.dataset.formName ?? "");
-        response = await fetch("/", {
+        response = await fetch("/__forms.html", {
           method: "POST",
           headers: { "Content-Type": "application/x-www-form-urlencoded" },
           body: body.toString(),

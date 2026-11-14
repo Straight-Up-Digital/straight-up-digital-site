@@ -1,24 +1,24 @@
 # Straight Up Digital — website
 
-The public marketing site for Straight Up Digital: a six-category digital presence audit, the services that follow it, and one enquiry route that reaches a person.
+The public marketing site for Straight Up Digital. **Business Auditor is the flagship product**, while this site currently accepts requests for human-reviewed digital presence audits; it does not run automated live audits or expose the separate private Python application.
 
-It is a static Astro site with no client-side framework. Pages are pre-rendered, the only JavaScript is the mobile navigation, the Core animation, the services index and the enquiry form, and all fonts are served from this domain. Netlify hosts the site and receives enquiries through Netlify Forms by default.
+This is a static Astro site with no client-side framework. Pages are pre-rendered, fonts are self-hosted, and Netlify hosts the public site. Netlify Forms is the default enquiry route; the private CRM remains deliberately disconnected.
 
 ## Stack
 
 | Layer | Choice | Why |
 | --- | --- | --- |
 | Framework | Astro 7, static output | Fast HTML, no runtime framework, small payload |
-| Styling | One hand-written CSS file | No utility framework or build step, full control of the brand |
+| Styling | One hand-written CSS file | No utility framework or styling build dependency |
 | Type | Archivo + Instrument Sans, self-hosted WOFF2 | Approved brand typefaces, no font CDN requests |
-| Hosting | Netlify | Git deploys, Forms, headers and redirects in one place |
-| Forms | Netlify Forms (default) | No third-party account, submissions stored in Netlify |
-| Optional forms | Netlify Function + Resend/Postmark | Only when the owner wants email delivery instead |
-| Analytics | None | No tracking until a privacy-friendly tool is approved |
+| Hosting | Netlify | Git deploys, Forms, headers and redirects |
+| Forms | Netlify Forms (default) | Submissions stored in Netlify; notifications are configured separately |
+| Optional forms | Netlify Function + Resend/Postmark | Alternative email transport, only when intentionally configured |
+| Analytics | None | Tracking remains disabled |
 
 ## Run it locally
 
-Requires Node 22 or newer (the Netlify build pins Node 24).
+Requires Node 22 or newer (Netlify builds pin Node 24).
 
 ```bash
 npm install
@@ -37,59 +37,51 @@ The site is then at `http://localhost:4321`.
 | `npm run test:links` | Checks every internal link in `dist/` |
 | `npm run netlify:dev` | Netlify Dev, including functions and headers |
 
-## Where the content lives
-
-Almost all copy is data, not markup. Edit the data file, rebuild, and every page that uses it updates.
+## Where content lives
 
 | File | Contains |
 | --- | --- |
-| `src/data/site.ts` | Name, tagline, contact details, legal entity, founder, analytics switch |
-| `src/data/services.ts` | Six services and their Available / On request / Planned status |
-| `src/data/pricing.ts` | Pricing principles, cost factors and the package slots |
-| `src/data/categories.ts` | The six audit categories, checks and example readings |
-| `src/data/steps.ts` | The six-step journey |
-| `src/data/faqs.ts` | Audit and pricing questions |
+| `src/data/site.ts` | Brand, owner-supplied contacts, founder profile and analytics switch |
+| `src/data/services.ts` | Six existing services and their Available / On request / Planned status |
+| `src/data/pricing.ts` | Published rates mirrored from the Auditor proposal configuration |
+| `src/data/categories.ts` | Six audit categories, checks and example readings |
+| `src/data/steps.ts` | Six-step customer journey |
+| `src/data/faqs.ts` | Audit and pricing answers |
 | `src/data/navigation.ts` | Header and footer navigation |
+| `public/__forms.html` | Static Netlify Forms definitions for the two Astro forms |
 
-Page copy that is not repeated lives in the page files under `src/pages/`. Design tokens — colour, type, spacing, motion — are at the top of `src/styles/global.css`.
+The pricing figures were verified against `C:\Users\Saint\business_auditor\auditor_config.json` and the matching `DEFAULT_CONFIG` in `business_auditor.py`. If those proposal settings change, update `src/data/pricing.ts` and the private configuration together. Published rates include the audit point rate, website build/hosting, hourly and once-off edits, and all five configured retainers and inclusions.
 
 ## Enquiries
 
 There are two delivery modes, selected at build time by `PUBLIC_FORM_MODE`.
 
-**`netlify` (default).** The form posts to Netlify Forms. Submissions appear under **Forms** in the Netlify dashboard, where a notification email can be added without touching code. This needs no email provider, no API key and no function. It is the recommended launch path.
+**`netlify` (default).** Both forms are statically declared in `public/__forms.html` for Netlify's build-time detection; the browser submits URL-encoded fields to that static form endpoint. Submissions are stored under **Forms** in the Netlify dashboard. Form detection must be enabled in Netlify, and email notifications must be configured separately for `audit-request` and `contact-enquiry`. The notification recipient may need to be an active Netlify team member. A working inbox address on the website does not by itself create a Netlify notification.
 
-**`email`.** The form posts to `/.netlify/functions/submit-enquiry`. The function validates the submission, filters spam, then sends it through Resend or Postmark. Configure it with the variables in `.env.example`; nothing else changes. If no provider is configured the function returns a clear 503 instead of pretending the message was sent.
+**`email`.** The form posts to `/.netlify/functions/submit-enquiry`. The function validates submissions and filters spam before sending through Resend or Postmark. Configure it with the variables in `.env.example`; it returns a clear error if no provider is configured.
 
-Both modes use the same payload, including the consent timestamp and the privacy notice version. The form validates in the browser for a fast, accessible experience and again on the server, which is the authority. A honeypot, a timing check, platform rate limiting and optional Cloudflare Turnstile sit in front of delivery.
+Both modes share the form fields and consent version. The form validates in the browser; the optional function also validates server-side. Honeypot and timing checks are used, with rate limiting in the function path and optional Cloudflare Turnstile.
 
-The private CRM is **not** connected. `netlify/lib/crm.mts` documents the future payload shape and is deliberately disabled; no CRM URL, token or request exists in this repository.
+The private CRM is **not** connected. `netlify/lib/crm.mts` documents a future payload shape and is deliberately disabled. No CRM URL, token or request exists in this public repository.
 
-## Deploying to Netlify
+## Deployment and domain
 
-The repository is ready to connect as a Git-based Netlify site.
+The private GitHub repository is connected to the public Netlify production site. Build settings are `npm run build`, publish directory `dist`, Node 24, and functions under `netlify/functions`. `netlify.toml` supplies redirects, caching and security headers, including the Content-Security-Policy.
 
-1. In Netlify, choose **Add new site → Import an existing project**, connect GitHub and select this repository.
-2. Accept the detected settings, or enter them explicitly: build command `npm run build`, publish directory `dist`, Node 24 (already pinned in `netlify.toml`).
-3. Deploy. `netlify.toml` supplies the redirects, cache rules and security headers, including a Content-Security-Policy that allows no inline scripts.
-4. Open **Forms → audit-request → Settings** and add the notification email address. Do the same for `contact-enquiry`.
-5. Submit one real test through each form and confirm it appears in the Forms inbox.
-6. Connect the custom domain under **Domain management**. Canonicals, the sitemap and the Open Graph URL use Netlify's site URL, so they update automatically. Set `PUBLIC_SITE_URL` only if you want to force a fixed address.
+**Continuous deployment:** Netlify’s native Git integration builds and publishes pushes to `main` from the private GitHub repository. Commit metadata uses `Straight Up Digital <straightupdigital@zohomail.com>`, the identity on the Netlify team account. Production remains public; Deploy Previews are restricted to the team.
 
-`netlify.toml` also redirects `/audit`, `/privacy-notice` and `/terms-and-conditions` to their current pages, so old links keep working.
+The current production hostname is `https://straight-up-digital-site.netlify.app/`. The requested custom domain is `straightupdigital.co.za`, but DNS for both the apex and `www` returned NXDOMAIN when checked on 14 November 2026. Keep the Netlify hostname as the live canonical address until the domain resolves and is verified in Netlify. Configure DNS at the registrar; do not overwrite mail-related DNS records without checking the existing email setup. Once connected, set `PUBLIC_SITE_URL` to the verified custom domain and redeploy so canonical URLs and the sitemap align.
+
+The `netlify.toml` redirects `/audit`, `/privacy-notice` and `/terms-and-conditions` to their current pages.
 
 ## Security and privacy
 
-This repository contains the public website only. It has no connection to the private Business Auditor application, its database or its CRM, and it must not be given one through a public endpoint.
+This repository contains the public website only. It is not connected to the separate Python Business Auditor, its database or CRM, and must not be given a public endpoint into them. The website does not claim that visitors can run automated live audits.
 
-There are no secrets in the repository. Function secrets belong in Netlify environment variables. The site sets a strict CSP, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`, `X-Frame-Options` and HSTS. Enquiries are used only to respond to the enquiry, as described in the draft privacy notice.
+There are no secrets in the repository. Function secrets belong in Netlify environment variables. The site sets a strict CSP, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`, `X-Frame-Options` and HSTS. The privacy notice and terms are still **drafts** and need appropriate South African legal review; owner identity/address, Information Officer details and record-retention decisions remain open.
 
-The privacy notice and terms of use are **drafts** and are marked as such on the page. They need a lawyer's review before launch.
-
-## Before launch
-
-`PLACEHOLDERS.md` lists every item the owner still needs to supply, where it appears and which file changes it. Nothing in that list has been filled with an invented value.
+See [`PLACEHOLDERS.md`](PLACEHOLDERS.md) for current owner actions and launch dependencies. Do not invent legal details or describe the sole-proprietor trading identity as a registered company.
 
 ## Ownership
 
-The site, brand assets and copy are proprietary to Straight Up Digital. Archivo and Instrument Sans are licensed under the SIL Open Font License; their licence permits self-hosting.
+The site, brand assets and copy are proprietary to Straight Up Digital. Archivo and Instrument Sans are licensed under the SIL Open Font License; its terms permit self-hosting.

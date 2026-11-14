@@ -1,6 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { ownerSupplied, placeholderKeys } from "../data/site";
+import { contact, ownerSupplied, placeholderKeys } from "../data/site";
 
 const description =
   "Draft privacy notice for Straight Up Digital, covering what personal information is collected through the website, why, how long it is kept and how to exercise your rights under POPIA.";
@@ -25,7 +25,7 @@ const description =
       </div>
 
       <h1>Privacy notice</h1>
-      <p class="legal__meta">Version privacy-draft-2026-11 · Last updated 13 November 2026</p>
+      <p class="legal__meta">Version privacy-draft-2026-11-14 · Last updated 14 November 2026</p>
 
       <div class="prose">
         <p>
@@ -37,18 +37,21 @@ const description =
 
         <h2>1. Who is responsible</h2>
         <p>
-          The responsible party is <strong>Straight Up Digital</strong>. The
-          registered legal entity name, registration number and registered address
-          are still to be confirmed.
+          <strong>Straight Up Digital</strong> is the public trading identity.
+          The owner has described the business structure as a sole proprietorship
+          being established through Capitec. The proprietor's full legal name and
+          a public service address have not yet been confirmed; this notice does
+          not claim a registered company or a company registration number.
         </p>
         <div class="placeholder-note" data-placeholder={placeholderKeys.legalEntity}>
-          <strong>Owner to supply:</strong> legal entity name, registration number
-          and registered address.
+          <strong>Owner to confirm:</strong> the proprietor's full legal name and
+          the contact or service address to publish. No company registration
+          number or registered address has been supplied.
         </div>
         <p>
-          Privacy questions and requests can be sent through the{" "}
-          <a href="/contact">enquiry form</a> until a dedicated privacy contact is
-          published.
+          Privacy questions and requests can be sent to{" "}
+          <a href={`mailto:${contact.email}`}>{contact.email}</a> or through the{" "}
+          <a href="/contact">enquiry form</a>.
         </p>
 
         <h2>2. What we collect</h2>
@@ -91,12 +94,13 @@ const description =
         </p>
         <ul>
           <li>
-            <strong>Netlify</strong> — website hosting and form submission
-            handling.
+            <strong>Netlify</strong> — website hosting and Netlify Forms submission
+            handling. Submissions are stored in the site's Netlify dashboard; email
+            notifications to the business inbox must be configured separately.
           </li>
           <li>
-            <strong>An email provider</strong> — used to deliver enquiries to the
-            business inbox. The provider has not been selected yet.
+            A separate email-delivery provider has not been selected. The site
+            currently uses Netlify Forms rather than the optional email function.
           </li>
           <li>
             Professional advisers or authorities, where the law requires it.
@@ -169,9 +173,10 @@ const description =
 
         <h2>11. Contact</h2>
         <p>
-          For any privacy question, use the <a href="/contact">enquiry form</a> and
-          mark the message “Privacy”. The Information Officer’s name and direct
-          details will be published once confirmed.
+          For any privacy question, email{" "}
+          <a href={`mailto:${contact.email}`}>{contact.email}</a> or use the{" "}
+          <a href="/contact">enquiry form</a> and mark the message “Privacy”. The
+          Information Officer's name and direct details remain to be confirmed.
         </p>
         <div class="placeholder-note" data-placeholder={placeholderKeys.informationOfficer}>
           <strong>Owner to supply:</strong> the Information Officer’s name and

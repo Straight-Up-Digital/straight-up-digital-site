@@ -11,6 +11,7 @@ import {
   notVerifiedDefinition,
 } from "../data/categories";
 import { auditFaqs } from "../data/faqs";
+import { contact, has } from "../data/site";
 
 const description =
   "What the Straight Up Digital audit checks, how the six categories are scored, why a category can be Not verified, what you receive and what the audit cannot measure. Request an audit on the page.";
@@ -65,7 +66,7 @@ const receive = [
   <section class="page-hero">
     <div class="container page-hero__inner">
       <div>
-        <p class="kicker">Digital audit</p>
+        <p class="kicker">Business Auditor · Flagship product</p>
         <h1 class="page-hero__title">
           Know what your digital presence is doing — and what it is not.
         </h1>
@@ -78,8 +79,10 @@ const receive = [
         </div>
       </div>
       <p class="page-hero__lede">
-        Six categories, scored from public evidence. Where the evidence is not
-        there, the report says so instead of filling the gap.
+        Business Auditor is Straight Up Digital's flagship product. Requests here
+        are for a human-reviewed digital presence audit; this website does not run
+        automated live audits. Findings are based on public evidence, and gaps are
+        reported rather than guessed.
       </p>
     </div>
   </section>
@@ -288,13 +291,12 @@ const receive = [
             do not have a website, say so — that is part of the picture.
           </p>
         </div>
-        <div class="info-panel" data-placeholder="business-email">
-          <h3>Prefer email?</h3>
-          <p>
-            A direct email address will be published once confirmed. Until then,
-            the form is the reliable route and it reaches the same place.
-          </p>
-        </div>
+        {has(contact.email) && (
+          <div class="info-panel">
+            <h3>Prefer email?</h3>
+            <p><a class="text-link" href={`mailto:${contact.email}`}>{contact.email}</a></p>
+          </div>
+        )}
       </aside>
     </div>
   </section>

@@ -15,7 +15,7 @@ const validAudit = {
   service_of_interest: "Digital presence audits",
   message: "Our contact page is broken and enquiries are down.",
   consent_given: "yes",
-  consent_text_version: "privacy-draft-2026-11",
+  consent_text_version: "privacy-draft-2026-11-14",
   consent_timestamp: "2026-11-13T10:00:00.000Z",
   form_type: "audit",
   source: "/digital-audit",

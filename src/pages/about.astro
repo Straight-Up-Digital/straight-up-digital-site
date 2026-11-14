@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import CtaBand from "../components/CtaBand.astro";
+import { ownerSupplied } from "../data/site";
 
 const description =
   "Straight Up Digital gives small and growing businesses a clear, evidence-based read of their digital presence, then helps fix what matters. Practical digital intelligence, without the theatre.";
@@ -186,23 +187,19 @@ const working = [
         <div>
           <p class="kicker"><span>04</span> Who is behind it</p>
           <h2 class="h2" id="founder-title" style="margin-top: 14px;">
-            A name, a face, a short history.
+            Commercial experience, applied to digital growth.
           </h2>
         </div>
         <p class="body">
-          This section is reserved for the founder’s name, a short biography and a
-          photograph. It will be published once approved — not filled in with a
-          story that did not happen.
+          Straight Up Digital was founded by St. John Ritchie, a South African
+          business development and sales professional.
         </p>
       </div>
 
-      <div class="founder-panel" data-placeholder="founder-profile">
-        <p class="caption">Founder profile</p>
-        <p>
-          A full profile is being prepared. Until it is published here, every
-          enquiry is read and answered by the person responsible for the work —
-          not passed to a call centre.
-        </p>
+      <div class="founder-panel">
+        <p class="caption">{ownerSupplied.founderName} · Founder</p>
+        {ownerSupplied.founderBio.map((paragraph) => <p>{paragraph}</p>)}
+        <p><strong>INTELLIGENCE. VISIBILITY. GROWTH.</strong></p>
       </div>
     </div>
   </section>

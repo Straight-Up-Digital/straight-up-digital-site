@@ -1,27 +1,90 @@
 /**
- * Pricing is not approved for publication. No price, package name or discount
- * may be added here until the owner supplies one in writing.
- *
- * Each slot is deliberately empty. The page renders an honest "details to be
- * published" state and marks the grid with data-placeholder="pricing-packages".
+ * Public pricing mirrored from the Business Auditor's proposal configuration
+ * (`business_auditor.py` defaults and `auditor_config.json`). Keep the figures
+ * synchronized when the private proposal configuration changes.
  */
 
-export interface PackageSlot {
-  id: string;
-  /** Left empty on purpose until the owner approves a package name. */
+export const auditPricing = {
+  maximumScore: 100,
+  pricePerMissingPointZar: 40,
+} as const;
+
+export const websiteOffer = {
+  buildOnceOffZar: 1500,
+  hostingMonthlyZar: 99,
+  maximumPages: 5,
+  guardrail:
+    "Basic website scope and hosting limits must be agreed before sale; domain, email, paid plugins, substantial copywriting and major revisions may be extra.",
+} as const;
+
+export interface MonthlyRetainer {
   name: string;
-  /** Left empty on purpose until the owner approves a price. */
-  price: string;
-  /** Left empty on purpose until the owner approves the inclusions. */
+  priceZarPerMonth: number;
   includes: string[];
-  status: "owner-to-approve";
 }
 
-export const packageSlots: PackageSlot[] = [
-  { id: "01", name: "", price: "", includes: [], status: "owner-to-approve" },
-  { id: "02", name: "", price: "", includes: [], status: "owner-to-approve" },
-  { id: "03", name: "", price: "", includes: [], status: "owner-to-approve" },
+export const monthlyRetainers: MonthlyRetainer[] = [
+  {
+    name: "Fresh Start",
+    priceZarPerMonth: 200,
+    includes: [
+      "One monthly content idea",
+      "Monthly listing and contact-detail check",
+      "Short progress note",
+    ],
+  },
+  {
+    name: "Steady Presence",
+    priceZarPerMonth: 400,
+    includes: [
+      "Two social/content ideas each month",
+      "One profile or review-response check",
+      "Monthly action list",
+    ],
+  },
+  {
+    name: "Local Growth",
+    priceZarPerMonth: 700,
+    includes: [
+      "One short website update or FAQ each month",
+      "Two social post drafts",
+      "Local profile and review check",
+      "Monthly progress note",
+    ],
+  },
+  {
+    name: "Content Partner",
+    priceZarPerMonth: 1000,
+    includes: [
+      "Two website content updates or one article brief each month",
+      "Four social post drafts",
+      "Monthly SEO and profile check",
+      "Monthly priorities call or written review",
+    ],
+  },
+  {
+    name: "Digital Partner",
+    priceZarPerMonth: 1500,
+    includes: [
+      "Four agreed content updates or briefs each month",
+      "Weekly social content prompts",
+      "Monthly website, local-profile and review checks",
+      "Monthly performance and next-step report",
+    ],
+  },
 ];
+
+export const onceOffEdits: { title: string; priceZar: number }[] = [
+  { title: "Small text change", priceZar: 150 },
+  { title: "Photo swap", priceZar: 150 },
+  { title: "Additional form", priceZar: 350 },
+  { title: "New page", priceZar: 650 },
+];
+
+export const hourlyPricing = {
+  rateZar: 650,
+  minimumEstimateHours: 2,
+} as const;
 
 export const costFactors: { title: string; body: string }[] = [
   {

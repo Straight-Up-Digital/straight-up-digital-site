@@ -3,14 +3,20 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import CtaBand from "../components/CtaBand.astro";
 import FaqList from "../components/FaqList.astro";
 import {
+  auditPricing,
   costFactors,
-  packageSlots,
+  hourlyPricing,
+  monthlyRetainers,
+  onceOffEdits,
   pricingPrinciples,
+  websiteOffer,
 } from "../data/pricing";
 import { pricingFaqs } from "../data/faqs";
 
 const description =
-  "How Straight Up Digital prices work: scope first, one written quote, no surprise extras. Packages and prices are published once approved. Request a quote for your business.";
+  "Straight Up Digital pricing: digital audits from R40 per missing point, websites up to five pages from R1,500, and five monthly support retainers. Scope confirmed in writing.";
+const formatZar = (amount: number): string =>
+  `R${amount.toLocaleString("en-US")}`;
 ---
 
 <BaseLayout
@@ -30,13 +36,13 @@ const description =
             Get a quote
             <svg class="btn__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg>
           </a>
-          <a class="btn btn--secondary" href="#packages">See the package grid</a>
+          <a class="btn btn--secondary" href="#packages">See existing rates</a>
         </div>
       </div>
       <p class="page-hero__lede">
-        Packages and prices have not been approved for publication. Rather than
-        publish a number that later changes, every project is scoped and quoted in
-        writing.
+        These are the existing prices in the Business Auditor proposal
+        configuration. We confirm the exact scope, deliverables and timing in
+        writing before work begins.
       </p>
     </div>
   </section>
@@ -101,45 +107,100 @@ const description =
     <div class="container">
       <div class="section-head">
         <div>
-          <p class="kicker"><span>03</span> Packages</p>
+          <p class="kicker"><span>03</span> Existing rates</p>
           <h2 class="h2" id="packages-title" style="margin-top: 14px;">
-            The grid is ready. The details are not.
+            Clear numbers, agreed scope.
           </h2>
         </div>
         <p class="body">
-          Package names, inclusions and prices are being approved. Until they are,
-          the honest route is a written quote for the work you actually need.
+          The prices below are mirrored from the existing proposal configuration.
+          A written proposal confirms what applies to your situation.
         </p>
       </div>
 
-      <div class="package-grid" data-placeholder="pricing-packages">
-        {
-          packageSlots.map((slot) => (
-            <article class="package-slot">
-              <span class="package-slot__num">{slot.id}</span>
-              <h3>Package details to follow</h3>
-              <p>
-                Scope and price are agreed in a written quote for now, so nothing
-                here is a guess dressed up as a package.
-              </p>
-              <a class="link-arrow" href="/contact">
-                Request a quote
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg>
-              </a>
-            </article>
-          ))
-        }
+      <div class="pricing-overview">
+        <article class="pricing-overview__card">
+          <p class="pricing-label">Business Auditor · human-reviewed audit</p>
+          <p class="pricing-overview__price">{formatZar(auditPricing.pricePerMissingPointZar)}<span> per missing point</span></p>
+          <p>
+            The proposal calculation uses the gap from a maximum score of
+            {" "}{auditPricing.maximumScore}: missing points × the rate shown.
+            This public website does not run automated live audits.
+          </p>
+          <a class="link-arrow" href="/digital-audit#request">
+            Request an audit
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg>
+          </a>
+        </article>
+        <article class="pricing-overview__card">
+          <p class="pricing-label">Website build</p>
+          <p class="pricing-overview__price">{formatZar(websiteOffer.buildOnceOffZar)}<span> once-off</span></p>
+          <p>Basic build scope covers up to {websiteOffer.maximumPages} pages.</p>
+          <a class="link-arrow" href="/contact">Discuss a website</a>
+        </article>
+        <article class="pricing-overview__card">
+          <p class="pricing-label">Website hosting</p>
+          <p class="pricing-overview__price">{formatZar(websiteOffer.hostingMonthlyZar)}<span> / month</span></p>
+          <p>Hosting is billed separately from the once-off website build.</p>
+        </article>
+        <article class="pricing-overview__card">
+          <p class="pricing-label">Hourly work</p>
+          <p class="pricing-overview__price">{formatZar(hourlyPricing.rateZar)}<span> / hour</span></p>
+          <p>Proposal estimates use a {hourlyPricing.minimumEstimateHours}-hour minimum estimate.</p>
+        </article>
       </div>
 
-      <p class="small" style="margin-top: 28px; max-width: 60ch;">
-        Why this looks unfinished: it is. Publishing invented package names or
-        prices would be worse than saying plainly that they are not ready. The
-        grid will be filled once the details are final.
+      <div class="pricing-subsection">
+        <div class="section-head">
+          <div>
+            <p class="kicker"><span>04</span> Monthly support</p>
+            <h3 class="h2" style="margin-top: 14px;">Five bounded retainers.</h3>
+          </div>
+          <p class="body">
+            Retainers are optional support, not a promise of rankings, leads or
+            revenue. Agree the monthly deliverables in writing.
+          </p>
+        </div>
+        <div class="package-grid package-grid--retainers">
+          {monthlyRetainers.map((plan) => (
+            <article class="package-slot package-slot--retainer">
+              <p class="pricing-label">Monthly retainer</p>
+              <h3>{plan.name}</h3>
+              <p class="package-slot__price">{formatZar(plan.priceZarPerMonth)}<span> / month</span></p>
+              <ul class="package-includes">
+                {plan.includes.map((item) => <li>{item}</li>)}
+              </ul>
+              <a class="link-arrow" href="/contact">Ask about this retainer</a>
+            </article>
+          ))}
+        </div>
+      </div>
+
+      <div class="pricing-subsection">
+        <div class="section-head">
+          <div>
+            <p class="kicker"><span>05</span> Once-off edits</p>
+            <h3 class="h2" style="margin-top: 14px;">Small changes, listed plainly.</h3>
+          </div>
+          <p class="body">These are the existing standard rates for individual website edits.</p>
+        </div>
+        <div class="edit-rate-grid">
+          {onceOffEdits.map((item) => (
+            <article class="edit-rate">
+              <h4>{item.title}</h4>
+              <p>{formatZar(item.priceZar)}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+
+      <p class="pricing-guardrail">
+        {websiteOffer.guardrail}
       </p>
 
       <p style="margin-top: 32px;">
         <a class="btn btn--primary btn--on-ivory" href="/contact">
-          Get a written quote
+          Discuss your scope
           <svg class="btn__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg>
         </a>
       </p>
@@ -150,7 +211,7 @@ const description =
     <div class="container container--narrow">
       <div class="section-head" style="grid-template-columns: 1fr;">
         <div>
-          <p class="kicker"><span>04</span> Questions</p>
+          <p class="kicker"><span>06</span> Questions</p>
           <h2 class="h2" id="pricing-faq-title" style="margin-top: 14px;">
             Before you ask for a quote.
           </h2>
