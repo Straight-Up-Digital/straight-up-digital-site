@@ -1,9 +1,9 @@
 /**
- * The six services. Change `status` to move a service between Available,
+ * The service catalog. Change `status` to move a service between Available,
  * On request and Planned. That single field drives every label on the site.
  *
  * The owner has not confirmed the launch statuses yet (see PLACEHOLDERS.md),
- * so the conservative defaults below are used: one offered service, four
+ * so the conservative defaults below are used: one offered service, five
  * scoped on request, one clearly marked as still in development.
  */
 
@@ -76,6 +76,25 @@ export const services: Service[] = [
       "Mobile, accessibility and performance checks",
       "Handover with editing guidance",
     ],
+  },
+  {
+    slug: "managed-hosting-and-domains",
+    title: "Managed hosting and domain registration",
+    status: "on-request",
+    summary:
+      "Reseller hosting with stated storage and email allowances, plus domain registration and renewal as a separate add-on.",
+    forWho:
+      "Businesses that want website hosting and domain support from the same digital partner.",
+    value:
+      "A clear hosting plan, known mailbox allowance and help coordinating the domain behind your website.",
+    receive: [
+      "A hosting tier with its storage and email allowance stated up front",
+      "Domain registration and renewal quoted separately by extension",
+      "Monthly website updates and backups only with the Managed Care tier",
+      "A written quote while online billing and automated provisioning are prepared",
+    ],
+    note:
+      "On request. FOSSBilling with Paystack is the planned billing and checkout route, but it is not live yet; final availability and domain prices are confirmed before order.",
   },
   {
     slug: "website-improvements-and-on-page-seo",

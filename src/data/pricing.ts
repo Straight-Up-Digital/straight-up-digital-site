@@ -1,7 +1,6 @@
 /**
- * Public pricing mirrored from the Business Auditor's proposal configuration
- * (`business_auditor.py` defaults and `auditor_config.json`). Keep the figures
- * synchronized when the private proposal configuration changes.
+ * Public pricing combines Auditor proposal rates with separate owner-approved
+ * reseller-hosting and domain prices. Keep the two sources distinct.
  */
 
 export const auditPricing = {
@@ -14,8 +13,50 @@ export const websiteOffer = {
   hostingMonthlyZar: 99,
   maximumPages: 5,
   guardrail:
-    "Basic website scope and hosting limits must be agreed before sale; domain, email, paid plugins, substantial copywriting and major revisions may be extra.",
+    "Website builds are scoped separately. Hosting plans list their storage and mailbox allowances; domain registration and renewal, extras above plan limits, paid plugins, substantial copywriting and major revisions are additional unless a written quote says otherwise.",
 } as const;
+
+export interface HostingPlan {
+  name: string;
+  price: string;
+  summary: string;
+  includes: string[];
+}
+
+export const hostingPlans: HostingPlan[] = [
+  {
+    name: "Email & Starter Site",
+    price: "R99",
+    summary: "A practical starting point for a small business website.",
+    includes: ["2 GB NVMe storage", "Up to 5 email accounts"],
+  },
+  {
+    name: "Business Growth",
+    price: "R149",
+    summary: "More room for a growing website and team.",
+    includes: ["5 GB NVMe storage", "Up to 15 email accounts"],
+  },
+  {
+    name: "Managed Care",
+    price: "R399–R599",
+    summary: "Hosting with a recurring website-care allowance.",
+    includes: [
+      "10 GB NVMe storage",
+      "Monthly website updates",
+      "Monthly backups",
+      "Final price based on agreed update and support scope",
+    ],
+  },
+];
+
+export const domainOffer = {
+  coZaPrice: "R149–R169",
+  billing: "per year",
+  note: "Final price and annual renewal terms depend on the domain extension and registrar and are confirmed before registration.",
+} as const;
+
+export const hostingBillingNotice =
+  "FOSSBilling with Paystack is the planned billing and checkout route. Online payment and automated provisioning are not live yet; request a quote for now.";
 
 export interface MonthlyRetainer {
   name: string;

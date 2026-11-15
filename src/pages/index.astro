@@ -6,9 +6,10 @@ import { categories, exampleCoverage, exampleScore } from "../data/categories";
 import { services, serviceStatusMeta } from "../data/services";
 import { steps } from "../data/steps";
 import { site } from "../data/site";
+import { domainOffer, hostingBillingNotice, hostingPlans } from "../data/pricing";
 
 const description =
-  "Straight Up Digital audits the digital presence of small and growing businesses: six categories, an honest score, coverage and confidence notes, and a prioritised plan. Intelligence. Visibility. Growth.";
+  "Straight Up Digital helps small businesses improve their digital presence with human-reviewed audits, website services, and managed hosting and domain options.";
 
 const outcomes = [
   {
@@ -254,11 +255,54 @@ const trustPoints = [
     </div>
   </section>
 
+  <section class="section ivory" aria-labelledby="hosting-title">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <p class="kicker"><span>05</span> Hosting &amp; domains</p>
+          <h2 class="h2" id="hosting-title" style="margin-top: 14px; max-width: 15ch;">
+            Keep your website and its essentials together.
+          </h2>
+        </div>
+        <p class="lede">
+          Explore the proposed hosting levels for your business, with domain
+          registration available as a separate annual add-on.
+        </p>
+      </div>
+
+      <div class="package-grid package-grid--retainers">
+        {hostingPlans.map((plan) => (
+          <article class="package-slot package-slot--retainer">
+            <p class="pricing-label">Managed hosting</p>
+            <h3>{plan.name}</h3>
+            <p class="package-slot__price">{plan.price}<span> / month</span></p>
+            <p>{plan.summary}</p>
+            <ul class="package-includes">
+              {plan.includes.map((item) => <li>{item}</li>)}
+            </ul>
+            <a class="link-arrow" href="/contact">Ask about this plan</a>
+          </article>
+        ))}
+      </div>
+
+      <p class="pricing-guardrail" style="margin-top: 24px;">
+        <strong>Domain registration:</strong> Suggested .co.za registration and renewal range: {domainOffer.coZaPrice} {domainOffer.billing}. {domainOffer.note}
+      </p>
+      <p class="pricing-guardrail">{hostingBillingNotice}</p>
+      <p style="margin-top: 28px;">
+        <a class="btn btn--primary btn--on-ivory" href="/pricing#hosting-packages">
+          See hosting and domain pricing
+          <svg class="btn__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg>
+        </a>
+      </p>
+    </div>
+  </section>
+
   <section class="section trust" aria-labelledby="trust-title">
     <div class="container">
       <div class="trust__head">
         <div>
-          <p class="kicker"><span>05</span> Straight answers</p>
+          <p class="kicker"><span>06</span> Straight answers</p>
           <h2 class="h2" id="trust-title" style="margin-top: 14px;">
             What we will not claim.
           </h2>

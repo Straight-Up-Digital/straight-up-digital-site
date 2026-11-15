@@ -50,7 +50,7 @@ export const pricingFaqs: Faq[] = [
   {
     question: "How are these prices determined?",
     answer:
-      "The published rates mirror the existing Business Auditor proposal configuration. The audit proposal uses R40 per missing point out of 100; website builds, editing rates and the five monthly retainers are shown on this page. The written proposal confirms the exact scope and deliverables before work begins.",
+      "The audit, website-build and support rates reflect the existing proposal configuration. The three reseller-hosting tiers are listed separately with their storage and email allowances; domain prices depend on the extension and are confirmed before registration. A written quote confirms the exact scope and deliverables.",
   },
   {
     question: "How do I get a quote?",
@@ -71,6 +71,11 @@ export const pricingFaqs: Faq[] = [
     question: "Do you work outside South Africa?",
     answer:
       "The site is written for South African businesses and South African search behaviour. Service areas are not published yet, so ask before assuming cover in your area. We will tell you honestly if we are not the right fit.",
+  },
+  {
+    question: "Can I pay for hosting online now?",
+    answer:
+      "Not yet. FOSSBilling with Paystack is being prepared for billing and checkout, but online payments and automated provisioning are not live. For now, send an enquiry and we will confirm availability, the written scope and payment steps before any order.",
   },
   {
     question: "What is not included?",

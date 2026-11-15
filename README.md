@@ -42,15 +42,15 @@ The site is then at `http://localhost:4321`.
 | File | Contains |
 | --- | --- |
 | `src/data/site.ts` | Brand, owner-supplied contacts, founder profile and analytics switch |
-| `src/data/services.ts` | Six existing services and their Available / On request / Planned status |
-| `src/data/pricing.ts` | Published rates mirrored from the Auditor proposal configuration |
+| `src/data/services.ts` | Seven services and their Available / On request / Planned status, including hosting and domains |
+| `src/data/pricing.ts` | Auditor proposal rates plus separately managed reseller-hosting and domain tiers |
 | `src/data/categories.ts` | Six audit categories, checks and example readings |
 | `src/data/steps.ts` | Six-step customer journey |
 | `src/data/faqs.ts` | Audit and pricing answers |
 | `src/data/navigation.ts` | Header and footer navigation |
 | `public/__forms.html` | Static Netlify Forms definitions for the two Astro forms |
 
-The pricing figures were verified against `C:\Users\Saint\business_auditor\auditor_config.json` and the matching `DEFAULT_CONFIG` in `business_auditor.py`. If those proposal settings change, update `src/data/pricing.ts` and the private configuration together. Published rates include the audit point rate, website build/hosting, hourly and once-off edits, and all five configured retainers and inclusions.
+Audit, website-build, hourly, once-off-edit and monthly-retainer rates were verified against `C:\Users\Saint\business_auditor\auditor_config.json` and the matching `DEFAULT_CONFIG` in `business_auditor.py`; keep those figures synchronized if that proposal configuration changes. The owner-approved reseller-hosting tiers and indicative .co.za domain range in `src/data/pricing.ts` are separate public offers and must not be treated as Auditor proposal defaults. FOSSBilling and Paystack checkout/provisioning are not live yet.
 
 ## Enquiries
 
