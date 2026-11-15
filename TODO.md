@@ -22,3 +22,10 @@
 - [ ] **Reseller operations:** Confirm upstream host/registrar costs, account limits, allowances, renewal/transfer/cancellation terms, support and backup/restore details before taking orders. Use [`PLACEHOLDERS.md`](PLACEHOLDERS.md) for the broader launch list.
 
 - [ ] **Publish the footer de-duplication fix:** Commit `763c535` is on GitHub, but Netlify skipped its deploy because production credits were exhausted. The live site remains at `eaeb305`. Wait for the next billing cycle or obtain explicit approval for a paid plan upgrade, then rerun and verify production. No upgrade was made.
+
+
+## Private local-CRM enquiry bridge (15 November 2026)
+
+- [ ] **Deploy authenticated CRM intake source:** Website source now stores emailed enquiries in a private Netlify Blob queue, and exposes only a token-authenticated, production-only read/ack endpoint. The production site has not yet received this source change; verify Netlify Functions bundling and wait for the production-credit limit to clear before a deploy.
+- [ ] **Configure sync token after deployment:** Add `CRM_ENQUIRY_SYNC_TOKEN` to the Netlify site with Functions-only scope and Production-only context; add the same value to the ignored local CRM `.env`. Never put the token in Git or chat. Use the CRM's owner-clicked sync and verify a synthetic enquiry appears once locally, is acknowledged remotely, and Zoho email delivery remains unchanged.
+- [ ] **Test explicit report revocation:** After deployment, verify owner-authenticated `DELETE` revokes a synthetic report link and rejects wrong tokens, unapproved URLs, and deploy previews.

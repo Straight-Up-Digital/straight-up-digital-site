@@ -45,10 +45,9 @@ export async function handlePublishAuditReport(
   context: Context,
   envReader: (key: string) => string | undefined = getEnv,
 ): Promise<Response> {
-  if (request.method !== "POST") return json({ error: "method_not_allowed" }, 405);
+  if (request.method !== "POST" && request.method !== "DELETE") return json({ error: "method_not_allowed" }, 405);
   if (context.deploy.context !== "production") return json({ error: "not_found" }, 404);
-  if (!reportFlowReady(envReader)) return json({ error: "report_service_not_ready" }, 503);
-
+  if (request.method === "POST" && !reportFlowReady(envReader)) return json({ error: "report_service_not_ready" }, 503);
   const expected = (envReader("AUDIT_REPORT_PUBLISH_TOKEN") || "").trim();
   if (!tokenMatches(request, expected)) return json({ error: "unauthorized" }, 401);
   if (!(request.headers.get("content-type") || "").toLowerCase().includes("application/json")) {
@@ -56,6 +55,33 @@ export async function handlePublishAuditReport(
   }
   const body = await readJsonBodyLimited(request, 20_000);
   if (!body || typeof body !== "object" || Array.isArray(body)) return json({ error: "invalid_request" }, 400);
+
+  if (request.method === "DELETE") {
+    const reportUrl = (body as Record<string, unknown>).reportUrl;
+    if (typeof reportUrl !== "string") return json({ error: "invalid_report_url" }, 400);
+    let parsed: URL;
+    try {
+      parsed = new URL(reportUrl);
+    } catch {
+      return json({ error: "invalid_report_url" }, 400);
+    }
+    if (parsed.protocol !== "https:" || !["straight-up-digital-site.netlify.app", "straightupdigital.co.za", "www.straightupdigital.co.za"].includes(parsed.hostname)) {
+      return json({ error: "invalid_report_url" }, 400);
+    }
+    const match = /^\/report\/([A-Za-z0-9_-]{40,60})$/.exec(parsed.pathname);
+    if (!match) return json({ error: "invalid_report_url" }, 400);
+    try {
+      const store = getStore({ name: REPORT_STORE, consistency: "strong" });
+      const key = reportKeyForToken(match[1]);
+      if (await store.get(key) === null) return json({ deleted: false, already_unavailable: true }, 200);
+      await store.delete(key);
+      return json({ deleted: true }, 200);
+    } catch {
+      console.log(JSON.stringify({ event: "client_report_delete_failed" }));
+      return json({ error: "report_delete_failed" }, 503);
+    }
+  }
+
   const report = normalizeCustomerReport((body as Record<string, unknown>).report);
   if (!report) return json({ error: "invalid_customer_report" }, 422);
 
@@ -87,5 +113,6 @@ export default async (request: Request, context: Context): Promise<Response> =>
   handlePublishAuditReport(request, context);
 
 export const config: Config = {
+  method: ["POST", "DELETE"],
   rateLimit: { action: "rate_limit", aggregateBy: "ip", windowSize: 60, windowLimit: 5 },
 };

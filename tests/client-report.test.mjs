@@ -7,7 +7,7 @@ import {
   reportSecurityHeaders,
   renderReportPage,
 } from "../netlify/lib/client-report.mts";
-import { handlePublishAuditReport } from "../netlify/functions/publish-audit-report.mts";
+import { config as publishConfig, handlePublishAuditReport } from "../netlify/functions/publish-audit-report.mts";
 
 const reportInput = {
   schemaVersion: 1,
@@ -108,4 +108,20 @@ test("publish handler rejects wrong owner token and malformed client report", as
   assert.equal(wrongToken.status, 401);
   const malformed = await handlePublishAuditReport(new Request(url, { method: "POST", headers: { Authorization: `Bearer ${ownerToken}`, "Content-Type": "application/json" }, body: JSON.stringify({ report: { ...reportInput, schemaVersion: 99 } }) }), context, reader(config));
   assert.equal(malformed.status, 422);
+});
+
+
+test("report revocation is DELETE-only, owner-authenticated and restricted to approved report URLs", async () => {
+  assert.deepEqual(publishConfig.method, ["POST", "DELETE"]);
+  const ownerToken = "A".repeat(43);
+  const config = { ...readyEnv, AUDIT_REPORT_PUBLISH_TOKEN: ownerToken };
+  const context = { deploy: { context: "production" }, params: {} };
+  const url = "https://straight-up-digital-site.netlify.app/.netlify/functions/publish-audit-report";
+  const headers = { Authorization: `Bearer ${ownerToken}`, "Content-Type": "application/json" };
+  const unauthorized = await handlePublishAuditReport(new Request(url, { method: "DELETE", headers: { ...headers, Authorization: `Bearer ${"B".repeat(43)}` }, body: JSON.stringify({ reportUrl: "https://straight-up-digital-site.netlify.app/report/" + "A".repeat(43) }) }), context, reader(config));
+  assert.equal(unauthorized.status, 401);
+  const rejected = await handlePublishAuditReport(new Request(url, { method: "DELETE", headers, body: JSON.stringify({ reportUrl: "https://attacker.example/report/" + "A".repeat(43) }) }), context, reader(config));
+  assert.equal(rejected.status, 400);
+  const preview = await handlePublishAuditReport(new Request(url, { method: "DELETE", headers, body: JSON.stringify({ reportUrl: "https://straight-up-digital-site.netlify.app/report/" + "A".repeat(43) }) }), { deploy: { context: "deploy-preview" }, params: {} }, reader(config));
+  assert.equal(preview.status, 404);
 });

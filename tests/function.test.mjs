@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import handler, { config } from "../netlify/functions/submit-enquiry.mts";
+import { config as privateConfig, handleCrmEnquiries } from "../netlify/functions/crm-enquiries.mts";
 
 const context = { ip: "203.0.113.10" };
 
@@ -126,4 +127,29 @@ test("a configured Turnstile secret requires a token", async () => {
 test("the function declares IP rate limiting", () => {
   assert.equal(config.rateLimit?.action, "rate_limit");
   assert.equal(config.rateLimit?.aggregateBy, "ip");
+});
+
+test("the private CRM endpoint is production-only and authenticates before touching Blobs", async () => {
+  assert.deepEqual(privateConfig.method, ["GET", "DELETE"]);
+  assert.equal(privateConfig.rateLimit?.windowLimit, 30);
+  const url = "https://straight-up-digital-site.netlify.app/api/private-enquiries";
+  const preview = await handleCrmEnquiries(
+    new Request(url, { method: "GET" }),
+    { deploy: { context: "deploy-preview" }, params: {} },
+    () => undefined,
+  );
+  assert.equal(preview.status, 404);
+  const unconfigured = await handleCrmEnquiries(
+    new Request(url, { method: "GET" }),
+    { deploy: { context: "production" }, params: {} },
+    () => undefined,
+  );
+  assert.equal(unconfigured.status, 503);
+  const unauthenticated = await handleCrmEnquiries(
+    new Request(url, { method: "GET", headers: { Authorization: `Bearer ${"A".repeat(64)}` } }),
+    { deploy: { context: "production" }, params: {} },
+    () => "expected-private-token",
+  );
+  assert.equal(unauthenticated.status, 401);
+  assert.match(unauthenticated.headers.get("cache-control"), /no-store/);
 });

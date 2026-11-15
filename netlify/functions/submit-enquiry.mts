@@ -20,6 +20,7 @@ import {
   sendEnquiryEmail,
   verifyTurnstile,
 } from "../lib/email.mts";
+import { storeDeliveredEnquiry } from "../lib/crm-enquiry-store.mts";
 
 declare const Netlify: {
   env: { get(key: string): string | undefined };
@@ -187,6 +188,20 @@ export default async (request: Request, context: Context): Promise<Response> => 
 
   try {
     const result = await sendEnquiryEmail(enquiry, getEnv);
+    try {
+      await storeDeliveredEnquiry(enquiry, context);
+    } catch (storageError) {
+      // Keep the existing email and customer acknowledgement path reliable.
+      // Never log form values or allow a CRM-storage failure to expose them.
+      console.log(
+        JSON.stringify({
+          event: "crm_intake_storage_failed",
+          form_type: enquiry.formType,
+          error_type:
+            storageError instanceof Error ? storageError.name : "UnknownError",
+        }),
+      );
+    }
     console.log(
       JSON.stringify({
         event: "enquiry_delivered",
