@@ -42,7 +42,7 @@ export const auditFaqs: Faq[] = [
   {
     question: "What happens after I send the request?",
     answer:
-      "A person checks the business and website details, then runs the full audit privately. We share the customer-friendly report link when the online report service is enabled; otherwise, we contact you directly to agree how to deliver the findings. You can use the report page to ask a question or request a meeting. That response is not a purchase or acceptance of paid work; scope and price are agreed separately in writing.",
+      "A person checks the business and website details, then runs the full audit privately. After review, we share a private online report that explains findings in everyday language, why they may affect customers and what to fix next. The full internal scorecard stays private and no PDF download is needed. You can use the report page to ask a question or request a meeting; that response is not acceptance of paid work, and any scope and price are agreed separately in writing.",
   },
 ];
 
@@ -70,10 +70,10 @@ export const pricingFaqs: Faq[] = [
   {
     question: "Do you work outside South Africa?",
     answer:
-      "The site is written for South African businesses and South African search behaviour. Service areas are not published yet, so ask before assuming cover in your area. We will tell you honestly if we are not the right fit.",
+      "Straight Up Digital is based in Port Alfred, Eastern Cape, South Africa. If your business is elsewhere, send an enquiry and we will confirm whether the work can be supported remotely or in your area.",
   },
   {
-    question: "Can I pay for hosting online now?",
+    question: "How do I request a hosting plan?",
     answer:
       "Choose the hosting plan you want and send a request. We will confirm availability, the recurring payment method and terms, and the start date before you agree to an order. No payment is taken and no service is provisioned before you approve the written details.",
   },

@@ -17,6 +17,7 @@ const layout = read("../src/layouts/BaseLayout.astro");
 const footer = read("../src/components/SiteFooter.astro");
 const astro = read("../astro.config.mjs");
 const paystack = read("../docs/paystack-setup.md");
+const faqs = read("../src/data/faqs.ts");
 
 test("public business identity and locality are owner-supplied", () => {
   assert.match(siteData, /St\. John Ritchie trading as Straight Up Digital/);
@@ -75,4 +76,11 @@ test("Paystack readiness copy does not promise recurring Capitec Pay", () => {
   assert.match(paystack, /Capitec Pay.*once-off/);
   assert.match(paystack, /secret.*never be sent to browser code/i);
   assert.match(paystack, /plan codes/i);
+});
+
+test("public FAQs describe live reviewed online reports and the owner-approved locality", () => {
+  assert.match(faqs, /After review, we share a private online report/);
+  assert.doesNotMatch(faqs, /when the online report service is enabled|Service areas are not published yet/);
+  assert.match(faqs, /based in Port Alfred, Eastern Cape, South Africa/);
+  assert.match(faqs, /How do I request a hosting plan/);
 });

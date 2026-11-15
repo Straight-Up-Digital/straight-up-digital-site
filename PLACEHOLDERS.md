@@ -30,7 +30,7 @@ This checklist separates owner-confirmed public information from operational ste
 | Service availability | Digital presence audits are available; web design, SEO, Google Business Profile, content/social, and hosting/domains are on request; reputation/review checks remain in development. | Confirm that these statuses still match actual capacity. Do not sell reputation checks as currently available. |
 | Private CRM/report safeguards | The full Python Auditor and CRM remain local-only. A reviewed redacted report is published manually; client next-step responses are emailed to the owner. | Keep manual approval and tight secret scopes; repeat a fabricated end-to-end production test after material changes. |
 | Analytics | Tracking is disabled. | Keep disabled unless a specific tool and appropriate notice/consent are approved. |
-| Optional profile content | Founder photo, service-area details and social-profile URLs have not been supplied. | Add only if desired and supply exact locations/profile URLs and permission to publish an image. |
+| Optional profile content | Operating locality is Port Alfred, Eastern Cape, South Africa. A founder photo and social-profile URLs have not been supplied; no additional service coverage is claimed. | Add a photo or profiles only if desired, with exact URLs and permission to publish. Confirm remote/service-area coverage case by case. |
 | Production deployment | GitHub Actions → Netlify build hook has published the verified production build. | Keep `NETLIFY_BUILD_HOOK` in GitHub Actions secrets and verify future workflow runs/published builds. |
 
 ## Pricing source and reconciliation
