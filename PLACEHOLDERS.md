@@ -31,7 +31,7 @@ This checklist separates owner-confirmed public information from operational ste
 | Private CRM/report safeguards | The full Python Auditor and CRM remain local-only. A reviewed redacted report is published manually; client next-step responses are emailed to the owner. | Keep manual approval and tight secret scopes; repeat a fabricated end-to-end production test after material changes. |
 | Analytics | Tracking is disabled. | Keep disabled unless a specific tool and appropriate notice/consent are approved. |
 | Optional profile content | Operating locality is Port Alfred, Eastern Cape, South Africa. A founder photo and social-profile URLs have not been supplied; no additional service coverage is claimed. | Add a photo or profiles only if desired, with exact URLs and permission to publish. Confirm remote/service-area coverage case by case. |
-| Production deployment | GitHub Actions → Netlify build hook has published the verified production build. | Keep `NETLIFY_BUILD_HOOK` in GitHub Actions secrets and verify future workflow runs/published builds. |
+| Production deployment | Commit `763c535` contains the footer de-duplication fix but Netlify skipped its production deploy due to exhausted account credits. Published production remains at `eaeb305`. | Wait for the next billing cycle or obtain explicit owner approval for any plan upgrade; then rerun the production workflow and verify the new commit. No paid change was made. |
 
 ## Pricing source and reconciliation
 
