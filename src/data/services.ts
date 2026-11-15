@@ -79,7 +79,7 @@ export const services: Service[] = [
   },
   {
     slug: "managed-hosting-and-domains",
-    title: "Managed hosting and domain registration",
+    title: "Hosting and domain registration",
     status: "on-request",
     summary:
       "Reseller hosting with stated storage and email allowances, plus domain registration and renewal as a separate add-on.",
