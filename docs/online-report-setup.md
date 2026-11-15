@@ -33,10 +33,9 @@ After changing Netlify environment variables, trigger a new production deploymen
 
 ## Separate initial-request email setting
 
-The public audit request form currently uses **Netlify Forms**, which is separate from the Zoho Function that handles customer report responses. The existing Forms notification is still addressed to `Hello@straightupdigital.co.za` and is awaiting recipient confirmation. The synthetic test verified the report-response SMTP path only; it does not verify Netlify Forms email delivery. Change the Forms recipient to `straightupdigital@zohomail.com`, confirm it from that inbox, and test the initial audit request. Do not assume that configuring Zoho SMTP changes Netlify Forms notifications.
+The public audit-request and contact forms use **Netlify Forms**, separate from the Zoho Function that handles customer report responses. The sole all-forms notification is now addressed to `straightupdigital@zohomail.com`; the obsolete pending `Hello@straightupdigital.co.za` notification was removed, and no recipient confirmation is pending in Netlify. On 15 November 2026, each form was submitted once with fictional data and a reserved `.invalid` email address. Both forms displayed their success state, and both matching `formresponses@netlify.com` notifications were verified in Zoho with the correct form type and source path. No client data was used. This independently verifies the Netlify Forms path; configuring Zoho SMTP alone does not change Netlify Forms notifications.
 
 ## Owner operating checklist
-
 1. Review the incoming request and verify the business identity/website; the public site does not run audits automatically.
 2. Run the full audit in the private local CRM.
 3. Open the customer report preview. Check that the findings are accurate and understandable, then confirm the review checkbox and publish.
