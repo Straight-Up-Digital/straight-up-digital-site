@@ -5,7 +5,7 @@ import SiteFooter from "../components/SiteFooter.astro";
 import StickyAuditBar from "../components/StickyAuditBar.astro";
 import WhatsAppButton from "../components/WhatsAppButton.astro";
 import BackToTopButton from "../components/BackToTopButton.astro";
-import { site } from "../data/site";
+import { contact, ownerSupplied, site } from "../data/site";
 
 interface Props {
   title: string;
@@ -50,6 +50,15 @@ const organization = {
   logo: new URL("/brand/logo-horizontal-dark.png", siteUrl).toString(),
   description: site.description,
   slogan: site.tagline,
+  founder: { "@type": "Person", name: ownerSupplied.founderName },
+  email: contact.email,
+  telephone: contact.phoneInternational,
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Port Alfred",
+    addressRegion: "Eastern Cape",
+    addressCountry: "ZA",
+  },
 };
 
 const structuredData = [organization, ...jsonLd];
@@ -62,6 +71,7 @@ const structuredData = [organization, ...jsonLd];
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
+    <meta name="author" content={ownerSupplied.founderName} />
     <link rel="canonical" href={canonical} />
     {noindex && <meta name="robots" content="noindex, nofollow" />}
     <meta name="theme-color" content="#080A09" />

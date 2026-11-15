@@ -1,7 +1,7 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import EnquiryForm from "../components/EnquiryForm.astro";
-import { contact, has, placeholderKeys, site } from "../data/site";
+import { contact, has, site } from "../data/site";
 
 const description =
   "Contact Straight Up Digital. Tell us what is not working, send the website address, and a person will reply with a clear next step. Audit requests, projects and questions all start here.";
@@ -68,14 +68,6 @@ const details = [
                   )}
                 </p>
               ) : null,
-            )
-          }
-          {
-            !has(contact.email) && !has(contact.phone) && !has(contact.address) && (
-              <p class="small" data-placeholder={placeholderKeys.email}>
-                Please use the enquiry form while direct contact details are
-                unavailable. Form notifications must be configured in Netlify.
-              </p>
             )
           }
         </div>

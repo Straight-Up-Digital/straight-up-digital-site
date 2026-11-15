@@ -2,23 +2,48 @@
 import { contact } from "../data/site";
 
 const whatsappNumber = contact.phoneInternational.replace(/\D/g, "");
-const message = encodeURIComponent(
-  "Hi Straight Up Digital, I’m interested in the Business Auditor and would like to know how to request a review.",
-);
-const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${message}`;
+const messages = [
+  {
+    label: "Digital audit",
+    text: "Hi Straight Up Digital, I’m interested in a digital audit for my business.",
+  },
+  {
+    label: "Hosting plan",
+    text: "Hi Straight Up Digital, I’m interested in a hosting plan. Please tell me about the Starter, Business Growth and Managed Care options.",
+  },
+  {
+    label: "Domain registration",
+    text: "Hi Straight Up Digital, I’m interested in registering or renewing a domain. Please tell me which extensions and prices are available.",
+  },
+  {
+    label: "Something else",
+    text: "Hi Straight Up Digital, I have a question about your services: ",
+  },
+];
 ---
 
-<a
-  class="whatsapp-button"
-  href={whatsappUrl}
-  target="_blank"
-  rel="noopener noreferrer"
-  aria-label={`Chat with Straight Up Digital on WhatsApp at ${contact.phoneInternational}`}
-  title="Chat with Straight Up Digital on WhatsApp"
->
-  <svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
-    <path d="M26.6 5.4A14.55 14.55 0 0 0 3.9 22.95L2 30l7.2-1.88A14.56 14.56 0 0 0 16.45 30h.01A14.56 14.56 0 0 0 26.6 5.4Z" fill="currentColor" />
-    <path d="M11.25 9.3c-.3-.65-.6-.66-.88-.67h-.75c-.26 0-.68.1-1.03.48-.36.38-1.35 1.31-1.35 3.2s1.38 3.71 1.57 3.97c.2.25 2.67 4.27 6.6 5.82 3.27 1.3 3.94 1.03 4.65.96.7-.06 2.28-.92 2.6-1.81.32-.9.32-1.67.22-1.83-.1-.16-.36-.25-.75-.45-.4-.19-2.29-1.13-2.65-1.26-.35-.13-.61-.2-.87.2-.26.38-1 1.25-1.22 1.51-.22.26-.45.29-.84.1-.39-.19-1.65-.61-3.14-1.94-1.16-1.03-1.94-2.3-2.17-2.68-.22-.39-.02-.6.17-.79.17-.17.39-.45.58-.67.19-.22.26-.39.39-.65.13-.25.06-.48-.03-.67-.1-.19-.87-2.12-1.2-2.9Z" fill="var(--lime)" />
-  </svg>
-  <span>WhatsApp me</span>
-</a>
+<details class="whatsapp-menu">
+  <summary
+    class="whatsapp-button"
+    aria-label={`Choose a WhatsApp message topic for Straight Up Digital at ${contact.phoneInternational}`}
+    title="Choose what to ask about on WhatsApp"
+  >
+    <svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
+      <path d="M26.6 5.4A14.55 14.55 0 0 0 3.9 22.95L2 30l7.2-1.88A14.56 14.56 0 0 0 16.45 30h.01A14.56 14.56 0 0 0 26.6 5.4Z" fill="currentColor" />
+      <path d="M11.25 9.3c-.3-.65-.6-.66-.88-.67h-.75c-.26 0-.68.1-1.03.48-.36.38-1.35 1.31-1.35 3.2s1.38 3.71 1.57 3.97c.2.25 2.67 4.27 6.6 5.82 3.27 1.3 3.94 1.03 4.65.96.7-.06 2.28-.92 2.6-1.81.32-.9.32-1.67.22-1.83-.1-.16-.36-.25-.75-.45-.4-.19-2.29-1.13-2.65-1.26-.35-.13-.61-.2-.87.2-.26.38-1 1.25-1.22 1.51-.22.26-.45.29-.84.1-.39-.19-1.65-.61-3.14-1.94-1.16-1.03-1.94-2.3-2.17-2.68-.22-.39-.02-.6.17-.79.17-.17.39-.45.58-.67.19-.22.26-.48.39-.65.25-.1-.19-.87-2.12-1.2-2.9Z" fill="var(--lime)" />
+    </svg>
+    <span>Chat on WhatsApp</span>
+  </summary>
+  <div class="whatsapp-menu__panel" aria-label="Choose a WhatsApp message topic">
+    <p>What would you like to ask about?</p>
+    {messages.map((message) => (
+      <a
+        href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message.text)}`}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {message.label}
+      </a>
+    ))}
+  </div>
+</details>

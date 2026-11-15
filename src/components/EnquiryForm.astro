@@ -33,8 +33,14 @@ const turnstileKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? "";
 const action =
   formMode === "email" ? "/.netlify/functions/submit-enquiry" : "/thank-you";
 
-const options = [...serviceOptions, "Not sure yet", "Something else"];
-const consentVersion = "privacy-draft-2026-11-14";
+const hostingPlanOptions = [
+  "Email & Starter Site hosting plan — R99/month",
+  "Business Growth hosting plan — R149/month",
+  "Managed Care hosting quote — R399–R599/month",
+];
+const domainRequestOption = "Domain registration or renewal request";
+const options = [...serviceOptions, ...hostingPlanOptions, domainRequestOption, "Not sure yet", "Something else"];
+const consentVersion = "privacy-1.0-2026-11-15";
 ---
 
 <section class="form-panel" id={id} aria-labelledby={`${id}-heading`} data-enquiry-root data-form-mode={formMode}>
@@ -326,6 +332,25 @@ const consentVersion = "privacy-draft-2026-11-14";
     form?.querySelector<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>(
       `[name="${name}"]`,
     ) ?? null;
+
+  const planRequests: Record<string, string> = {
+    starter: "Email & Starter Site hosting plan — R99/month",
+    growth: "Business Growth hosting plan — R149/month",
+    "managed-care": "Managed Care hosting quote — R399–R599/month",
+    domain: "Domain registration or renewal request",
+  };
+  const planSlug = new URLSearchParams(window.location.search).get("plan");
+  const requestedPlan = planSlug ? planRequests[planSlug] : undefined;
+  const serviceSelect = field("service_of_interest") as HTMLSelectElement | null;
+  if (requestedPlan && serviceSelect) {
+    serviceSelect.value = requestedPlan;
+    const messageInput = field("message") as HTMLTextAreaElement | null;
+    if (messageInput && !messageInput.value) {
+      messageInput.value = requestedPlan === "Domain registration or renewal request"
+        ? "I would like to request domain registration or renewal. Please confirm the extension, availability, annual price and renewal terms."
+        : `I would like to request ${requestedPlan}. Please confirm availability, payment terms and the start date.`;
+    }
+  }
 
   const errorFor = (name: FieldName) =>
     root?.querySelector<HTMLElement>(`[data-error-for="${name}"]`) ?? null;

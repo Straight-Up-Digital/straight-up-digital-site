@@ -75,7 +75,7 @@ export const pricingFaqs: Faq[] = [
   {
     question: "Can I pay for hosting online now?",
     answer:
-      "Not yet. FOSSBilling with Paystack is being prepared for billing and checkout, but online payments and automated provisioning are not live. For now, send an enquiry and we will confirm availability, the written scope and payment steps before any order.",
+      "Choose the hosting plan you want and send a request. We will confirm availability, the recurring payment method and terms, and the start date before you agree to an order. No payment is taken and no service is provisioned before you approve the written details.",
   },
   {
     question: "What is not included?",

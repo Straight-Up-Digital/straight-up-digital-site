@@ -50,13 +50,13 @@ The site is then at `http://localhost:4321`.
 | `src/data/navigation.ts` | Header and footer navigation |
 | `public/__forms.html` | Static Netlify Forms definitions for the two Astro forms |
 
-Audit, website-build, hourly, once-off-edit and monthly-retainer rates were verified against `C:\Users\Saint\business_auditor\auditor_config.json` and the matching `DEFAULT_CONFIG` in `business_auditor.py`; keep those figures synchronized if that proposal configuration changes. The owner-approved reseller-hosting tiers and indicative .co.za domain range in `src/data/pricing.ts` are separate public offers and must not be treated as Auditor proposal defaults. FOSSBilling and Paystack checkout/provisioning are not live yet.
+Audit, website-build, hourly, once-off-edit and monthly-retainer rates were verified against `C:\Users\Saint\business_auditor\auditor_config.json` and the matching `DEFAULT_CONFIG` in `business_auditor.py`; keep those figures synchronized if that proposal configuration changes. The owner-approved reseller-hosting tiers and indicative .co.za domain range in `src/data/pricing.ts` are separate public offers and must not be treated as Auditor proposal defaults. Hosting buttons send a plan-specific manual request; no payment is taken until the owner confirms the written order details. Paystack activation and recurring plan configuration remain outstanding. See [`docs/paystack-setup.md`](docs/paystack-setup.md).
 
 ## Enquiries
 
 There are two delivery modes, selected at build time by `PUBLIC_FORM_MODE`.
 
-**`netlify` (default).** Both forms are statically declared in `public/__forms.html` for Netlify's build-time detection; the browser submits URL-encoded fields to that static form endpoint. Submissions are stored under **Forms** in the Netlify dashboard. Form detection must be enabled in Netlify, and email notifications must be configured separately for `audit-request` and `contact-enquiry`. The notification recipient may need to be an active Netlify team member. A working inbox address on the website does not by itself create a Netlify notification.
+**`netlify` (default).** Both forms are statically declared in `public/__forms.html` for Netlify's build-time detection; the browser submits URL-encoded fields to that static form endpoint. Submissions are stored under **Forms** in the Netlify dashboard. The all-forms email notification is configured for `straightupdigital@zohomail.com`; synthetic tests for both forms arrived on 15 November 2026.
 
 **`email`.** The form posts to `/.netlify/functions/submit-enquiry`. The function validates submissions and filters spam before sending through Zoho SMTP, Resend or Postmark. Configure it with the variables in `.env.example`; it returns a clear error if no provider is configured.
 
@@ -72,7 +72,7 @@ The public GitHub website repository deploys to the public Netlify production si
 
 **Continuous deployment:** `.github/workflows/netlify-production.yml` calls the Netlify production build hook for every push to `main` (and supports manual runs) using the private GitHub Actions secret `NETLIFY_BUILD_HOOK`; never commit the hook URL. The build-hook workflow is the canonical production path and does not rely on Netlify’s native Git production trigger. Keep Netlify’s GitHub connection in place for team-private Deploy Previews. If native production events are enabled, verify them separately; `[skip netlify]` suppresses a native attempt without suppressing the GitHub Actions hook. Production remains public.
 
-The current production hostname is `https://straight-up-digital-site.netlify.app/`. The requested custom domain is `straightupdigital.co.za`, but DNS for both the apex and `www` returned NXDOMAIN when checked on 14 November 2026. Keep the Netlify hostname as the live canonical address until the domain resolves and is verified in Netlify. Configure DNS at the registrar; do not overwrite mail-related DNS records without checking the existing email setup. Once connected, set `PUBLIC_SITE_URL` to the verified custom domain and redeploy so canonical URLs and the sitemap align.
+The current reachable production hostname is `https://straight-up-digital-site.netlify.app/`. Canonical URLs and the sitemap are configured to use the intended public domain `https://straightupdigital.co.za/`. DNS for the apex and `www` returned NXDOMAIN when last checked on 14 November 2026, so the domain is not yet confirmed reachable. Configure DNS at the registrar, attach and verify the domain/HTTPS in Netlify, and do not overwrite mail-related records without checking Zoho's current requirements.
 
 The `netlify.toml` redirects `/audit`, `/privacy-notice` and `/terms-and-conditions` to their current pages.
 
@@ -80,7 +80,7 @@ The `netlify.toml` redirects `/audit`, `/privacy-notice` and `/terms-and-conditi
 
 This repository contains the public website and the receiving side of a narrowly scoped report publisher. The private Python Business Auditor, its database and CRM remain local and are never publicly served. Only an owner-authenticated request can publish a whitelisted customer report; visitors cannot trigger the full audit engine. The website does not claim that visitors can run an instant live audit.
 
-There are no secrets in the repository. Keep runtime credentials in Netlify environment variables, use the narrowest available deploy context/scope, and treat build code as able to read any variable scoped to it; do not assume secrets are Function-only. The site sets a strict CSP, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`, `X-Frame-Options` and HSTS. The privacy notice and terms are still **drafts** and need appropriate South African legal review; owner identity/address, Information Officer details and record-retention decisions remain open.
+There are no secrets in the repository. Keep runtime credentials in Netlify environment variables, use the narrowest available deploy context/scope, and treat build code as able to read any variable scoped to it; do not assume secrets are Function-only. The site sets a strict CSP, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`, `X-Frame-Options` and HSTS. The owner-confirmed policies identify St. John Ritchie trading as Straight Up Digital and the Port Alfred locality; they are no longer labelled drafts. Paystack secret keys must stay server-side. Paystack's South African Capitec Pay method is once-off only and must not be presented as monthly recurring billing.
 
 See [`PLACEHOLDERS.md`](PLACEHOLDERS.md) for current owner actions and launch dependencies. Do not invent legal details or describe the sole-proprietor trading identity as a registered company.
 

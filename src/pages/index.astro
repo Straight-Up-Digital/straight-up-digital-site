@@ -280,13 +280,13 @@ const trustPoints = [
             <ul class="package-includes">
               {plan.includes.map((item) => <li>{item}</li>)}
             </ul>
-            <a class="link-arrow" href="/contact">Ask about this plan</a>
+            <a class="link-arrow" href={`/contact?plan=${plan.slug}#enquiry`}>{plan.ctaLabel}</a>
           </article>
         ))}
       </div>
 
       <p class="pricing-guardrail" style="margin-top: 24px;">
-        <strong>Domain registration:</strong> Suggested .co.za registration and renewal range: {domainOffer.coZaPrice} {domainOffer.billing}. {domainOffer.note}
+        <strong>Domain registration:</strong> Suggested .co.za registration and renewal range: {domainOffer.coZaPrice} {domainOffer.billing}. {domainOffer.note} <a class="text-link" href="/contact?plan=domain#enquiry">Request a domain registration</a>.
       </p>
       <p class="pricing-guardrail">{hostingBillingNotice}</p>
       <p style="margin-top: 28px;">

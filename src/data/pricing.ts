@@ -17,28 +17,36 @@ export const websiteOffer = {
 } as const;
 
 export interface HostingPlan {
+  slug: "starter" | "growth" | "managed-care";
   name: string;
   price: string;
+  ctaLabel: string;
   summary: string;
   includes: string[];
 }
 
 export const hostingPlans: HostingPlan[] = [
   {
+    slug: "starter",
     name: "Email & Starter Site",
     price: "R99",
+    ctaLabel: "Select Starter Plan (R99/mo)",
     summary: "A practical starting point for a small business website.",
     includes: ["2 GB NVMe storage", "Up to 5 email accounts"],
   },
   {
+    slug: "growth",
     name: "Business Growth",
     price: "R149",
+    ctaLabel: "Select Business Growth (R149/mo)",
     summary: "More room for a growing website and team.",
     includes: ["5 GB NVMe storage", "Up to 15 email accounts"],
   },
   {
+    slug: "managed-care",
     name: "Managed Care",
     price: "R399–R599",
+    ctaLabel: "Request Managed Care Quote",
     summary: "Hosting with a recurring website-care allowance.",
     includes: [
       "10 GB NVMe storage",
@@ -56,7 +64,7 @@ export const domainOffer = {
 } as const;
 
 export const hostingBillingNotice =
-  "FOSSBilling with Paystack is the planned billing and checkout route. Online payment and automated provisioning are not live yet; request a quote for now.";
+  "Choose a plan to request it. We will confirm availability, the recurring payment method and terms, and the start date before you commit. No payment is taken and no service is provisioned until you approve the written order details.";
 
 export interface MonthlyRetainer {
   name: string;

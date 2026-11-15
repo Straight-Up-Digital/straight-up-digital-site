@@ -13,7 +13,7 @@ const validBody = {
   service_of_interest: "Website design and development",
   message: "We need a site that explains our bread and takes orders.",
   consent_given: "yes",
-  consent_text_version: "privacy-draft-2026-11-14",
+  consent_text_version: "privacy-1.0-2026-11-15",
   consent_timestamp: "2026-11-13T10:00:00.000Z",
   form_type: "contact",
   source: "/contact",

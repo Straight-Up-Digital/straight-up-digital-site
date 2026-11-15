@@ -3,15 +3,11 @@ import { defineConfig } from "astro/config";
 import sitemap from "@astrojs/sitemap";
 
 /**
- * The canonical site URL is never invented in code. Locally it falls back to
- * the dev server; on Netlify, the read-only URL env var is the site's main
- * address, so connecting a custom domain later updates canonicals and the
- * sitemap automatically. PUBLIC_SITE_URL can override it for a fixed domain.
+ * The owner-selected public origin is used for canonicals and the sitemap
+ * before DNS cutover, so search metadata is already aligned with the intended
+ * custom domain.
  */
-const site =
-  process.env.PUBLIC_SITE_URL ||
-  process.env.URL ||
-  "http://localhost:4321";
+const site = "https://straightupdigital.co.za";
 
 export default defineConfig({
   site,
@@ -27,9 +23,7 @@ export default defineConfig({
     sitemap({
       filter: (page) =>
         !page.includes("/thank-you") &&
-        !page.includes("/404") &&
-        !page.includes("/privacy") &&
-        !page.includes("/terms"),
+        !page.includes("/404"),
       changefreq: "monthly",
       priority: 0.7,
     }),

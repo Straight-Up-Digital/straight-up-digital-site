@@ -1,10 +1,9 @@
 /**
  * Single source of truth for site-wide copy and owner-supplied details.
  *
- * Nothing in this file should be invented. Empty strings mean "not supplied
- * yet": the UI renders a neutral, clearly non-fictional placeholder and
- * PLACEHOLDERS.md records what the owner must supply. Do not fill these in
- * with example values.
+ * Confirmed public identity and contact information live here so site-wide
+ * components stay consistent. Optional profile links and media remain empty
+ * until supplied; never replace them with invented values.
  */
 
 export const site = {
@@ -23,8 +22,8 @@ export const contact = {
   email: "Hello@straightupdigital.co.za",
   phone: "062 065 3503",
   phoneInternational: "+27 62 065 3503",
-  /** Display-ready address, e.g. "1 Example Street, Cape Town". */
-  address: "",
+  /** Owner-approved public locality; no street address is published. */
+  address: "Port Alfred, Eastern Cape, South Africa",
   /** Business hours, free text. */
   hours: "",
 } as const;
@@ -39,8 +38,8 @@ export const socialProfiles = {
 
 /** Details that only the owner can provide. */
 export const ownerSupplied = {
-  legalEntity: "",
-  informationOfficer: "",
+  legalEntity: "St. John Ritchie trading as Straight Up Digital",
+  informationOfficer: "St. John Ritchie",
   founderName: "St. John Ritchie",
   founderBio: [
     "St. John Ritchie is a South African business development and sales professional with approximately 20 years of experience helping businesses identify opportunities, build relationships and achieve commercial growth.",
@@ -65,13 +64,11 @@ export const analytics = {
   scriptSrc: "",
 } as const;
 
-/** Placeholder keys, used for data attributes and the PLACEHOLDERS checklist. */
+/** Placeholder keys used only for optional details not yet supplied. */
 export const placeholderKeys = {
   email: "business-email",
   phone: "business-phone",
   address: "public-address",
-  legalEntity: "legal-entity",
-  informationOfficer: "information-officer",
   founder: "founder-profile",
   serviceAreas: "service-areas",
   social: "social-profiles",

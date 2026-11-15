@@ -2,9 +2,8 @@
  * The service catalog. Change `status` to move a service between Available,
  * On request and Planned. That single field drives every label on the site.
  *
- * The owner has not confirmed the launch statuses yet (see PLACEHOLDERS.md),
- * so the conservative defaults below are used: one offered service, five
- * scoped on request, one clearly marked as still in development.
+ * The status field drives every public label. Services marked on request are
+ * manually scoped and confirmed before the owner accepts an order.
  */
 
 export type ServiceStatus = "available" | "on-request" | "planned";
@@ -91,10 +90,10 @@ export const services: Service[] = [
       "A hosting tier with its storage and email allowance stated up front",
       "Domain registration and renewal quoted separately by extension",
       "Monthly website updates and backups only with the Managed Care tier",
-      "A written quote while online billing and automated provisioning are prepared",
+      "A written confirmation of availability, payment terms and service start date before an order",
     ],
     note:
-      "On request. FOSSBilling with Paystack is the planned billing and checkout route, but it is not live yet; final availability and domain prices are confirmed before order.",
+      "Select a plan to send a request. The owner confirms availability, recurring payment terms, any domain charges and the start date before accepting an order.",
   },
   {
     slug: "website-improvements-and-on-page-seo",

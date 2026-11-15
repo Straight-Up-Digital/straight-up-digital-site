@@ -1,6 +1,6 @@
 ---
 import { footerNav } from "../data/navigation";
-import { contact, has, placeholderKeys, site } from "../data/site";
+import { contact, ownerSupplied, site } from "../data/site";
 
 const year = new Date().getFullYear();
 ---
@@ -52,28 +52,20 @@ const year = new Date().getFullYear();
       </div>
       <div>
         <h2 class="site-footer__title">Direct details</h2>
-        <div data-placeholder={placeholderKeys.email}>
-          {
-            has(contact.email) ? (
-              <p class="small">
-                <a class="text-link" href={`mailto:${contact.email}`}>{contact.email}</a>
-              </p>
-            ) : (
-              <p class="small">
-                Email and phone will be published here once confirmed. Until
-                then, please use the enquiry form.
-              </p>
-            )
-          }
-        </div>
-        {has(contact.phone) && (
-          <p class="small">
-            <a class="text-link" href={`tel:${contact.phoneInternational.replace(/[^\d+]/g, "")}`}>{contact.phone}</a>
-          </p>
-        )}
-        {has(contact.address) && <p class="site-footer__note">{contact.address}</p>}
+        <p class="small">{ownerSupplied.legalEntity}</p>
+        <p class="small">
+          <a class="text-link" href={`mailto:${contact.email}`}>{contact.email}</a>
+        </p>
+        <p class="small">
+          <a class="text-link" href={`tel:${contact.phoneInternational.replace(/[^\d+]/g, "")}`}>{contact.phoneInternational}</a>
+        </p>
+        <p class="site-footer__note">{contact.address}</p>
       </div>
     </div>
+
+    <p class="site-footer__legal">
+      All digital audits are human-reviewed assessments of publicly visible information. Straight Up Digital does not guarantee search engine rankings, traffic volumes or financial returns. Services are governed by our <a href="/terms">Terms of Use</a> and <a href="/privacy">Privacy Notice</a> under South African law, including POPIA.
+    </p>
 
     <div class="site-footer__bottom">
       <p>© {year} {site.name}. All rights reserved.</p>

@@ -1,31 +1,20 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { contact, ownerSupplied, placeholderKeys } from "../data/site";
+import { contact, ownerSupplied } from "../data/site";
 
 const description =
-  "Draft privacy notice for Straight Up Digital, covering what personal information is collected through the website, why, how long it is kept and how to exercise your rights under POPIA.";
+  "Privacy notice for Straight Up Digital, describing the personal information collected through the website, how it is used, and how to exercise your rights under POPIA.";
 ---
 
 <BaseLayout
   title="Privacy notice"
   description={description}
   canonicalPath="/privacy"
-  noindex
 >
   <section class="legal">
     <div class="container legal__inner">
-      <div class="legal__banner" role="note">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4Z"></path><path d="M12 8v4M12 15v.5"></path></svg>
-        <p>
-          <strong>Draft for review.</strong> This notice has not been approved by a
-          lawyer and is not final. It is published as a working draft so the
-          wording can be reviewed against POPIA before the site collects real
-          enquiries.
-        </p>
-      </div>
-
       <h1>Privacy notice</h1>
-      <p class="legal__meta">Version privacy-draft-2026-11-14 · Last updated 14 November 2026</p>
+      <p class="legal__meta">Version 1.0 · Last updated 15 November 2026</p>
 
       <div class="prose">
         <p>
@@ -37,17 +26,10 @@ const description =
 
         <h2>1. Who is responsible</h2>
         <p>
-          <strong>Straight Up Digital</strong> is the public trading identity.
-          The owner has described the business structure as a sole proprietorship
-          being established through Capitec. The proprietor's full legal name and
-          a public service address have not yet been confirmed; this notice does
-          not claim a registered company or a company registration number.
+          <strong>{ownerSupplied.legalEntity}</strong> operates from
+          Port Alfred, Eastern Cape, South Africa. Straight Up Digital is not
+          described here as a registered company.
         </p>
-        <div class="placeholder-note" data-placeholder={placeholderKeys.legalEntity}>
-          <strong>Owner to confirm:</strong> the proprietor's full legal name and
-          the contact or service address to publish. No company registration
-          number or registered address has been supplied.
-        </div>
         <p>
           Privacy questions and requests can be sent to{" "}
           <a href={`mailto:${contact.email}`}>{contact.email}</a> or through the{" "}
@@ -100,8 +82,8 @@ const description =
             accessible to anyone who has its private link, is marked not to be
             indexed by search engines and stops working after 30 days. Expired
             records are removed by the daily cleanup job.
-            Initial audit requests use Netlify Forms; the owner must confirm its
-            email notification settings separately.
+            Initial audit requests and contact enquiries use Netlify Forms, with
+            submission notices delivered to the business email address.
           </li>
           <li>
             <strong>Zoho Mail</strong> — when the report-response feature is enabled,
@@ -131,24 +113,17 @@ const description =
           response is sent to the business by email and is not stored in the
           website's report store. Enquiries and email records are kept only as long
           as needed to respond, deliver agreed work and meet record-keeping
-          obligations; a fixed retention period has not been approved yet.
+          obligations. We review these records and delete or anonymise them when
+          they are no longer needed, unless a legal or accounting obligation
+          requires continued retention.
         </p>
-        <div class="placeholder-note">
-          <strong>Owner to confirm:</strong> the retention period for enquiries,
-          quotes and client records, and how records are deleted.
-        </div>
 
         <h2>6. Cookies and analytics</h2>
         <p>
-          This site does not set advertising or tracking cookies. Analytics is
-          switched off until a privacy-friendly tool is chosen and approved. If
-          analytics is enabled later, this notice will say which tool is used and
-          the site will ask for consent where the law requires it.
+          This site does not set advertising or tracking cookies and does not use
+          analytics. If that changes, this notice will be updated and consent will
+          be requested where required by law.
         </p>
-        <div class="placeholder-note" data-placeholder={placeholderKeys.analytics}>
-          <strong>Owner to confirm:</strong> the analytics tool (or a decision to
-          use none) and the cookie notice wording.
-        </div>
 
         <h2>7. Your rights</h2>
         <p>Under POPIA you may ask to:</p>
@@ -191,18 +166,10 @@ const description =
         <p>
           For any privacy question, email{" "}
           <a href={`mailto:${contact.email}`}>{contact.email}</a> or use the{" "}
-          <a href="/contact">enquiry form</a> and mark the message “Privacy”. The
-          Information Officer's name and direct details remain to be confirmed.
+          <a href="/contact">enquiry form</a> and mark the message “Privacy”.
+          {ownerSupplied.informationOfficer} is the business's privacy contact.
         </p>
-        <div class="placeholder-note" data-placeholder={placeholderKeys.informationOfficer}>
-          <strong>Owner to supply:</strong> the Information Officer’s name and
-          contact details, as required by POPIA.
-        </div>
-        {
-          ownerSupplied.informationOfficer && (
-            <p>Information Officer: {ownerSupplied.informationOfficer}</p>
-          )
-        }
+        <p>Business location: {contact.address}. Contact: <a href={`mailto:${contact.email}`}>{contact.email}</a>.</p>
       </div>
     </div>
   </section>

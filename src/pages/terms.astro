@@ -1,30 +1,20 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { contact } from "../data/site";
+import { contact, ownerSupplied } from "../data/site";
 
 const description =
-  "Draft terms of use for the Straight Up Digital website: what the site is for, the limits of the information published, intellectual property and liability.";
+  "Terms of use for the Straight Up Digital website, including service information, audit limitations, intellectual property and liability.";
 ---
 
 <BaseLayout
   title="Terms of use"
   description={description}
   canonicalPath="/terms"
-  noindex
 >
   <section class="legal">
     <div class="container legal__inner">
-      <div class="legal__banner" role="note">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4Z"></path><path d="M12 8v4M12 15v.5"></path></svg>
-        <p>
-          <strong>Draft for review.</strong> These terms are a working draft and
-          have not been approved by a lawyer. The legal entity details, liability
-          wording and governing-law clause must be confirmed before launch.
-        </p>
-      </div>
-
       <h1>Terms of use</h1>
-      <p class="legal__meta">Version terms-draft-2026-11-14 · Last updated 14 November 2026</p>
+      <p class="legal__meta">Version 1.0 · Last updated 15 November 2026</p>
 
       <div class="prose">
         <p>
@@ -34,12 +24,9 @@ const description =
 
         <h2>1. Who we are</h2>
         <p>
-          This website is operated under the public trading identity{" "}
-          <strong>Straight Up Digital</strong>. The owner has described the
-          business structure as a sole proprietorship being established through
-          Capitec. The proprietor's full legal name and public service address
-          still need confirmation. This website does not represent Straight Up
-          Digital as a registered company.
+          This website is operated by <strong>{ownerSupplied.legalEntity}</strong>.
+          The business operates from {contact.address}. Straight Up Digital is a
+          trading name and is not represented as a registered company.
         </p>
 
         <h2>2. What this website is for</h2>
@@ -58,10 +45,12 @@ const description =
 
         <h2>4. No guarantee of results</h2>
         <p>
-          The audit is directional. It does not measure traffic, search volume,
-          revenue or conversions, and it does not guarantee rankings, enquiries or
-          sales. Search results change for reasons outside anyone’s control. Any
-          example on this site is labelled as an example and is not client data.
+          Digital audits are human-reviewed analytical assessments based on
+          publicly visible information. They do not measure private analytics,
+          guarantee search rankings, traffic volumes or financial returns, and
+          are not a promise of a particular business outcome. Search results and
+          third-party information can change. Examples are labelled and are not
+          client data.
         </p>
 
         <h2>5. Enquiries and quotes</h2>
@@ -101,11 +90,6 @@ const description =
           site we link to, or by the site being temporarily unavailable. Nothing in
           these terms limits liability that cannot lawfully be limited.
         </p>
-        <div class="placeholder-note">
-          <strong>Lawyer to confirm:</strong> the liability wording and any
-          consumer-protection limits that apply.
-        </div>
-
         <h2>10. Privacy</h2>
         <p>
           Personal information is handled as described in the{" "}
@@ -114,14 +98,9 @@ const description =
 
         <h2>11. Governing law</h2>
         <p>
-          These terms are intended to be governed by South African law. This
-          depends on the final legal entity and must be confirmed with the lawyer
-          reviewing this draft.
+          These terms are governed by the laws of South Africa. Any dispute will
+          be dealt with by a court with jurisdiction under South African law.
         </p>
-        <div class="placeholder-note">
-          <strong>Owner and lawyer to confirm:</strong> the legal entity, the
-          jurisdiction and the dispute-resolution route.
-        </div>
 
         <h2>12. Changes</h2>
         <p>
@@ -136,6 +115,7 @@ const description =
           <a href={`mailto:${contact.email}`}>{contact.email}</a> or through the{" "}
           <a href="/contact">enquiry form</a>.
         </p>
+        <p>Business location: {contact.address}. Contact: <a href={`mailto:${contact.email}`}>{contact.email}</a>.</p>
       </div>
     </div>
   </section>

@@ -10,7 +10,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",
-    "test": "node --test tests/enquiry.test.mjs tests/function.test.mjs tests/client-report.test.mjs",
+    "test": "node --test tests/enquiry.test.mjs tests/function.test.mjs tests/client-report.test.mjs tests/site-content.test.mjs",
     "netlify:dev": "netlify dev",
     "test:links": "node scripts/check-links.mjs"
   },
