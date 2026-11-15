@@ -8,9 +8,9 @@ The published report opens as a branded webpage. It describes each finding as **
 
 On the report page, the client may say they want to discuss the fixes, request a meeting, or ask a question. Their name, email, selected next step, optional meeting preference, message and consent timestamp are sent to `straightupdigital@zohomail.com`. This response is not a purchase or binding acceptance. The full audit is not attached to the owner notification; the owner already has it in the local CRM. Reports use unguessable bearer links, are marked noindex/no-store, stop working after 30 days and are deleted by the daily cleanup function after expiry.
 
-## Configuration required before the report feature can go live
+## Production configuration and verified status
 
-The website feature is **disabled by default** and fails closed. Set the following as production-context Netlify environment variables with **Functions** scope. Do not put real values in `netlify.toml`, Git, email, or chat.
+The report feature is **disabled by default** and fails closed. Production is enabled and passed a synthetic end-to-end report/response test on 15 November 2026. Set the following as Netlify environment variables in the production deploy context. Choose the narrowest available scope; do not put real values in `netlify.toml`, Git, email, or chat.
 
 ```text
 AUDIT_REPORTS_ENABLED=true
@@ -25,13 +25,15 @@ ZOHO_SMTP_USERNAME=straightupdigital@zohomail.com
 ZOHO_SMTP_PASSWORD=<Zoho app-specific password>
 ```
 
+Netlify's `Builds, Functions, Runtime` scope is not browser-readable, but it makes secrets accessible to code in those contexts. Prefer Production-only deploy contexts and the narrowest available scopes; avoid Deploy Preview values unless required. Some account plans may not offer a Function-only scope, so review the actual selector before saving. The production smoke test used fictional business data and a reserved `.invalid` email address, not client data.
+
 Generate a token locally with `python -c "import secrets; print(secrets.token_urlsafe(48))"`. Put the same value in Netlify's `AUDIT_REPORT_PUBLISH_TOKEN` and the ignored local `business_auditor/.env` file. In that private `.env`, set `AUDIT_REPORT_PUBLISH_URL=https://straight-up-digital-site.netlify.app/.netlify/functions/publish-audit-report`. Never commit `.env`. If Zoho displays different SMTP details in its account-specific Server Configurations page, use those values; with two-factor authentication, Zoho may require an app-specific password.
 
 After changing Netlify environment variables, trigger a new production deployment so the Function runtime receives the values. The existing GitHub Actions build-hook workflow is the deployment path; no paid plan change is needed. Netlify Functions and Blobs consume the account's included usage credits, so monitor usage; the Free plan can pause usage at its hard limit.
 
 ## Separate initial-request email setting
 
-The public audit request form currently uses **Netlify Forms**, which is separate from the Zoho Function that handles customer report responses. In Netlify Forms, change the existing notification recipient from `Hello@straightupdigital.co.za` to `straightupdigital@zohomail.com`, confirm the new notification from that inbox, and test the initial audit request. Do not assume that configuring Zoho SMTP changes Netlify Forms notifications.
+The public audit request form currently uses **Netlify Forms**, which is separate from the Zoho Function that handles customer report responses. The existing Forms notification is still addressed to `Hello@straightupdigital.co.za` and is awaiting recipient confirmation. The synthetic test verified the report-response SMTP path only; it does not verify Netlify Forms email delivery. Change the Forms recipient to `straightupdigital@zohomail.com`, confirm it from that inbox, and test the initial audit request. Do not assume that configuring Zoho SMTP changes Netlify Forms notifications.
 
 ## Owner operating checklist
 
