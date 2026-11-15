@@ -18,6 +18,7 @@ const footer = read("../src/components/SiteFooter.astro");
 const astro = read("../astro.config.mjs");
 const paystack = read("../docs/paystack-setup.md");
 const faqs = read("../src/data/faqs.ts");
+const digitalAudit = read("../src/pages/digital-audit.astro");
 
 test("public business identity and locality are owner-supplied", () => {
   assert.match(siteData, /St\. John Ritchie trading as Straight Up Digital/);
@@ -83,4 +84,7 @@ test("public FAQs describe live reviewed online reports and the owner-approved l
   assert.doesNotMatch(faqs, /when the online report service is enabled|Service areas are not published yet/);
   assert.match(faqs, /based in Port Alfred, Eastern Cape, South Africa/);
   assert.match(faqs, /How do I request a hosting plan/);
+  assert.match(digitalAudit, /After review, we\s+share a private online report/);
+  assert.match(digitalAudit, /link expires after 30 days/);
+  assert.doesNotMatch(digitalAudit, /when the secure report service is enabled|Otherwise, we follow up directly/);
 });

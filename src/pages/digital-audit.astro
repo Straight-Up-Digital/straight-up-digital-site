@@ -8,7 +8,7 @@ import { auditFaqs } from "../data/faqs";
 import { contact, has } from "../data/site";
 
 const description =
-  "Request an owner-run digital presence review. When the secure report service is enabled, receive a private online report explaining what was found, why it matters, and what to fix.";
+  "Request an owner-run digital presence review and receive a private online report explaining what was found, why it matters, and what to fix.";
 
 const faqJsonLd = {
   "@context": "https://schema.org",
@@ -26,14 +26,14 @@ const serviceJsonLd = {
   name: "Digital presence audit",
   serviceType: "Digital presence audit",
   description:
-    "An owner-run review of public digital evidence. When the secure report service is enabled, the customer receives a private online report explaining observed issues, their customer impact and practical fixes.",
+    "An owner-run review of public digital evidence. After review, the customer receives a private online report explaining observed issues, their customer impact and practical fixes.",
   provider: { "@type": "Organization", name: "Straight Up Digital" },
 };
 
 const receive = [
   {
     title: "A private online report",
-    body: "When the secure report service is enabled, open your reviewed findings in a browser from a private link. No PDF download or account is needed.",
+    body: "Open your reviewed findings in a browser using a private link. No PDF download or account is needed. The link expires after 30 days.",
   },
   {
     title: "What was actually found",
@@ -73,11 +73,10 @@ const receive = [
         </div>
       </div>
       <p class="page-hero__lede">
-        Business Auditor is Straight Up Digital's flagship product. A person checks
-        the business details and runs the full audit privately. When the secure
-        report service is enabled, we share a private online report explaining the
-        real findings, why they matter and what to fix. Otherwise, we contact you
-        directly to arrange delivery. This website does not run instant audits.
+          Business Auditor is Straight Up Digital's flagship product. A person checks
+          the business details and runs the full audit privately. After review, we
+          share a private online report explaining the real findings, why they matter
+          and what to fix. This website does not run instant audits.
       </p>
     </div>
   </section>
@@ -217,8 +216,8 @@ const receive = [
           </h2>
         </div>
         <p class="lede">
-          When the secure report service is enabled, open the report on the website
-          and choose a next step. Otherwise, we follow up directly by email.
+          Once a person has run and reviewed your audit, open the private report on
+          our website and choose a next step.
         </p>
       </div>
 
