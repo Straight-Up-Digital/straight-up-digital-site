@@ -19,6 +19,7 @@ const astro = read("../astro.config.mjs");
 const paystack = read("../docs/paystack-setup.md");
 const faqs = read("../src/data/faqs.ts");
 const digitalAudit = read("../src/pages/digital-audit.astro");
+const footerNavigation = read("../src/data/navigation.ts");
 
 test("public business identity and locality are owner-supplied", () => {
   assert.match(siteData, /St\. John Ritchie trading as Straight Up Digital/);
@@ -28,6 +29,15 @@ test("public business identity and locality are owner-supplied", () => {
   assert.match(footer, /ownerSupplied\.legalEntity/);
   assert.match(footer, /South African law, including POPIA/);
   assert.doesNotMatch(`${privacy}\n${terms}`, /Draft for review|Owner to confirm|placeholder-note|privacy-draft|terms-draft/);
+});
+
+test("footer has a single navigation destination for legal and audit pages", () => {
+  const footerNavData = footerNavigation.split("export const footerNav:")[1].split("export const isCurrent")[0];
+  for (const [path, label] of [["/privacy", "Privacy"], ["/terms", "Terms"], ["/digital-audit", "Digital audit"]]) {
+    assert.equal((footerNavData.match(new RegExp(`href: \"${path}\"`, "g")) ?? []).length, 1, `${label} should be listed once`);
+  }
+  assert.doesNotMatch(footer, /site-footer__bottom[\s\S]*<ul>/);
+  assert.doesNotMatch(footer, /href=\"\/(?:privacy|terms|digital-audit)\"/);
 });
 
 test("each hosting plan has an exact request CTA and reaches the contact form with its plan slug", () => {
