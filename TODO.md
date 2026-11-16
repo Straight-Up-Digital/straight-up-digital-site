@@ -23,10 +23,21 @@
 
 - [ ] **Publish the footer de-duplication fix:** Commit `763c535` is on GitHub, but Netlify skipped its deploy because production credits were exhausted. The live site remains at `eaeb305`. Wait for the next billing cycle or obtain explicit approval for a paid plan upgrade, then rerun and verify production. No upgrade was made.
 
-
 ## Private local-CRM enquiry bridge (15 November 2026)
 
 - [x] **Push authenticated CRM intake source:** Website source now stores emailed enquiries in a private Netlify Blob queue and exposes only a token-authenticated, production-only read/ack endpoint. The changed functions were bundled locally and the source was pushed to GitHub; the production site has not yet received the change.
 - [x] **Configure the private sync token:** `CRM_ENQUIRY_SYNC_TOKEN` is stored as a secret in Netlify's Production context and in the ignored local CRM `.env`. Netlify verifies the secret is scoped to Builds, Functions, and Runtime, with no value in preview, branch, or local-development contexts. Never put the token in Git or chat.
 - [ ] **Deploy and test the private intake:** Netlify currently reports production deploys paused due to operational credits. Once deploys resume, verify the production endpoint, use the CRM's owner-clicked sync with one synthetic enquiry, confirm exactly one local import and remote acknowledgement, and verify Zoho email delivery remains unchanged.
 - [ ] **Test explicit report revocation:** After deployment, verify owner-authenticated `DELETE` revokes a synthetic report link and rejects wrong tokens, unapproved URLs, and deploy previews.
+
+## Approved Cloudflare Workers migration (16 November 2026)
+
+- [x] **Worker static asset routing:** The existing Astro site builds to Worker static assets. API/report paths are intercepted; ordinary site pages and assets fall through. Canonicals, metadata, page content, and the Netlify implementation remain unchanged.
+- [x] **Contact and audit submission port (code):** Worker routes preserve the existing input formats and validation, 32 KB request limit, honeypot/timing acknowledgements, optional Turnstile check, response contracts, Zoho mail adapter, and private intake after successful delivery. Synthetic route and SMTP-protocol tests pass; real Zoho delivery has not been tested on Cloudflare.
+- [x] **Owner report publish/revoke port (code):** Includes method restrictions, bearer authentication, environment gates, customer-safe normalization, unguessable tokens, hashed D1 keys, expiry, and allowlisted revocation. Synthetic authorization, validation, and revocation tests pass.
+- [x] **Client report and response port (code):** Includes private report rendering, escaped findings, no-index/no-store protections, expiry and response-consent checks, non-binding next-step choices, and owner email composition. Synthetic tests pass; a live email has not been sent.
+- [x] **Private CRM sync endpoint (code):** Includes production gate, token authentication, private responses, stable 100-record pagination, and bounded acknowledgement. The local CRM now has an exact `workers.dev` host opt-in with separate Cloudflare URL/token settings; Netlify settings remain the defaults. Mocked client-compatibility tests pass.
+- [x] **Expiry job and local D1 schema:** Added the 02:15 UTC cleanup trigger and separate migration bindings. The local D1 migration applied successfully; no remote database has been created or populated.
+- [x] **Local verification:** 50 website tests passed; Astro check had 0 errors/warnings; Worker type-check, Astro build, Wrangler dry-run, and local D1 migration passed. The CRM's full Python suite passed (73 tests, 10 subtests), including six isolated platform-allowlist tests. No production client data or provider credentials were used.
+- [ ] **Isolated Cloudflare deployment and real mail test:** Create/test the Cloudflare Worker and separate D1 resources, replace placeholder database IDs, configure test-only secrets, then verify real delivery to `straightupdigital@zohomail.com` from a verified sender. Do not enable customer report publishing in production until these checks pass.
+- [ ] **Domain cutover:** Netlify remains live. No Cloudflare production deployment, branded-domain DNS change, data migration, paid upgrade, or Netlify shutdown has happened. Test on the isolated Worker URL first; any DNS cutover requires a separate owner approval.

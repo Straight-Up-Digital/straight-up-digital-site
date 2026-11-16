@@ -10,7 +10,11 @@
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",
-    "test": "node --test tests/enquiry.test.mjs tests/function.test.mjs tests/client-report.test.mjs tests/site-content.test.mjs",
+    "build:cloudflare": "node scripts/build-cloudflare.mjs",
+    "worker:dev": "npm run build:cloudflare && wrangler dev",
+    "worker:dry-run": "npm run build:cloudflare && wrangler deploy --dry-run --env test",
+    "check:worker": "tsc --project tsconfig.cloudflare.json --noEmit",
+    "test": "node --test tests/enquiry.test.mjs tests/function.test.mjs tests/client-report.test.mjs tests/site-content.test.mjs tests/cloudflare-worker.test.mjs",
     "netlify:dev": "netlify dev",
     "test:links": "node scripts/check-links.mjs"
   },
@@ -24,10 +28,12 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.12",
+    "@cloudflare/workers-types": "^5.20261116.1",
     "@netlify/functions": "^6.1.1",
     "@types/nodemailer": "^8.0.2",
     "netlify-cli": "^27.17.0",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "wrangler": "^4.163.0"
   },
   "engines": {
     "node": ">=22"

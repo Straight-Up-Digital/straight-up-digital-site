@@ -1,0 +1,79 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "straight-up-digital-migration",
+  "main": "./cloudflare/worker.ts",
+  "compatibility_date": "2026-11-16",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": true,
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "not_found_handling": "404-page",
+    "run_worker_first": ["/api/*", "/.netlify/functions/*", "/report/*"]
+  },
+  "vars": {
+    "APP_ENV": "development",
+    "EMAIL_PROVIDER": "console",
+    "ENQUIRY_TO_EMAIL": "straightupdigital@zohomail.com",
+    "ENQUIRY_FROM_EMAIL": "straightupdigital@zohomail.com",
+    "ZOHO_SMTP_HOST": "smtp.zoho.com",
+    "ZOHO_SMTP_PORT": "465",
+    "AUDIT_REPORTS_ENABLED": "false",
+    "PUBLIC_REPORT_HOSTS": "straight-up-digital-site.netlify.app,straightupdigital.co.za,www.straightupdigital.co.za"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "straight-up-digital-local",
+      "database_id": "00000000-0000-4000-8000-000000000001",
+      "migrations_dir": "cloudflare/migrations"
+    }
+  ],
+  "triggers": { "crons": ["15 2 * * *"] },
+  "env": {
+    "test": {
+      "name": "straight-up-digital-migration-test",
+      "vars": {
+        "APP_ENV": "test",
+        "EMAIL_PROVIDER": "console",
+        "ENQUIRY_TO_EMAIL": "straightupdigital@zohomail.com",
+        "ENQUIRY_FROM_EMAIL": "straightupdigital@zohomail.com",
+        "ZOHO_SMTP_HOST": "smtp.zoho.com",
+        "ZOHO_SMTP_PORT": "465",
+        "AUDIT_REPORTS_ENABLED": "false",
+        "PUBLIC_REPORT_HOSTS": "straight-up-digital-site.netlify.app,straightupdigital.co.za,www.straightupdigital.co.za"
+      },
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "straight-up-digital-migration-test",
+          "database_id": "00000000-0000-4000-8000-000000000002",
+          "migrations_dir": "cloudflare/migrations"
+        }
+      ],
+      "triggers": { "crons": [] }
+    },
+    "production": {
+      "name": "straight-up-digital-cloudflare",
+      "vars": {
+        "APP_ENV": "production",
+        "EMAIL_PROVIDER": "zoho-smtp",
+        "ENQUIRY_TO_EMAIL": "straightupdigital@zohomail.com",
+        "ENQUIRY_FROM_EMAIL": "straightupdigital@zohomail.com",
+        "ZOHO_SMTP_HOST": "smtp.zoho.com",
+        "ZOHO_SMTP_PORT": "465",
+        "AUDIT_REPORTS_ENABLED": "false",
+        "PUBLIC_REPORT_HOSTS": "straightupdigital.co.za,www.straightupdigital.co.za"
+      },
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "straight-up-digital-production",
+          "database_id": "00000000-0000-4000-8000-000000000003",
+          "migrations_dir": "cloudflare/migrations"
+        }
+      ],
+      "triggers": { "crons": ["15 2 * * *"] }
+    }
+  }
+}

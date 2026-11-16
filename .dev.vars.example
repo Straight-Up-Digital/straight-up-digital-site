@@ -1,0 +1,7 @@
+# Copy this file to .dev.vars only for local Wrangler testing. Never commit real values.
+# This local-only salt is not a production secret.
+RATE_LIMIT_HASH_SECRET=local-development-only-change-me
+# Local tests use the console provider; they do not send mail.
+EMAIL_PROVIDER=console
+AUDIT_REPORTS_ENABLED=false
+# Leave production-only secrets unset in local development.
