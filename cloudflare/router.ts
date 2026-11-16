@@ -1,4 +1,4 @@
-import { D1DataStore } from "./storage.ts";
+import { FirestoreDataStore } from "./storage.ts";
 import { handleSubmitEnquiry, handleClientReport } from "./public-routes.ts";
 import { handleCrmEnquiries, handlePublishReport } from "./private-routes.ts";
 import { sendEnquiryEmail, sendReportResponseEmail } from "./email.ts";
@@ -6,7 +6,7 @@ import type { CloudflareWorkerEnv, SocketConnect, WorkerExecutionContext } from 
 
 export async function handleWorkerRequest(request: Request, env: CloudflareWorkerEnv, _ctx?: WorkerExecutionContext, socketConnect?: SocketConnect): Promise<Response> {
   const url = new URL(request.url);
-  const store = new D1DataStore(env.DB);
+  const store = new FirestoreDataStore(env);
   const publicDeps = {
     store,
     sendEnquiryEmail: (enquiry: Parameters<typeof sendEnquiryEmail>[0], mailEnv: CloudflareWorkerEnv) => sendEnquiryEmail(enquiry, mailEnv, socketConnect),

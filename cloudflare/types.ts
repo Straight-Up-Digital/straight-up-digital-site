@@ -1,15 +1,6 @@
 import type { CleanEnquiry } from "../netlify/lib/validation.mts";
 import type { CustomerReport } from "../netlify/lib/client-report.mts";
 
-export interface D1Meta { changes?: number }
-export interface D1Result<T = unknown> { success?: boolean; results?: T[]; meta?: D1Meta }
-export interface D1Statement {
-  bind(...values: unknown[]): D1Statement;
-  first<T = Record<string, unknown>>(columnName?: string): Promise<T | null>;
-  all<T = Record<string, unknown>>(): Promise<D1Result<T>>;
-  run<T = unknown>(): Promise<D1Result<T>>;
-}
-export interface D1DatabaseLike { prepare(query: string): D1Statement }
 export interface StaticAssetBinding { fetch(request: Request): Promise<Response> }
 export interface TcpSocketLike {
   readable: ReadableStream<Uint8Array>;
@@ -32,8 +23,9 @@ export interface StoredEnquiry { id: string; receivedAt: string; fields: IntakeF
 export interface StoredReport { report: CustomerReport; expiresAt: string }
 
 export interface CloudflareWorkerEnv {
-  DB: D1DatabaseLike;
   ASSETS: StaticAssetBinding;
+  FIRESTORE_PROJECT_ID?: string;
+  GOOGLE_FIRESTORE_SERVICE_ACCOUNT_JSON?: string;
   APP_ENV?: string;
   PUBLIC_REPORT_HOSTS?: string;
   EMAIL_PROVIDER?: string;
