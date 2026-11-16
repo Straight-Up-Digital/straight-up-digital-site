@@ -1,42 +1,55 @@
 # South African Firestore setup for Straight Up Digital
 
-## Selected storage design
+## Selected storage design and current status
 
-The Cloudflare Worker now uses the Firestore REST API for enquiry records, private customer reports, and rate-limit buckets. The intended database location is **`africa-south1` (Johannesburg, South Africa)**. The Worker uses the default Firestore database and sends no personal data to Cloudflare D1. Test and production should use separate Google Cloud projects, each with its own default Firestore database, so synthetic test records cannot mix with client records.
+The Cloudflare Worker code uses the Firestore REST API for enquiry records, private customer reports, and rate-limit buckets. Firestore is the intended persistent data store; the application has no D1 binding. The test project has been created as `straight-up-digital-test` on Firebase's Spark plan, which the Console showed as no cost ($0/month). Its first/default database is Standard edition, in **`africa-south1` (Johannesburg)**, with production-mode client rules and no scheduled backups. The database is empty. The project's `FIRESTORE_PROJECT_ID` is now set in the Wrangler `test` environment.
 
-This is a technical data-location choice, not a legal certification or a claim that every part of request processing remains in South Africa. Cloudflare receives and processes form requests at the Worker edge, and Zoho receives the notification emails. Confirm the applicable operator agreements, processing locations, and privacy notice before production cutover.
+The separate production project and database have **not** been created. The production `FIRESTORE_PROJECT_ID` remains blank. No service accounts, service-account keys, Worker secrets, or production data have been created or configured. The test Worker remains unrouted from `workers.dev`, and the Firestore-backed Worker code has not yet been deployed.
+
+This is a technical data-location choice, not a legal certification or a claim that every part of request processing remains in South Africa. Cloudflare receives and processes live form requests at the Worker edge, and Zoho receives notification emails. Confirm the applicable operator agreements, processing locations, and privacy notice before production cutover.
 
 ## No-cost guardrails
 
-Google documents a Firestore free quota of 1 GiB stored data, 50,000 document reads/day, 20,000 writes/day, 20,000 deletes/day, and 10 GiB/month outbound data. **Exactly one database per Google Cloud project** qualifies for that free quota. Firestore TTL deletes, point-in-time recovery, backups, restores, and clones are not in the free quota and require billing. This implementation uses the Worker’s scheduled cleanup rather than Firestore TTL and does not enable backups, PITR, or other paid features.
+Google documents a Firestore free quota of 1 GiB stored data, 50,000 document reads/day, 20,000 writes/day, 20,000 deletes/day, and 10 GiB/month outbound data. **Exactly one database per Google Cloud project** qualifies for that free quota. Firestore TTL deletes, point-in-time recovery, backups, restores, and clones are not in the free quota and require billing. The test project is on Spark, scheduled backups are disabled, and this implementation uses the Worker's scheduled cleanup instead of Firestore TTL.
 
-Do not enable a billing account or select a paid plan for this setup. If Google’s console blocks creation or enabling an API unless billing is activated, stop and ask before changing billing. Keep usage below the documented free quotas; Google may change its terms, and no-cost use is not guaranteed beyond those current published limits.
+Do not enable a billing account or select a paid plan for this setup. The test project currently has no billing plan attached. If Google blocks production project/database creation or an API enablement unless billing is activated, stop and ask before changing billing. Keep usage below the published free quotas; if limits are exceeded without billing, requests may stop working. Google may change its terms, and no-cost use is not guaranteed beyond current limits.
 
-## Create each database carefully
+## Database configuration
 
-Firestore database location cannot be changed after creation. Google also notes the default database’s location can be fixed indirectly by an earlier App Engine or related default-resource setup. Use a **new project dedicated to this application/environment**, check that no default-resource location has already been set, and create Firestore as the first location-sensitive resource. Choose:
+Firestore database location cannot be changed after creation. Google also notes the default database's location can be fixed indirectly by an earlier App Engine or related default-resource setup. Use a dedicated project and create Firestore as the first location-sensitive resource. The verified test database settings are:
 
-- **Edition:** Standard
-- **Database ID:** `(default)`
-- **Location:** `africa-south1` (Johannesburg)
-- **Security rules:** production mode (the Worker uses server-side IAM, not public client access)
+| Setting | Test database |
+|---|---|
+| Project ID | `straight-up-digital-test` |
+| Billing | Spark; no billing account ($0/month shown in Console) |
+| Edition | Standard |
+| Database ID | `(default)` |
+| Location | `africa-south1` (Johannesburg) |
+| Client security rules | Production mode; denies client SDK reads/writes |
+| Scheduled backups | Disabled; Google says Blaze/pay-as-you-go is required |
+| Data | Empty; no client records have been inserted |
 
-Repeat in a separate project for test and production. Before continuing, verify the created database shows `africa-south1` in the console. Never create it in `eur3`, `WEUR`, or another region and assume it can later be moved.
+The production project and database still need to be created separately with Standard edition, `(default)`, `africa-south1`, production-mode rules, and backups off. Verify the selected region before final creation; never create a database in `eur3`, `WEUR`, or another region and assume it can later be moved. The old Cloudflare D1 test database was verified empty and deleted.
 
-## Create a service account for the Worker
+## Worker service-account access (not configured yet)
 
-After the database exists, create a service account in that project and grant only the project-scoped `roles/datastore.user` role for application read/write access. Do not grant Owner or Editor. Generate a JSON key only if no keyless federation option is configured; keep it private and rotate/revoke it if exposed. The Worker uses the Firestore datastore OAuth scope and sends all Firestore requests server-to-server.
+The Worker accesses Firestore server-to-server via the datastore OAuth scope and IAM. Firestore client security rules do not replace server IAM access control. The current Worker adapter expects a service-account JSON secret; it does not yet implement a keyless federation flow. No service account or key has been created. Obtain explicit owner approval before creating a long-lived key or placing it in Cloudflare secrets.
+
+After separate approval, use a dedicated service account per project and grant only the project-scoped `roles/datastore.user` role; do not grant Owner or Editor. Keep test and production credentials separate. If a key is authorized, generate only the minimum required service-account key and revoke/rotate it if exposed. Never put it in Git, a public `.env`, a website bundle, or chat.
 
 Configure these values separately for each Cloudflare Worker environment:
 
 | Setting | Type | Purpose |
 |---|---|---|
-| `FIRESTORE_PROJECT_ID` | non-secret environment variable | The exact Google Cloud project ID for that environment |
-| `GOOGLE_FIRESTORE_SERVICE_ACCOUNT_JSON` | Worker secret | The service account JSON key; never put it in Git, a public `.env`, a website bundle, or chat |
+| `FIRESTORE_PROJECT_ID` | Non-secret environment variable | Exact Google Cloud project ID for that environment; test is set, production remains blank until its project exists |
+| `GOOGLE_FIRESTORE_SERVICE_ACCOUNT_JSON` | Worker secret | Service-account JSON key; not configured |
+| `RATE_LIMIT_HASH_SECRET` | Worker secret | Salt for hashed rate-limit identifiers |
+| `CRM_ENQUIRY_SYNC_TOKEN` | Worker secret | Authenticates the local CRM sync endpoint |
+| `AUDIT_REPORT_PUBLISH_TOKEN` | Worker secret | Authenticates owner report publication/revocation |
+| `TURNSTILE_SECRET_KEY` | Worker secret | Optional form bot-verification secret, if enabled |
+| `ZOHO_SMTP_PASSWORD` | Worker secret | Zoho SMTP app password; not configured for Cloudflare |
 
-Set the secret using Cloudflare’s Worker secret settings or the authenticated Wrangler secret command. Keep it separate between test and production. The project ID is intentionally blank in `wrangler.jsonc` until the owner creates the Google projects. The local test suite mocks Google’s API and does not need credentials.
-
-The service account is used only by the Worker; Firestore client security rules are not a substitute for keeping this key private. Do not expose the credential to the browser. Keep `AUDIT_REPORTS_ENABLED=false` until the owner-only publication route, authentication secrets, privacy notice, and real email test have all been checked.
+The local test suite mocks Google's API and does not need credentials. Keep all secret values out of Git and chat. Keep `AUDIT_REPORTS_ENABLED=false` until the owner-only publication route, authentication secrets, privacy notice, and real email test have all been checked.
 
 ## Collections and retention
 
@@ -48,17 +61,18 @@ The Worker stores:
 
 The scheduled Worker cleanup deletes up to 450 expired report or rate-limit documents per run. Expired reports are rejected by the public route based on their expiry even if cleanup is delayed. Enquiry records are removed through the authenticated CRM acknowledgement/delete workflow; the database cleanup does not delete corresponding Zoho mailbox messages. Configure mailbox retention and erasure separately.
 
-No production client data is copied from Netlify or the old test database by this migration. The prior Cloudflare D1 test database is not bound to the application; it was used only for synthetic development checks.
+No production client data is copied from Netlify or the old D1 test database. The new Firestore test database is currently empty.
 
 ## POPIA and production cutover checks
 
 A South African Firestore region addresses storage location for the Firestore database, but does not by itself settle POPIA compliance or cross-border processing. Before cutover:
 
-1. Confirm Cloudflare’s and Google’s processing/operator terms for this exact use and region.
-2. Verify the Zoho account’s data centre and email-retention behavior; the mailbox address alone does not prove its data location.
-3. Update the public privacy notice to name the actual deployed providers, purposes, retention, deletion/opt-out route, and any cross-border processing that applies.
-4. Test a synthetic enquiry, owner CRM sync and acknowledgement, report expiry/revocation, and email delivery before receiving real client data.
-5. Keep the test Worker’s `workers.dev` route disabled and do not change DNS or the live Netlify site without separate owner approval.
+1. Create and verify the separate production database in `africa-south1`, without enabling billing.
+2. Confirm Cloudflare's and Google's processing/operator terms for this exact use and region.
+3. Verify the Zoho account's data centre and email-retention behavior; the mailbox address alone does not prove its data location.
+4. Update the public privacy notice to name the actual deployed providers, purposes, retention, deletion/opt-out route, and any cross-border processing that applies.
+5. Obtain explicit authorization before creating service-account keys and configuring Cloudflare secrets; then deploy only to the unrouted test Worker and run synthetic enquiry, CRM sync/acknowledgement, report expiry/revocation, and email checks.
+6. Keep the test Worker's `workers.dev` route disabled and do not change DNS or the live Netlify site without separate owner approval.
 
 This checklist is an implementation aid, not legal advice. A South African privacy professional should review the final data flow and notices if a formal POPIA assessment is required.
 
