@@ -42,6 +42,8 @@
     },
     "production": {
       "name": "straight-up-digital-cloudflare",
+      // Turn this off once the custom domain is live.
+      "workers_dev": true,
       "vars": {
         "APP_ENV": "production",
         "EMAIL_PROVIDER": "zoho-smtp",

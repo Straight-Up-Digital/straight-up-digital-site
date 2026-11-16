@@ -5,6 +5,7 @@ import {
 } from "../netlify/lib/client-report.mts";
 import { EmailConfigError } from "./email.ts";
 import { enquiryErrorHtml, htmlResponse, jsonResponse, readEnquiryBody, readUrlEncodedLimited, textField, validEmail } from "./http.ts";
+import { hasFirestoreConfiguration } from "./firestore.ts";
 import { rateLimit, RateLimitUnavailable } from "./security.ts";
 import { createReportKey, type PrivateDataStore } from "./storage.ts";
 import type { CloudflareWorkerEnv, EnquiryEmailSender, ReportEmailSender } from "./types.ts";
@@ -44,8 +45,13 @@ const ack = (acceptsHtml: boolean): Response => acceptsHtml
 export async function handleSubmitEnquiry(request: Request, env: CloudflareWorkerEnv, deps: PublicRouteDeps): Promise<Response> {
   const acceptsHtml = (request.headers.get("accept") || "").includes("text/html");
   if (request.method !== "POST") return jsonResponse({ ok: false, message: "Use POST for this endpoint." }, 405, { Allow: "POST" });
-  const limited = await rateCheck(request, env, deps, "submit-enquiry", 5, 60);
-  if (limited) return limited;
+  const firestoreConfigured = hasFirestoreConfiguration(env);
+  if (firestoreConfigured) {
+    const limited = await rateCheck(request, env, deps, "submit-enquiry", 5, 60);
+    if (limited) return limited;
+  } else {
+    console.warn(JSON.stringify({ event: "enquiry_firestore_unconfigured", action: "persistent_rate_limit_and_crm_copy_skipped" }));
+  }
 
   const raw = await readEnquiryBody(request);
   if (!raw) {
@@ -84,10 +90,14 @@ export async function handleSubmitEnquiry(request: Request, env: CloudflareWorke
 
   try {
     const sent = await (deps.sendEnquiryEmail ?? (async () => { throw new EmailConfigError("email_sender_unavailable"); }))(enquiry, env);
-    try {
-      await deps.store.saveDeliveredEnquiry(enquiry, new Date(nowFrom(deps)).toISOString(), (deps.newId ?? (() => crypto.randomUUID()))());
-    } catch (storageError) {
-      console.log(JSON.stringify({ event: "crm_intake_storage_failed", form_type: enquiry.formType, error_type: storageError instanceof Error ? storageError.name : "UnknownError" }));
+    if (firestoreConfigured) {
+      try {
+        await deps.store.saveDeliveredEnquiry(enquiry, new Date(nowFrom(deps)).toISOString(), (deps.newId ?? (() => crypto.randomUUID()))());
+      } catch (storageError) {
+        console.warn(JSON.stringify({ event: "crm_intake_storage_failed", form_type: enquiry.formType, error_type: storageError instanceof Error ? storageError.name : "UnknownError" }));
+      }
+    } else {
+      console.warn(JSON.stringify({ event: "crm_intake_storage_skipped", reason: "firestore_not_configured", form_type: enquiry.formType }));
     }
     console.log(JSON.stringify({ event: "enquiry_delivered", form_type: enquiry.formType, service: enquiry.service, provider: sent.provider }));
     return ack(acceptsHtml);

@@ -5,6 +5,20 @@ import { handleCrmEnquiries, handlePublishReport } from "../cloudflare/private-r
 import { createReportKey } from "../cloudflare/storage.ts";
 import { EmailConfigError, sendEnquiryEmail } from "../cloudflare/email.ts";
 import { runDailyCleanup } from "../cloudflare/scheduled.ts";
+import { applySiteSecurityHeaders } from "../cloudflare/response-headers.ts";
+
+test("Worker-generated responses receive site security headers without overwriting stricter route policies", () => {
+  const response = applySiteSecurityHeaders(new Response("ok", { headers: { "Cache-Control": "private, no-store" } }));
+  assert.equal(response.headers.get("X-Content-Type-Options"), "nosniff");
+  assert.equal(response.headers.get("Strict-Transport-Security"), "max-age=31536000");
+  assert.equal(response.headers.get("Cache-Control"), "private, no-store");
+  assert.match(response.headers.get("Content-Security-Policy"), /form-action 'self'/);
+
+  const privatePolicy = "default-src 'none'; frame-ancestors 'none'; base-uri 'none'";
+  const privateResponse = applySiteSecurityHeaders(new Response("report", { headers: { "Content-Security-Policy": privatePolicy } }));
+  assert.equal(privateResponse.headers.get("Content-Security-Policy"), privatePolicy);
+  assert.equal(privateResponse.headers.get("X-Frame-Options"), "DENY");
+});
 
 class MemoryStore {
   enquiries = new Map(); reports = new Map(); rates = new Map();
@@ -72,7 +86,7 @@ const requestJson = (url, body, headers = {}) => new Request(url, {
 
  test("contact submission validates, emails first, then stores only a private intake copy", async () => {
   const store = new MemoryStore(); let mailed = 0;
-  const response = await handleSubmitEnquiry(requestJson("https://site.example/api/enquiries", enquiryPayload(), { Accept: "application/json", "cf-connecting-ip": "192.0.2.1" }), { APP_ENV: "test", RATE_LIMIT_HASH_SECRET: "unit-test-salt" }, publicDeps(store, { sendEnquiryEmail: async (value) => { mailed += 1; assert.equal(value.email, "ada@example.co.za"); return { provider: "synthetic" }; } }));
+  const response = await handleSubmitEnquiry(requestJson("https://site.example/api/enquiries", enquiryPayload(), { Accept: "application/json", "cf-connecting-ip": "192.0.2.1" }), { APP_ENV: "test", RATE_LIMIT_HASH_SECRET: "unit-test-salt", FIRESTORE_PROJECT_ID: "synthetic-test", GOOGLE_FIRESTORE_SERVICE_ACCOUNT_JSON: "synthetic-test" }, publicDeps(store, { sendEnquiryEmail: async (value) => { mailed += 1; assert.equal(value.email, "ada@example.co.za"); return { provider: "synthetic" }; } }));
   assert.equal(response.status, 200); assert.deepEqual(await response.json(), { ok: true });
   assert.equal(mailed, 1); assert.equal(store.enquiries.size, 1);
   const saved = [...store.enquiries.values()][0];
@@ -87,6 +101,22 @@ test("enquiry failure does not create a CRM copy; storage failure does not undo 
   const store = new MemoryStore(); store.failEnquiryWrites = true;
   const accepted = await handleSubmitEnquiry(requestJson("https://site.example/api/enquiries", enquiryPayload(), { "cf-connecting-ip": "192.0.2.3" }), { APP_ENV: "test", RATE_LIMIT_HASH_SECRET: "unit-test-salt" }, publicDeps(store, { sendEnquiryEmail: async () => ({ provider: "synthetic" }) }));
   assert.equal(accepted.status, 200); assert.equal(store.enquiries.size, 0);
+});
+
+test("valid enquiry emails and returns success when Firestore service-account JSON is absent", async () => {
+  const store = new MemoryStore(); let mailed = 0;
+  const warnings = []; const originalWarn = console.warn;
+  console.warn = (...args) => warnings.push(args.join(" "));
+  try {
+    const env = { APP_ENV: "production", RATE_LIMIT_HASH_SECRET: "unit-test-salt", FIRESTORE_PROJECT_ID: "straight-up-digital-test" };
+    const response = await handleSubmitEnquiry(requestJson("https://site.example/api/enquiries", enquiryPayload(), { Accept: "application/json", "cf-connecting-ip": "192.0.2.30" }), env, publicDeps(store, { sendEnquiryEmail: async () => { mailed += 1; return { provider: "synthetic" }; } }));
+    assert.equal(response.status, 200); assert.deepEqual(await response.json(), { ok: true });
+    assert.equal(mailed, 1); assert.equal(store.enquiries.size, 0); assert.equal(store.rates.size, 0);
+    assert.match(warnings.join("\n"), /enquiry_firestore_unconfigured/);
+    assert.match(warnings.join("\n"), /crm_intake_storage_skipped/);
+  } finally {
+    console.warn = originalWarn;
+  }
 });
 
 test("silent honeypot submissions are acknowledged without validation, email, or storage", async () => {

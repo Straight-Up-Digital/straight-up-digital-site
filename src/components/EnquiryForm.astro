@@ -6,9 +6,9 @@
  *  - PUBLIC_FORM_MODE=netlify (default): Netlify Forms receives the submission.
  *    Works without any third-party account, stores submissions in the Netlify
  *    dashboard and can email the owner from there.
- *  - PUBLIC_FORM_MODE=email: the Netlify Function validates the submission and
- *    sends it through the configured email adapter. Turnstile is used when a
- *    site key is present.
+ *  - PUBLIC_FORM_MODE=email: the Cloudflare Worker validates the submission at
+ *    /api/enquiries and sends it through the configured email adapter. Turnstile
+ *    is used when a site key is present.
  *
  * Both paths keep the same payload shape so the private CRM can be connected
  * later without changing the form.
@@ -31,7 +31,7 @@ const formMode =
   import.meta.env.PUBLIC_FORM_MODE === "email" ? "email" : "netlify";
 const turnstileKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? "";
 const action =
-  formMode === "email" ? "/.netlify/functions/submit-enquiry" : "/thank-you";
+  formMode === "email" ? "/api/enquiries" : "/thank-you";
 
 const hostingPlanOptions = [
   "Email & Starter Site hosting plan — R99/month",
@@ -495,7 +495,7 @@ const consentVersion = "privacy-1.0-2026-11-15";
       let response: Response;
 
       if (mode === "email") {
-        response = await fetch("/.netlify/functions/submit-enquiry", {
+        response = await fetch("/api/enquiries", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),

@@ -244,3 +244,7 @@ export const firestoreClientFromEnv = (env: Pick<CloudflareWorkerEnv, "FIRESTORE
   if (!projectId || !credentials) throw new FirestoreError(0, "configuration");
   return new FirestoreRestClient(projectId, credentials, options);
 };
+
+
+export const hasFirestoreConfiguration = (env: Pick<CloudflareWorkerEnv, "FIRESTORE_PROJECT_ID" | "GOOGLE_FIRESTORE_SERVICE_ACCOUNT_JSON">): boolean =>
+  Boolean(env.FIRESTORE_PROJECT_ID?.trim() && env.GOOGLE_FIRESTORE_SERVICE_ACCOUNT_JSON?.trim());
