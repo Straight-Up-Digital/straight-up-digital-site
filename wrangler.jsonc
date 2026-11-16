@@ -33,6 +33,7 @@
   "env": {
     "test": {
       "name": "straight-up-digital-migration-test",
+      "workers_dev": true,
       "vars": {
         "APP_ENV": "test",
         "EMAIL_PROVIDER": "console",
