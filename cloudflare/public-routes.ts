@@ -5,7 +5,7 @@ import {
 } from "../netlify/lib/client-report.mts";
 import { EmailConfigError } from "./email.ts";
 import { enquiryErrorHtml, htmlResponse, jsonResponse, readEnquiryBody, readUrlEncodedLimited, textField, validEmail } from "./http.ts";
-import { hasFirestoreConfiguration } from "./firestore.ts";
+import { FirestoreError, hasFirestoreConfiguration } from "./firestore.ts";
 import { rateLimit, RateLimitUnavailable } from "./security.ts";
 import { createReportKey, type PrivateDataStore } from "./storage.ts";
 import type { CloudflareWorkerEnv, EnquiryEmailSender, ReportEmailSender } from "./types.ts";
@@ -31,7 +31,8 @@ async function rateCheck(request: Request, env: CloudflareWorkerEnv, deps: Publi
     if (result.allowed) return null;
     return jsonResponse({ ok: false, code: "rate_limited", message: "Too many attempts. Please wait a moment and try again." }, 429, { "Retry-After": String(result.retryAfter) });
   } catch (error) {
-    console.log(JSON.stringify({ event: "request_rate_limit_unavailable", route, error_type: error instanceof Error ? error.name : "UnknownError" }));
+    const details = error instanceof FirestoreError ? { firestore_status: error.status, firestore_operation: error.operation } : {};
+    console.log(JSON.stringify({ event: "request_rate_limit_unavailable", route, error_type: error instanceof Error ? error.name : "UnknownError", ...details }));
     return error instanceof RateLimitUnavailable
       ? jsonResponse({ ok: false, code: "rate_limit_not_configured", message: "The form is temporarily unavailable. Please try again later." }, 503)
       : jsonResponse({ ok: false, code: "rate_limit_unavailable", message: "The form is temporarily unavailable. Please try again later." }, 503);

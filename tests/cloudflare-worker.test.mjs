@@ -6,6 +6,7 @@ import { createReportKey } from "../cloudflare/storage.ts";
 import { EmailConfigError, sendEnquiryEmail } from "../cloudflare/email.ts";
 import { runDailyCleanup } from "../cloudflare/scheduled.ts";
 import { applySiteSecurityHeaders } from "../cloudflare/response-headers.ts";
+import { FirestoreError } from "../cloudflare/firestore.ts";
 
 test("Worker-generated responses receive site security headers without overwriting stricter route policies", () => {
   const response = applySiteSecurityHeaders(new Response("ok", { headers: { "Cache-Control": "private, no-store" } }));
@@ -191,6 +192,63 @@ test("report revocation accepts only allowlisted HTTPS URLs and invalidates the 
   assert.equal(rejected.status, 400);
   const deleted = await handlePublishReport(makeDelete(`https://reports.example.workers.dev/report/${token}`, "192.0.2.10"), productionEnv, { store });
   assert.equal(deleted.status, 200); assert.deepEqual(await deleted.json(), { deleted: true }); assert.equal(store.reports.has(key), false);
+});
+
+test("rate-limit Firestore failures log only status and operation metadata", async () => {
+  const store = new MemoryStore();
+  store.incrementRateLimit = async () => { throw new FirestoreError(403, "write"); };
+  const logs = []; const originalLog = console.log;
+  console.log = (...args) => logs.push(args.join(" "));
+  try {
+    const response = await handleCrmEnquiries(new Request("https://site.example/api/private-enquiries", { headers: { "cf-connecting-ip": "192.0.2.11" } }), productionEnv, { store });
+    assert.equal(response.status, 503); assert.deepEqual(await response.json(), { error: "rate_limit_unavailable" });
+    assert.equal(logs.length, 1); assert.match(logs[0], /"firestore_status":403/); assert.match(logs[0], /"firestore_operation":"write"/);
+    assert.equal(/secret|private_key|email/i.test(logs[0]), false);
+  } finally {
+    console.log = originalLog;
+  }
+});
+
+test("Firestore diagnostic requires its bearer token and returns only status and operation", async () => {
+  const store = new MemoryStore(); const token = "D".repeat(48);
+  store.incrementRateLimit = async () => { throw new FirestoreError(403, "write"); };
+  const env = { ...productionEnv, FIRESTORE_DIAGNOSTIC_TOKEN: ` \r\n${token} \r\n` };
+  const url = "https://site.example/api/private-enquiries?diagnostic=firestore";
+  const denied = await handleCrmEnquiries(new Request(url), env, { store });
+  assert.equal(denied.status, 404);
+  const response = await handleCrmEnquiries(new Request(url, { headers: { Authorization: `Bearer ${token}` } }), env, { store });
+  assert.equal(response.status, 503);
+  assert.deepEqual(await response.json(), { error: "firestore_diagnostic_failed", firestore_status: 403, firestore_operation: "write" });
+});
+
+test("Firestore diagnostic distinguishes OAuth token-fetch failures without exposing raw details", async () => {
+  const store = new MemoryStore(); const token = "E".repeat(48);
+  store.incrementRateLimit = async () => { throw new FirestoreError(0, "authentication", "oauth_fetch", "network"); };
+  const env = { ...productionEnv, FIRESTORE_DIAGNOSTIC_TOKEN: token };
+  const url = "https://site.example/api/private-enquiries?diagnostic=firestore";
+  const response = await handleCrmEnquiries(new Request(url, { headers: { Authorization: `Bearer ${token}` } }), env, { store });
+  assert.equal(response.status, 503);
+  assert.deepEqual(await response.json(), { error: "firestore_diagnostic_failed", firestore_status: 0, firestore_operation: "authentication", firestore_stage: "oauth_fetch", firestore_failure_type: "network" });
+});
+
+test("OAuth transport probe sends no credentials and returns only the endpoint HTTP status", async () => {
+  const token = "O".repeat(48); const originalFetch = globalThis.fetch; let observed;
+  globalThis.fetch = async (input, init) => {
+    observed = { url: String(input), method: init.method, body: String(init.body), authorization: new Headers(init.headers).get("Authorization") };
+    return new Response("ignored response body", { status: 400 });
+  };
+  try {
+    const url = "https://site.example/api/private-enquiries?diagnostic=firestore&probe=oauth";
+    const response = await handleCrmEnquiries(new Request(url, { headers: { Authorization: `Bearer ${token}` } }), { ...productionEnv, FIRESTORE_DIAGNOSTIC_TOKEN: token }, { store: new MemoryStore() });
+    assert.equal(response.status, 200);
+    assert.deepEqual(await response.json(), { oauth_http_status: 400 });
+    assert.equal(observed.url, "https://oauth2.googleapis.com/token");
+    assert.equal(observed.method, "POST");
+    assert.equal(observed.body, "grant_type=diagnostic_probe");
+    assert.equal(observed.authorization, null);
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
 });
 
 test("daily cleanup removes expired reports and rate buckets and reports aggregate counts", async () => {

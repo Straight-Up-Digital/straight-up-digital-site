@@ -46,12 +46,16 @@ let cachedToken: TokenCacheEntry | null = null;
 export class FirestoreError extends Error {
   readonly status: number;
   readonly operation: string;
+  readonly stage: "jwt_sign" | "oauth_fetch" | undefined;
+  readonly failureType: "timeout" | "network" | undefined;
 
-  constructor(status: number, operation: string) {
+  constructor(status: number, operation: string, stage?: "jwt_sign" | "oauth_fetch", failureType?: "timeout" | "network") {
     super(`firestore_${operation}_failed`);
     this.name = "FirestoreError";
     this.status = status;
     this.operation = operation;
+    this.stage = stage;
+    this.failureType = failureType;
   }
 }
 
@@ -144,7 +148,7 @@ export class FirestoreRestClient {
     try {
       signature = await crypto.subtle.sign("RSASSA-PKCS1-v1_5", key, new TextEncoder().encode(unsigned));
     } catch {
-      throw new FirestoreError(0, "authentication");
+      throw new FirestoreError(0, "authentication", "jwt_sign");
     }
     const assertion = `${unsigned}.${base64Url(new Uint8Array(signature))}`;
     const body = new URLSearchParams({
@@ -161,8 +165,9 @@ export class FirestoreRestClient {
         body,
         ...(signal ? { signal } : {}),
       });
-    } catch {
-      throw new FirestoreError(0, "authentication");
+    } catch (error) {
+      const failureType = error instanceof Error && (error.name === "AbortError" || error.name === "TimeoutError") ? "timeout" : "network";
+      throw new FirestoreError(0, "authentication", "oauth_fetch", failureType);
     }
     if (!response.ok) throw new FirestoreError(response.status, "authentication");
 
