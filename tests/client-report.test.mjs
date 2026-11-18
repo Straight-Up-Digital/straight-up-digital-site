@@ -30,11 +30,11 @@ const reportInput = {
 
 const readyEnv = {
   AUDIT_REPORTS_ENABLED: "true",
-  EMAIL_PROVIDER: "zoho-smtp",
+  EMAIL_PROVIDER: "zoho-mail-api",
   ENQUIRY_TO_EMAIL: "straightupdigital@zohomail.com",
   ENQUIRY_FROM_EMAIL: "straightupdigital@zohomail.com",
-  ZOHO_SMTP_USERNAME: "straightupdigital@zohomail.com",
-  ZOHO_SMTP_PASSWORD: "example-placeholder-not-a-real-password",
+  ZOHO_API_CLIENT_ID: "example-client-id",
+  ZOHO_API_CLIENT_SECRET: "example-client-secret",
 };
 const reader = (config) => (key) => config[key];
 
@@ -85,7 +85,7 @@ test("public report tokens are never used as storage keys directly", () => {
 test("report flow requires explicit feature flag and a Zoho mailbox configuration", () => {
   assert.equal(reportFlowReady(reader(readyEnv)), true);
   assert.equal(reportFlowReady(reader({ ...readyEnv, AUDIT_REPORTS_ENABLED: "false" })), false);
-  assert.equal(reportFlowReady(reader({ ...readyEnv, ZOHO_SMTP_PASSWORD: "" })), false);
+  assert.equal(reportFlowReady(reader({ ...readyEnv, ZOHO_API_CLIENT_SECRET: "" })), false);
   assert.equal(reportFlowReady(reader({ ...readyEnv, ENQUIRY_TO_EMAIL: "elsewhere@example.com" })), false);
 });
 

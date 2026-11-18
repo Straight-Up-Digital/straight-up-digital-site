@@ -36,6 +36,8 @@ export interface CloudflareWorkerEnv {
   ZOHO_SMTP_USERNAME?: string;
   ZOHO_SMTP_PASSWORD?: string;
   ZOHO_SMTP_SECURE?: string;
+  ZOHO_API_CLIENT_ID?: string;
+  ZOHO_API_CLIENT_SECRET?: string;
   RESEND_API_KEY?: string;
   POSTMARK_SERVER_TOKEN?: string;
   POSTMARK_MESSAGE_STREAM?: string;

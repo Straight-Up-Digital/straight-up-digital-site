@@ -62,9 +62,9 @@ const publishToken = "P".repeat(48);
 const syncToken = "S".repeat(64);
 const productionEnv = {
   APP_ENV: "production", RATE_LIMIT_HASH_SECRET: "synthetic-test-rate-salt-not-a-secret",
-  AUDIT_REPORTS_ENABLED: "true", EMAIL_PROVIDER: "zoho-smtp",
-  ENQUIRY_TO_EMAIL: owner, ENQUIRY_FROM_EMAIL: owner, ZOHO_SMTP_USERNAME: owner,
-  ZOHO_SMTP_PASSWORD: "synthetic-not-real", ZOHO_SMTP_HOST: "smtp.zoho.com", ZOHO_SMTP_PORT: "465",
+  AUDIT_REPORTS_ENABLED: "true", EMAIL_PROVIDER: "zoho-mail-api",
+  ENQUIRY_TO_EMAIL: owner, ENQUIRY_FROM_EMAIL: owner,
+  ZOHO_API_CLIENT_ID: "synthetic-client-id", ZOHO_API_CLIENT_SECRET: "synthetic-client-secret",
   AUDIT_REPORT_PUBLISH_TOKEN: publishToken, CRM_ENQUIRY_SYNC_TOKEN: syncToken,
   PUBLIC_REPORT_HOSTS: "reports.example.workers.dev",
 };
@@ -283,4 +283,59 @@ test("Zoho SMTP adapter negotiates implicit TLS and sends escaped MIME through a
   assert.match(decodedHtml, /&lt;script&gt;client&lt;\/script&gt;/); assert.match(decodedHtml, /&lt;b&gt;this&lt;\/b&gt;/);
   assert.ok(commands.some((value) => value.trim() === "AUTH LOGIN"));
   assert.equal(commands.some((value) => value.includes("synthetic-app-password")), false);
+});
+
+test("Zoho Mail API sends via HTTPS token, account lookup and create-message calls", async () => {
+  const originalFetch = globalThis.fetch; const calls = [];
+  globalThis.fetch = async (input, init = {}) => {
+    const url = new URL(input); calls.push({ url: url.toString(), method: init.method || "GET", headers: init.headers, body: init.body });
+    if (url.hostname === "accounts.zoho.com") {
+      const form = new URLSearchParams(String(init.body));
+      assert.equal(form.get("grant_type"), "client_credentials");
+      assert.equal(form.get("scope"), "ZohoMail.accounts.READ,ZohoMail.messages.CREATE");
+      assert.equal(form.get("client_id"), "synthetic-client-id");
+      assert.equal(form.get("client_secret"), "synthetic-client-secret");
+      return Response.json({ access_token: "synthetic-access-token", expires_in: 3600, api_domain: "https://mail.zoho.com" });
+    }
+    if (url.hostname === "mail.zoho.com" && url.pathname === "/api/accounts") {
+      assert.equal(new Headers(init.headers).get("Authorization"), "Zoho-oauthtoken synthetic-access-token");
+      return Response.json({ status: { code: 200 }, data: [{ accountId: "synthetic-account-id", primaryEmailAddress: owner }] });
+    }
+    if (url.hostname === "mail.zoho.com" && url.pathname === "/api/accounts/synthetic-account-id/messages") {
+      const body = JSON.parse(String(init.body));
+      assert.equal(body.fromAddress, owner); assert.equal(body.toAddress, owner); assert.equal(body.mailFormat, "html");
+      assert.match(body.content, /New enquiry/);
+      return Response.json({ status: { code: 200, description: "success" } });
+    }
+    throw new Error("unexpected synthetic API request");
+  };
+  try {
+    const result = await sendEnquiryEmail({
+      name: "Synthetic QA", businessName: "TEST - ignore", websiteUrl: "https://example.co.za/", email: "synthetic@example.co.za", phone: "",
+      service: "Contact", message: "Synthetic delivery test", consentGiven: true, consentTextVersion: "v1", consentTimestamp: "2026-11-18T00:00:00.000Z",
+      formType: "contact", source: "/contact", turnstileToken: "", startedAt: Date.now() - 5_000,
+    }, { EMAIL_PROVIDER: "zoho-mail-api", ENQUIRY_TO_EMAIL: owner, ENQUIRY_FROM_EMAIL: owner, ZOHO_API_CLIENT_ID: "synthetic-client-id", ZOHO_API_CLIENT_SECRET: "synthetic-client-secret" });
+    assert.equal(result.provider, "zoho-mail-api");
+    assert.deepEqual(calls.map((call) => [new URL(call.url).hostname, call.method, new URL(call.url).pathname]), [
+      ["accounts.zoho.com", "POST", "/oauth/v2/token"],
+      ["mail.zoho.com", "GET", "/api/accounts"],
+      ["mail.zoho.com", "POST", "/api/accounts/synthetic-account-id/messages"],
+    ]);
+  } finally { globalThis.fetch = originalFetch; }
+});
+
+test("Zoho Mail API token failure stops before account lookup and does not disclose response body", async () => {
+  const originalFetch = globalThis.fetch; let calls = 0;
+  globalThis.fetch = async () => { calls += 1; return new Response("private upstream details", { status: 401 }); };
+  try {
+    await assert.rejects(
+      () => sendEnquiryEmail({
+        name: "Synthetic", businessName: "Example", websiteUrl: "https://example.co.za/", email: "synthetic@example.co.za", phone: "",
+        service: "Contact", message: "Test", consentGiven: true, consentTextVersion: "v1", consentTimestamp: "2026-11-18T00:00:00.000Z",
+        formType: "contact", source: "/contact", turnstileToken: "", startedAt: Date.now() - 5_000,
+      }, { EMAIL_PROVIDER: "zoho-mail-api", ENQUIRY_TO_EMAIL: owner, ENQUIRY_FROM_EMAIL: owner, ZOHO_API_CLIENT_ID: "synthetic-client-id", ZOHO_API_CLIENT_SECRET: "synthetic-client-secret" }),
+      (error) => error.message === "zoho_oauth_http_401" && !error.message.includes("private upstream details"),
+    );
+    assert.equal(calls, 1);
+  } finally { globalThis.fetch = originalFetch; }
 });

@@ -8,12 +8,16 @@ export type ReportEnvReader = (key: string) => string | undefined;
 
 export function reportFlowReady(getEnv: ReportEnvReader): boolean {
   const owner = OWNER_EMAIL.toLowerCase();
+  const provider = (getEnv("EMAIL_PROVIDER") || "").trim().toLowerCase();
+  const mailReady = provider === "zoho-mail-api"
+    ? Boolean((getEnv("ZOHO_API_CLIENT_ID") || "").trim() && (getEnv("ZOHO_API_CLIENT_SECRET") || "").trim())
+    : provider === "zoho-smtp"
+      && (getEnv("ZOHO_SMTP_USERNAME") || "").trim().toLowerCase() === owner
+      && Boolean((getEnv("ZOHO_SMTP_PASSWORD") || "").trim());
   return getEnv("AUDIT_REPORTS_ENABLED") === "true"
-    && (getEnv("EMAIL_PROVIDER") || "").trim().toLowerCase() === "zoho-smtp"
+    && mailReady
     && (getEnv("ENQUIRY_TO_EMAIL") || "").trim().toLowerCase() === owner
-    && (getEnv("ENQUIRY_FROM_EMAIL") || "").trim().toLowerCase() === owner
-    && (getEnv("ZOHO_SMTP_USERNAME") || "").trim().toLowerCase() === owner
-    && Boolean((getEnv("ZOHO_SMTP_PASSWORD") || "").trim());
+    && (getEnv("ENQUIRY_FROM_EMAIL") || "").trim().toLowerCase() === owner;
 }
 
 export interface CustomerFinding {

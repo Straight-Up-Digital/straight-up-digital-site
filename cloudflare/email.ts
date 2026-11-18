@@ -132,9 +132,68 @@ async function sendZoho(input: { from: string; to: string; replyTo?: string; sub
   } finally { await channel.close().catch(() => undefined); }
 }
 
+const ZOHO_MAIL_SCOPES = "ZohoMail.accounts.READ,ZohoMail.messages.CREATE";
+const ZOHO_API_TIMEOUT_MS = 5_000;
+
+async function zohoJson(url: string, init: RequestInit, stage: string): Promise<Record<string, unknown>> {
+  let response: Response;
+  try {
+    response = await fetch(url, { ...init, signal: AbortSignal.timeout(ZOHO_API_TIMEOUT_MS) });
+  } catch (error) {
+    const type = error instanceof Error && error.name === "TimeoutError" ? "timeout" : "network_error";
+    throw new Error(`zoho_${stage}_${type}`);
+  }
+  if (!response.ok) throw new Error(`zoho_${stage}_http_${response.status}`);
+  try {
+    const body: unknown = await response.json();
+    if (!body || typeof body !== "object" || Array.isArray(body)) throw new Error("invalid_json");
+    return body as Record<string, unknown>;
+  } catch {
+    throw new Error(`zoho_${stage}_invalid_response`);
+  }
+}
+
+async function sendZohoMailApi(input: { from: string; to: string; replyTo?: string; subject: string; text: string; html: string }, env: CloudflareWorkerEnv): Promise<void> {
+  const clientId = (env.ZOHO_API_CLIENT_ID || "").trim();
+  const clientSecret = (env.ZOHO_API_CLIENT_SECRET || "").trim();
+  if (!clientId || !clientSecret) throw new EmailConfigError("Zoho Mail API OAuth client credentials are missing.");
+  if (!validAddress(input.from) || !validAddress(input.to) || (input.replyTo && !validAddress(input.replyTo))) throw new EmailConfigError("The sender, recipient, or reply-to address is invalid.");
+
+  const tokenBody = new URLSearchParams({
+    client_id: clientId,
+    client_secret: clientSecret,
+    grant_type: "client_credentials",
+    scope: ZOHO_MAIL_SCOPES,
+  });
+  const token = await zohoJson("https://accounts.zoho.com/oauth/v2/token", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded", Accept: "application/json" },
+    body: tokenBody.toString(),
+  }, "oauth");
+  if (typeof token.access_token !== "string" || !token.access_token) throw new Error("zoho_oauth_token_missing");
+
+  const authHeaders = { Authorization: `Zoho-oauthtoken ${token.access_token}`, Accept: "application/json" };
+  const accounts = await zohoJson("https://mail.zoho.com/api/accounts", { headers: authHeaders }, "accounts");
+  const data = accounts.data;
+  const account = Array.isArray(data)
+    ? data.find((item) => item && typeof item === "object" && String((item as Record<string, unknown>).primaryEmailAddress || "").toLowerCase() === input.from.toLowerCase()) as Record<string, unknown> | undefined
+    : undefined;
+  const accountId = account?.accountId;
+  if (typeof accountId !== "string" && typeof accountId !== "number") throw new Error("zoho_sender_account_not_found");
+
+  const message = await zohoJson(`https://mail.zoho.com/api/accounts/${encodeURIComponent(String(accountId))}/messages`, {
+    method: "POST",
+    headers: { ...authHeaders, "Content-Type": "application/json" },
+    body: JSON.stringify({ fromAddress: input.from, toAddress: input.to, subject: input.subject, content: input.html, mailFormat: "html", askReceipt: "no" }),
+  }, "message");
+  const result = message.status;
+  if (!result || typeof result !== "object" || Number((result as Record<string, unknown>).code) !== 200) throw new Error("zoho_message_rejected");
+}
+
 
 async function sendMessage(content: { subject: string; text: string; html: string }, details: { to: string; from: string; replyTo?: string }, env: CloudflareWorkerEnv, provider: string, connect?: SocketConnect): Promise<void> {
   if (provider === "zoho-smtp") { await sendZoho({ ...content, ...details }, env, connect); return; }
+  if (provider === "zoho-mail-api") { await sendZohoMailApi({ ...content, ...details }, env); return; }
   if (provider === "resend") {
     if (!env.RESEND_API_KEY) throw new EmailConfigError("RESEND_API_KEY is missing.");
     const response = await fetch("https://api.resend.com/emails", { method: "POST", headers: { Authorization: `Bearer ${env.RESEND_API_KEY}`, "Content-Type": "application/json" }, body: JSON.stringify({ from: details.from, to: [details.to], subject: content.subject, text: content.text, html: content.html, reply_to: details.replyTo }) });
