@@ -194,3 +194,21 @@ test("missing Firestore configuration fails closed and API errors do not expose 
     return true;
   });
 });
+
+test("OAuth token-fetch errors retain only the network exception name and message", async () => {
+  const credentials = await makeCredentials();
+  const store = new FirestoreDataStore({ FIRESTORE_PROJECT_ID: "sud-test", GOOGLE_FIRESTORE_SERVICE_ACCOUNT_JSON: credentials.json }, {
+    fetcher: async () => { throw new TypeError("Failed to fetch"); },
+  });
+  await assert.rejects(() => store.deleteExpiredReports("2026-11-16T00:00:00.000Z"), (error) => {
+    assert.ok(error instanceof FirestoreError);
+    assert.equal(error.name, "FirestoreError");
+    assert.equal(error.message, "firestore_authentication_failed");
+    assert.equal(error.stage, "oauth_fetch");
+    assert.equal(error.failureType, "network");
+    assert.equal(error.causeName, "TypeError");
+    assert.equal(error.causeMessage, "Failed to fetch");
+    assert.doesNotMatch(error.causeMessage, /private_key|client_email|token/i);
+    return true;
+  });
+});

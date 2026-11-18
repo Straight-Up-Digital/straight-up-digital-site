@@ -48,14 +48,18 @@ export class FirestoreError extends Error {
   readonly operation: string;
   readonly stage: "jwt_sign" | "oauth_fetch" | undefined;
   readonly failureType: "timeout" | "network" | undefined;
+  readonly causeName: string | undefined;
+  readonly causeMessage: string | undefined;
 
-  constructor(status: number, operation: string, stage?: "jwt_sign" | "oauth_fetch", failureType?: "timeout" | "network") {
+  constructor(status: number, operation: string, stage?: "jwt_sign" | "oauth_fetch", failureType?: "timeout" | "network", cause?: unknown) {
     super(`firestore_${operation}_failed`);
     this.name = "FirestoreError";
     this.status = status;
     this.operation = operation;
     this.stage = stage;
     this.failureType = failureType;
+    this.causeName = cause instanceof Error ? cause.name.replace(/[^A-Za-z0-9_.-]/g, "").slice(0, 80) : undefined;
+    this.causeMessage = cause instanceof Error ? cause.message.replace(/[\r\n\t]+/g, " ").replace(/(?:Bearer\s+)[A-Za-z0-9._~-]+/gi, "Bearer [redacted]").replace(/[A-Za-z0-9_-]{100,}/g, "[redacted]").slice(0, 200) : undefined;
   }
 }
 
@@ -167,7 +171,7 @@ export class FirestoreRestClient {
       });
     } catch (error) {
       const failureType = error instanceof Error && (error.name === "AbortError" || error.name === "TimeoutError") ? "timeout" : "network";
-      throw new FirestoreError(0, "authentication", "oauth_fetch", failureType);
+      throw new FirestoreError(0, "authentication", "oauth_fetch", failureType, error);
     }
     if (!response.ok) throw new FirestoreError(response.status, "authentication");
 

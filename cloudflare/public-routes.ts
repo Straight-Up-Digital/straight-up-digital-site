@@ -24,6 +24,48 @@ const nowFrom = (deps: PublicRouteDeps): number => (deps.now ?? Date.now)();
 const reportHtml = (content: string, status = 200): Response => htmlResponse(content, status);
 const isEmailReady = (env: CloudflareWorkerEnv): boolean => reportFlowReady((key) => env[key as keyof CloudflareWorkerEnv] as string | undefined);
 const reportRateError = (): Response => htmlResponse("Too many requests. Please wait a few minutes, then try again.", 429);
+const ENQUIRY_RATE_WINDOW_MS = 10 * 60 * 1000;
+const ENQUIRY_RATE_LIMIT = 5;
+const localEnquiryRates = new Map<string, { count: number; expiresAt: number }>();
+
+async function localEnquiryRateLimit(request: Request, nowMs: number): Promise<{ allowed: boolean; retryAfter: number }> {
+  const ip = request.headers.get("cf-connecting-ip") || "unknown";
+  const digest = new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(ip)));
+  const key = Array.from(digest, (byte) => byte.toString(16).padStart(2, "0")).join("");
+  for (const [storedKey, bucket] of localEnquiryRates) if (bucket.expiresAt <= nowMs) localEnquiryRates.delete(storedKey);
+  const bucket = localEnquiryRates.get(key);
+  if (!bucket || bucket.expiresAt <= nowMs) {
+    localEnquiryRates.set(key, { count: 1, expiresAt: nowMs + ENQUIRY_RATE_WINDOW_MS });
+    return { allowed: true, retryAfter: Math.ceil(ENQUIRY_RATE_WINDOW_MS / 1000) };
+  }
+  bucket.count += 1;
+  return { allowed: bucket.count <= ENQUIRY_RATE_LIMIT, retryAfter: Math.max(1, Math.ceil((bucket.expiresAt - nowMs) / 1000)) };
+}
+
+async function enquiryRateCheck(request: Request, env: CloudflareWorkerEnv, deps: PublicRouteDeps): Promise<Response | null> {
+  const now = nowFrom(deps);
+  let result: { allowed: boolean; retryAfter: number };
+  if (hasFirestoreConfiguration(env)) {
+    try {
+      result = await rateLimit(request, env, deps.store, "submit-enquiry", ENQUIRY_RATE_LIMIT, 600, now);
+    } catch (error) {
+      const safeError = error instanceof FirestoreError ? {
+        firestore_status: error.status,
+        firestore_operation: error.operation,
+        ...(error.stage ? { firestore_stage: error.stage } : {}),
+        ...(error.failureType ? { firestore_failure_type: error.failureType } : {}),
+        ...(error.causeName ? { oauth_error_name: error.causeName } : {}),
+        ...(error.causeMessage ? { oauth_error_message: error.causeMessage } : {}),
+      } : {};
+      console.warn(JSON.stringify({ event: "enquiry_persistent_rate_limit_failed", error_type: error instanceof Error ? error.name : "UnknownError", ...safeError }));
+      result = await localEnquiryRateLimit(request, now);
+    }
+  } else {
+    console.warn(JSON.stringify({ event: "enquiry_firestore_unconfigured", action: "in_memory_rate_limit_and_crm_copy_skipped" }));
+    result = await localEnquiryRateLimit(request, now);
+  }
+  return result.allowed ? null : jsonResponse({ ok: false, code: "rate_limited", message: "Too many attempts. Please wait a few minutes, then try again." }, 429, { "Retry-After": String(result.retryAfter) });
+}
 
 async function rateCheck(request: Request, env: CloudflareWorkerEnv, deps: PublicRouteDeps, route: string, limit: number, seconds: number): Promise<Response | null> {
   try {
@@ -47,13 +89,6 @@ export async function handleSubmitEnquiry(request: Request, env: CloudflareWorke
   const acceptsHtml = (request.headers.get("accept") || "").includes("text/html");
   if (request.method !== "POST") return jsonResponse({ ok: false, message: "Use POST for this endpoint." }, 405, { Allow: "POST" });
   const firestoreConfigured = hasFirestoreConfiguration(env);
-  if (firestoreConfigured) {
-    const limited = await rateCheck(request, env, deps, "submit-enquiry", 5, 60);
-    if (limited) return limited;
-  } else {
-    console.warn(JSON.stringify({ event: "enquiry_firestore_unconfigured", action: "persistent_rate_limit_and_crm_copy_skipped" }));
-  }
-
   const raw = await readEnquiryBody(request);
   if (!raw) {
     const message = "The form data could not be read. Please try again.";
@@ -81,13 +116,17 @@ export async function handleSubmitEnquiry(request: Request, env: CloudflareWorke
     const verified = await (deps.verifyTurnstile ?? verifyTurnstile)(
       enquiry.turnstileToken, turnstileSecret, request.headers.get("cf-connecting-ip") || undefined,
     );
-    if (!verified) {
+    if (verified === false) {
       const message = "The spam check did not pass. Refresh the page, complete the check and try again.";
       return acceptsHtml ? enquiryErrorHtml(message, 400) : jsonResponse({ ok: false, message, errors: { turnstile: message } }, 400);
     }
+    if (verified === null) console.warn(JSON.stringify({ event: "turnstile_unavailable", action: "continue_after_local_spam_checks" }));
   } else {
     console.log(JSON.stringify({ event: "turnstile_skipped", reason: "no_secret_configured" }));
   }
+
+  const limited = await enquiryRateCheck(request, env, deps);
+  if (limited) return limited;
 
   try {
     const sent = await (deps.sendEnquiryEmail ?? (async () => { throw new EmailConfigError("email_sender_unavailable"); }))(enquiry, env);

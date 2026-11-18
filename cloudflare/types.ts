@@ -45,7 +45,6 @@ export interface CloudflareWorkerEnv {
   AUDIT_REPORTS_ENABLED?: string;
   AUDIT_REPORT_PUBLISH_TOKEN?: string;
   RATE_LIMIT_HASH_SECRET?: string;
-  FIRESTORE_DIAGNOSTIC_TOKEN?: string;
 }
 
 export type EnquiryEmailSender = (enquiry: CleanEnquiry, env: CloudflareWorkerEnv, connect?: SocketConnect) => Promise<{ provider: string }>;

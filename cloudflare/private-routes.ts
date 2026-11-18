@@ -75,37 +75,6 @@ export async function handlePublishReport(request: Request, env: CloudflareWorke
 export async function handleCrmEnquiries(request: Request, env: CloudflareWorkerEnv, deps: PrivateRouteDeps): Promise<Response> {
   if (!isProduction(env)) return jsonResponse({ error: "not_found" }, 404, { "Cache-Control": "no-store, private", "Vary": "Authorization" });
   if (request.method !== "GET" && request.method !== "DELETE") return jsonResponse({ error: "method_not_allowed" }, 405, { Allow: "GET, DELETE", "Cache-Control": "no-store, private" });
-  const url = new URL(request.url);
-  if (request.method === "GET" && url.searchParams.get("diagnostic") === "firestore") {
-    if (!(await bearerAuthorized(request, (env.FIRESTORE_DIAGNOSTIC_TOKEN || "").trim()))) return jsonResponse({ error: "not_found" }, 404, { "Cache-Control": "no-store, private", Vary: "Authorization" });
-    if (url.searchParams.get("probe") === "oauth") {
-      try {
-        const response = await fetch("https://oauth2.googleapis.com/token", {
-          method: "POST",
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          body: new URLSearchParams({ grant_type: "diagnostic_probe" }),
-          signal: AbortSignal.timeout(8_000),
-        });
-        return jsonResponse({ oauth_http_status: response.status }, 200, { "Cache-Control": "no-store, private", Vary: "Authorization" });
-      } catch (error) {
-        const failureType = error instanceof Error && (error.name === "AbortError" || error.name === "TimeoutError") ? "timeout" : "network";
-        return jsonResponse({ error: "oauth_probe_failed", oauth_failure_type: failureType }, 503, { "Cache-Control": "no-store, private", Vary: "Authorization" });
-      }
-    }
-    try {
-      const result = await rateLimit(request, env, deps.store, "firestore-diagnostic", 1, 60, nowFrom(deps));
-      return jsonResponse({ ok: true, allowed: result.allowed }, 200, { "Cache-Control": "no-store, private", Vary: "Authorization" });
-    } catch (error) {
-      const details = error instanceof FirestoreError ? {
-        firestore_status: error.status,
-        firestore_operation: error.operation,
-        ...(error.stage ? { firestore_stage: error.stage } : {}),
-        ...(error.failureType ? { firestore_failure_type: error.failureType } : {}),
-      } : {};
-      const code = error instanceof RateLimitUnavailable ? "rate_limit_not_configured" : "firestore_diagnostic_failed";
-      return jsonResponse({ error: code, ...details }, 503, { "Cache-Control": "no-store, private", Vary: "Authorization" });
-    }
-  }
   const limited = await protectedRateLimit(request, env, deps, "crm-enquiries", 30);
   if (limited) return limited;
   const secret = (env.CRM_ENQUIRY_SYNC_TOKEN || "").trim();

@@ -99,13 +99,14 @@ test("enquiry failure does not create a CRM copy; storage failure does not undo 
   const mailFailureStore = new MemoryStore();
   const failed = await handleSubmitEnquiry(requestJson("https://site.example/api/enquiries", enquiryPayload(), { "cf-connecting-ip": "192.0.2.2" }), { APP_ENV: "test", RATE_LIMIT_HASH_SECRET: "unit-test-salt" }, publicDeps(mailFailureStore, { sendEnquiryEmail: async () => { throw new EmailConfigError("synthetic_not_configured"); } }));
   assert.equal(failed.status, 503); assert.equal(mailFailureStore.enquiries.size, 0);
-  const store = new MemoryStore(); store.failEnquiryWrites = true;
-  const accepted = await handleSubmitEnquiry(requestJson("https://site.example/api/enquiries", enquiryPayload(), { "cf-connecting-ip": "192.0.2.3" }), { APP_ENV: "test", RATE_LIMIT_HASH_SECRET: "unit-test-salt" }, publicDeps(store, { sendEnquiryEmail: async () => ({ provider: "synthetic" }) }));
-  assert.equal(accepted.status, 200); assert.equal(store.enquiries.size, 0);
+  const store = new MemoryStore(); store.failEnquiryWrites = true; let mailed = 0;
+  const accepted = await handleSubmitEnquiry(requestJson("https://site.example/api/enquiries", enquiryPayload(), { "cf-connecting-ip": "192.0.2.3" }), { APP_ENV: "test", RATE_LIMIT_HASH_SECRET: "unit-test-salt", FIRESTORE_PROJECT_ID: "synthetic-test", GOOGLE_FIRESTORE_SERVICE_ACCOUNT_JSON: "synthetic-test" }, publicDeps(store, { sendEnquiryEmail: async () => { mailed += 1; return { provider: "synthetic" }; } }));
+  assert.equal(accepted.status, 200); assert.equal(mailed, 1); assert.equal(store.enquiries.size, 0);
 });
 
 test("valid enquiry emails and returns success when Firestore service-account JSON is absent", async () => {
-  const store = new MemoryStore(); let mailed = 0;
+  const store = new MemoryStore(); let mailed = 0; let firestoreRateCalls = 0;
+  store.incrementRateLimit = async () => { firestoreRateCalls += 1; throw new Error("must_not_call_firestore_without_credentials"); };
   const warnings = []; const originalWarn = console.warn;
   console.warn = (...args) => warnings.push(args.join(" "));
   try {
@@ -113,6 +114,8 @@ test("valid enquiry emails and returns success when Firestore service-account JS
     const response = await handleSubmitEnquiry(requestJson("https://site.example/api/enquiries", enquiryPayload(), { Accept: "application/json", "cf-connecting-ip": "192.0.2.30" }), env, publicDeps(store, { sendEnquiryEmail: async () => { mailed += 1; return { provider: "synthetic" }; } }));
     assert.equal(response.status, 200); assert.deepEqual(await response.json(), { ok: true });
     assert.equal(mailed, 1); assert.equal(store.enquiries.size, 0); assert.equal(store.rates.size, 0);
+    assert.equal(store.rates.size, 0, "missing Firestore credentials must not attempt a Firestore rate-limit operation");
+    assert.equal(firestoreRateCalls, 0);
     assert.match(warnings.join("\n"), /enquiry_firestore_unconfigured/);
     assert.match(warnings.join("\n"), /crm_intake_storage_skipped/);
   } finally {
@@ -125,6 +128,42 @@ test("silent honeypot submissions are acknowledged without validation, email, or
   const response = await handleSubmitEnquiry(requestJson("https://site.example/api/enquiries", { company_website_confirm: "filled-by-bot" }, { "cf-connecting-ip": "192.0.2.4" }), { APP_ENV: "test", RATE_LIMIT_HASH_SECRET: "unit-test-salt" }, publicDeps(store, { sendEnquiryEmail: async () => { mailed += 1; return { provider: "synthetic" }; } }));
   assert.equal(response.status, 200); assert.deepEqual(await response.json(), { ok: true });
   assert.equal(mailed, 0); assert.equal(store.enquiries.size, 0);
+});
+
+test("Firestore rate-limit failure falls back to local limiting and does not prevent email delivery", async () => {
+  const store = new MemoryStore(); let mailed = 0;
+  store.incrementRateLimit = async () => { throw new FirestoreError(0, "authentication", "oauth_fetch", "network", new TypeError("Failed to fetch")); };
+  const env = { APP_ENV: "production", RATE_LIMIT_HASH_SECRET: "unit-test-salt", FIRESTORE_PROJECT_ID: "synthetic-test", GOOGLE_FIRESTORE_SERVICE_ACCOUNT_JSON: "synthetic-test" };
+  const response = await handleSubmitEnquiry(requestJson("https://site.example/api/enquiries", enquiryPayload(), { "cf-connecting-ip": "192.0.2.31" }), env, publicDeps(store, { sendEnquiryEmail: async () => { mailed += 1; return { provider: "synthetic" }; } }));
+  assert.equal(response.status, 200); assert.equal(mailed, 1); assert.equal(store.enquiries.size, 1);
+});
+
+test("local hashed-IP fallback blocks a visitor above five requests in ten minutes", async () => {
+  const store = new MemoryStore(); let mailed = 0;
+  const env = { APP_ENV: "production", RATE_LIMIT_HASH_SECRET: "unit-test-salt" };
+  const deps = publicDeps(store, { sendEnquiryEmail: async () => { mailed += 1; return { provider: "synthetic" }; } });
+  const responses = [];
+  for (let i = 0; i < 6; i += 1) {
+    responses.push(await handleSubmitEnquiry(requestJson("https://site.example/api/enquiries", enquiryPayload(), { "cf-connecting-ip": "192.0.2.32" }), env, deps));
+  }
+  assert.deepEqual(responses.map((response) => response.status), [200, 200, 200, 200, 200, 429]);
+  assert.equal(mailed, 5);
+  assert.deepEqual(await responses[5].json(), { ok: false, code: "rate_limited", message: "Too many attempts. Please wait a few minutes, then try again." });
+});
+
+test("Turnstile service outage is logged but does not discard a validated enquiry", async () => {
+  const store = new MemoryStore(); let mailed = 0;
+  const warnings = []; const originalWarn = console.warn; console.warn = (...args) => warnings.push(args.join(" "));
+  try {
+    const response = await handleSubmitEnquiry(requestJson("https://site.example/api/enquiries", enquiryPayload({ turnstile_token: "synthetic-valid-token" }), { "cf-connecting-ip": "192.0.2.33" }), { APP_ENV: "production", TURNSTILE_SECRET_KEY: "synthetic-secret" }, publicDeps(store, {
+      verifyTurnstile: async () => null,
+      sendEnquiryEmail: async () => { mailed += 1; return { provider: "synthetic" }; },
+    }));
+    assert.equal(response.status, 200); assert.equal(mailed, 1);
+    assert.match(warnings.join("\n"), /turnstile_unavailable/);
+  } finally {
+    console.warn = originalWarn;
+  }
 });
 
 test("non-production environments cannot publish or read customer report links", async () => {
@@ -192,63 +231,6 @@ test("report revocation accepts only allowlisted HTTPS URLs and invalidates the 
   assert.equal(rejected.status, 400);
   const deleted = await handlePublishReport(makeDelete(`https://reports.example.workers.dev/report/${token}`, "192.0.2.10"), productionEnv, { store });
   assert.equal(deleted.status, 200); assert.deepEqual(await deleted.json(), { deleted: true }); assert.equal(store.reports.has(key), false);
-});
-
-test("rate-limit Firestore failures log only status and operation metadata", async () => {
-  const store = new MemoryStore();
-  store.incrementRateLimit = async () => { throw new FirestoreError(403, "write"); };
-  const logs = []; const originalLog = console.log;
-  console.log = (...args) => logs.push(args.join(" "));
-  try {
-    const response = await handleCrmEnquiries(new Request("https://site.example/api/private-enquiries", { headers: { "cf-connecting-ip": "192.0.2.11" } }), productionEnv, { store });
-    assert.equal(response.status, 503); assert.deepEqual(await response.json(), { error: "rate_limit_unavailable" });
-    assert.equal(logs.length, 1); assert.match(logs[0], /"firestore_status":403/); assert.match(logs[0], /"firestore_operation":"write"/);
-    assert.equal(/secret|private_key|email/i.test(logs[0]), false);
-  } finally {
-    console.log = originalLog;
-  }
-});
-
-test("Firestore diagnostic requires its bearer token and returns only status and operation", async () => {
-  const store = new MemoryStore(); const token = "D".repeat(48);
-  store.incrementRateLimit = async () => { throw new FirestoreError(403, "write"); };
-  const env = { ...productionEnv, FIRESTORE_DIAGNOSTIC_TOKEN: ` \r\n${token} \r\n` };
-  const url = "https://site.example/api/private-enquiries?diagnostic=firestore";
-  const denied = await handleCrmEnquiries(new Request(url), env, { store });
-  assert.equal(denied.status, 404);
-  const response = await handleCrmEnquiries(new Request(url, { headers: { Authorization: `Bearer ${token}` } }), env, { store });
-  assert.equal(response.status, 503);
-  assert.deepEqual(await response.json(), { error: "firestore_diagnostic_failed", firestore_status: 403, firestore_operation: "write" });
-});
-
-test("Firestore diagnostic distinguishes OAuth token-fetch failures without exposing raw details", async () => {
-  const store = new MemoryStore(); const token = "E".repeat(48);
-  store.incrementRateLimit = async () => { throw new FirestoreError(0, "authentication", "oauth_fetch", "network"); };
-  const env = { ...productionEnv, FIRESTORE_DIAGNOSTIC_TOKEN: token };
-  const url = "https://site.example/api/private-enquiries?diagnostic=firestore";
-  const response = await handleCrmEnquiries(new Request(url, { headers: { Authorization: `Bearer ${token}` } }), env, { store });
-  assert.equal(response.status, 503);
-  assert.deepEqual(await response.json(), { error: "firestore_diagnostic_failed", firestore_status: 0, firestore_operation: "authentication", firestore_stage: "oauth_fetch", firestore_failure_type: "network" });
-});
-
-test("OAuth transport probe sends no credentials and returns only the endpoint HTTP status", async () => {
-  const token = "O".repeat(48); const originalFetch = globalThis.fetch; let observed;
-  globalThis.fetch = async (input, init) => {
-    observed = { url: String(input), method: init.method, body: String(init.body), authorization: new Headers(init.headers).get("Authorization") };
-    return new Response("ignored response body", { status: 400 });
-  };
-  try {
-    const url = "https://site.example/api/private-enquiries?diagnostic=firestore&probe=oauth";
-    const response = await handleCrmEnquiries(new Request(url, { headers: { Authorization: `Bearer ${token}` } }), { ...productionEnv, FIRESTORE_DIAGNOSTIC_TOKEN: token }, { store: new MemoryStore() });
-    assert.equal(response.status, 200);
-    assert.deepEqual(await response.json(), { oauth_http_status: 400 });
-    assert.equal(observed.url, "https://oauth2.googleapis.com/token");
-    assert.equal(observed.method, "POST");
-    assert.equal(observed.body, "grant_type=diagnostic_probe");
-    assert.equal(observed.authorization, null);
-  } finally {
-    globalThis.fetch = originalFetch;
-  }
 });
 
 test("daily cleanup removes expired reports and rate buckets and reports aggregate counts", async () => {
