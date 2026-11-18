@@ -4,7 +4,7 @@ The hosting pages currently accept a **plan request**, not a payment. A selected
 
 ## What can be prepared now
 
-The site is Astro on Netlify, and its server-side Functions run on Node. Paystack's hosted redirect flow can be integrated by calling its REST API from a Netlify Function using Node's built-in `fetch`; a browser SDK is not required for that flow. The Paystack secret must never be sent to browser code, committed to Git, or pasted into chat.
+The site is static Astro output served by a Cloudflare Worker. Paystack's hosted redirect flow can be integrated in a Worker API route using the built-in `fetch`; no browser SDK or Node server is required. No checkout route, merchant keys, plan codes, webhook, or live payment processing is currently configured. Keep the secret server-side in Cloudflare Worker secrets. The secret must never be sent to browser code, committed to Git, or pasted into chat.
 
 ## Important South African payment distinction
 
@@ -18,7 +18,7 @@ Using a Capitec Business account to receive or settle proceeds is separate from 
 4. Implement the checkout initializer on the server, with fixed plan/amount mapping, validated customer email, a unique transaction reference and an allowed callback URL. Do not accept an amount supplied by the browser.
 5. Configure a Paystack webhook endpoint. Verify `x-paystack-signature` using HMAC-SHA512 over the raw request body and the server-side secret. Verify the transaction status, ZAR currency and expected amount before recording it as paid. Make the event handler idempotent and do not provision merely because a customer visited the callback page.
 6. Test successful, declined, abandoned, repeated and mismatched-amount transactions using test keys. Confirm that owner notification, cancellations, refunds and service start/stop decisions are handled before enabling live orders.
-7. Add the live secret and plan codes directly to the Netlify production environment settings, never to `.env.example` or Git. Enable live checkout only after the webhook and all tested order states work.
+7. Add the live secret as a Cloudflare Worker secret and store only non-secret plan identifiers in server-side Worker configuration. Keep production checkout disabled until the webhook and all tested order states work.
 
 ## Primary sources
 

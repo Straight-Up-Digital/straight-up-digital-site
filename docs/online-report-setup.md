@@ -1,45 +1,46 @@
-# Online Business Auditor report: owner setup and workflow
+# Online Business Auditor report: Cloudflare setup and owner workflow
 
-## How the customer journey works
+## Current production status
 
-The public form collects an audit request; it does **not** run the private Python engine. The owner reviews the request and manually runs the full audit in the local, private Business Auditor CRM. In the CRM, the owner previews the customer version, confirms its wording and accuracy, then publishes it. Only the deliberately whitelisted report is sent over HTTPS to a production-only Netlify Function. The full scorecard, pricing, internal service-fit analysis, competitor strategy and CRM data remain in the local private application.
+The Cloudflare Worker is live at `https://straight-up-digital-cloudflare.stjohn-toperformer.workers.dev`. Its production Firestore project is `straight-up-digital-prod` in `africa-south1` (Johannesburg), and enquiry email uses the Zoho Mail API. **Online report publishing and client responses are currently disabled**: production has `AUDIT_REPORTS_ENABLED=false`, and the Cloudflare secret `AUDIT_REPORT_PUBLISH_TOKEN` has not been configured. No production customer report should be published until the remaining setup and synthetic test below are complete.
 
-The published report opens as a branded webpage. It describes each finding as **what we found, why it matters and what to do next**. It includes no PDF download or internal scorecard. The owner can open the generated private link in the CRM and share it with the client by email. Link delivery is deliberately manual; the system does not send a report link to a client automatically.
+The email API has accepted a synthetic contact enquiry, but a report-response message has not yet been tested. The public report flow is separate from contact/audit enquiries.
 
-On the report page, the client may say they want to discuss the fixes, request a meeting, or ask a question. Their name, email, selected next step, optional meeting preference, message and consent timestamp are sent to `straightupdigital@zohomail.com`. This response is not a purchase or binding acceptance. The full audit is not attached to the owner notification; the owner already has it in the local CRM. Reports use unguessable bearer links, are marked noindex/no-store, stop working after 30 days and are deleted by the daily cleanup function after expiry.
+## Customer journey
 
-## Production configuration and verified status
+The public form does not run the private Python audit engine. The owner reviews the request and manually runs the full audit in the local, private Business Auditor CRM. The owner previews the customer-safe version, checks the wording and accuracy, then explicitly publishes it. The Worker accepts only the normalized customer report, not the full internal scorecard, pricing, service-fit analysis, competitor strategy or CRM data.
 
-The report feature is **disabled by default** and fails closed. Production is enabled and passed a synthetic end-to-end report/response test on 15 November 2026. Set the following as Netlify environment variables in the production deploy context. Choose the narrowest available scope; do not put real values in `netlify.toml`, Git, email, or chat.
+A published report opens as a branded web page, not a PDF download. Each finding explains what was found, why it matters to the business, and what the customer can do next. A client can ask a question, request a meeting, or indicate that they want to discuss the proposed fixes. These choices are non-binding. The response is emailed to `straightupdigital@zohomail.com`; it is not stored in the website's report collection.
 
-```text
-AUDIT_REPORTS_ENABLED=true
-AUDIT_REPORT_PUBLISH_TOKEN=<same high-entropy token as the local CRM>
-EMAIL_PROVIDER=zoho-smtp
-ENQUIRY_TO_EMAIL=straightupdigital@zohomail.com
-ENQUIRY_FROM_EMAIL=straightupdigital@zohomail.com
-ZOHO_SMTP_HOST=smtp.zoho.com
-ZOHO_SMTP_PORT=465
-ZOHO_SMTP_SECURE=true
-ZOHO_SMTP_USERNAME=straightupdigital@zohomail.com
-ZOHO_SMTP_PASSWORD=<Zoho app-specific password>
-```
+Report links are unguessable bearer links, use `noindex`/`no-store` protections, and expire after 30 days. The daily Cloudflare scheduled cleanup removes expired Firestore report records. The owner can revoke an individual link from the local CRM before expiry.
 
-Netlify's `Builds, Functions, Runtime` scope is not browser-readable, but it makes secrets accessible to code in those contexts. Prefer Production-only deploy contexts and the narrowest available scopes; avoid Deploy Preview values unless required. Some account plans may not offer a Function-only scope, so review the actual selector before saving. The production smoke test used fictional business data and a reserved `.invalid` email address, not client data.
+## Required configuration before enabling reports
 
-Generate a token locally with `python -c "import secrets; print(secrets.token_urlsafe(48))"`. Put the same value in Netlify's `AUDIT_REPORT_PUBLISH_TOKEN` and the ignored local `business_auditor/.env` file. In that private `.env`, set `AUDIT_REPORT_PUBLISH_URL=https://straight-up-digital-site.netlify.app/.netlify/functions/publish-audit-report`. Never commit `.env`. If Zoho displays different SMTP details in its account-specific Server Configurations page, use those values; with two-factor authentication, Zoho may require an app-specific password.
+1. Generate a new, high-entropy token locally, distinct from any Netlify token. Keep it private. In the website repository, run `npx wrangler secret put AUDIT_REPORT_PUBLISH_TOKEN --env production` and enter the token directly into Wrangler's prompt. Do not put the value in Git, chat, or a command line that saves shell history.
+2. In the production `wrangler.jsonc` environment, set `AUDIT_REPORTS_ENABLED` to `true`. Add the exact production `workers.dev` hostname (`straight-up-digital-cloudflare.stjohn-toperformer.workers.dev`) to `PUBLIC_REPORT_HOSTS`; that allowlist is required for safe report revocation. When a custom domain is approved and live, include its exact hostname(s) too.
+3. In the ignored local Business Auditor `.env`, set these names using the same token and the current production endpoint. Never commit `.env` or share values:
 
-After changing Netlify environment variables, trigger a new production deployment so the Function runtime receives the values. The existing GitHub Actions build-hook workflow is the deployment path; no paid plan change is needed. Netlify Functions and Blobs consume the account's included usage credits, so monitor usage; the Free plan can pause usage at its hard limit.
+   ```text
+   CLOUDFLARE_WORKER_HOST=straight-up-digital-cloudflare.stjohn-toperformer.workers.dev
+   CLOUDFLARE_AUDIT_REPORT_PUBLISH_URL=https://straight-up-digital-cloudflare.stjohn-toperformer.workers.dev/api/publish-audit-report
+   CLOUDFLARE_AUDIT_REPORT_PUBLISH_TOKEN=<same token stored as the Worker secret>
+   ```
 
-## Separate initial-request email setting
+4. Verify the production Worker still has `GOOGLE_FIRESTORE_SERVICE_ACCOUNT_JSON`, `RATE_LIMIT_HASH_SECRET`, `ZOHO_API_CLIENT_ID` and `ZOHO_API_CLIENT_SECRET` configured. The active email provider is `zoho-mail-api`; do not re-add or use the retired SMTP password.
+5. Run the site's tests and production dry-run, then deploy only to Cloudflare. The current site build commands are `npm run build:cloudflare` and `npx wrangler deploy --env production`.
+6. Use a clearly synthetic report to test publish, browser rendering, client response email to the business inbox, delete/revocation and daily expiry behavior. Verify the response contains no internal scorecard or pricing. Do not use real customer information until the owner has reviewed the updated privacy notice and cross-border data-processing obligations.
 
-The public audit-request and contact forms use **Netlify Forms**, separate from the Zoho Function that handles customer report responses. The sole all-forms notification is now addressed to `straightupdigital@zohomail.com`; the obsolete pending `Hello@straightupdigital.co.za` notification was removed, and no recipient confirmation is pending in Netlify. On 15 November 2026, each form was submitted once with fictional data and a reserved `.invalid` email address. Both forms displayed their success state, and both matching `formresponses@netlify.com` notifications were verified in Zoho with the correct form type and source path. No client data was used. This independently verifies the Netlify Forms path; configuring Zoho SMTP alone does not change Netlify Forms notifications.
+## Local CRM settings and operating steps
 
-## Owner operating checklist
-1. Review the incoming request and verify the business identity/website; the public site does not run audits automatically.
-2. Run the full audit in the private local CRM.
-3. Open the customer report preview. Check that the findings are accurate and understandable, then confirm the review checkbox and publish.
-4. Open the report from the CRM and send its private link to the client using your normal email. The CRM shows the expiry date; a refreshed report creates a new link and the older link remains live until its expiry.
-5. When the client responds, the chosen next step and message arrive by email at the configured business inbox. Follow up manually and agree any scope and price separately in writing.
+The CRM publisher reads `CLOUDFLARE_WORKER_HOST`, `CLOUDFLARE_AUDIT_REPORT_PUBLISH_URL` and `CLOUDFLARE_AUDIT_REPORT_PUBLISH_TOKEN` from the private local `.env`. It permits only the known Straight Up Digital report route on HTTPS and requires the returned link hostname to be allowlisted. `CLOUDFLARE_WORKER_HOST` must be the exact hostname only, without a scheme, path or port.
 
-Test the complete flow using a fabricated audit and an address you control before sending any real client's report. Deploy-preview report routes intentionally return unavailable/not found and must not be used for live report data, because Netlify Blobs stores are shared across deploy contexts.
+After the feature is enabled and synthetic tests pass:
+
+1. Review the enquiry and verify the business and website.
+2. Run the complete audit in the private CRM.
+3. Preview the customer-facing version. Correct or remove anything that is not useful, accurate or safe to disclose.
+4. Confirm the review in the CRM and publish. Share the generated link manually by email; the site does not automatically send the report link.
+5. When a client responds, follow up manually. Agree any scope, price and contract separately in writing.
+6. If the report or contact is deleted from the CRM, revoke its online report first. The CRM blocks unsafe local erasure if Cloudflare revocation fails.
+
+The full audit engine and CRM must remain bound to `127.0.0.1`; never expose the local CRM through a public tunnel. A private report link is still a bearer credential: share it only with the intended client, and do not include it in public posts or analytics.

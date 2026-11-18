@@ -12,9 +12,9 @@ const description =
   canonicalPath="/privacy"
 >
   <section class="legal">
-    <div class="container legal__inner">
-      <h1>Privacy notice</h1>
-      <p class="legal__meta">Version 1.0 · Last updated 15 November 2026</p>
+        <div class="container legal__inner">
+          <h1>Privacy notice</h1>
+          <p class="legal__meta">Version 1.1 · Last updated 18 November 2026</p>
 
       <div class="prose">
         <p>
@@ -77,45 +77,60 @@ const description =
         </p>
         <ul>
           <li>
-            <strong>Netlify</strong> — website hosting, enquiry handling, serverless
-            functions and (when enabled) private online report storage. A report is
-            accessible to anyone who has its private link, is marked not to be
-            indexed by search engines and stops working after 30 days. Expired
-            records are removed by the daily cleanup job.
-            Initial audit requests and contact enquiries use Netlify Forms, with
-            submission notices delivered to the business email address.
+            <strong>Cloudflare</strong> — website hosting, form-processing Worker
+            and security controls. Cloudflare receives the form request and
+            technical data such as an IP address and may process requests at its
+            global edge locations, including outside South Africa.
           </li>
           <li>
-            <strong>Zoho Mail</strong> — when the report-response feature is enabled,
-            it sends the business your name, email address, business and website,
-            selected next step, meeting preference, message and consent timestamp.
-            The configured recipient is straightupdigital@zohomail.com.
+            <strong>Google Cloud Firestore</strong> — the accepted enquiry and
+            private report records are stored in the production database region in
+            Johannesburg, South Africa (<code>africa-south1</code>). The owner can
+            retrieve an enquiry into the private local CRM; after successful
+            import, the temporary Firestore queue copy is deleted. Rate-limit
+            records are short-lived and are used to reduce form abuse.
           </li>
           <li>
-            <strong>Straight Up Digital's private Business Auditor</strong> — the
-            owner runs the full audit and keeps its scorecard and detailed analysis
-            in the private CRM. Those internal details are not included in the
-            customer report.
+            <strong>Zoho Mail</strong> — receives enquiry notifications at
+            straightupdigital@zohomail.com through the Zoho Mail API. The message
+            includes the details you submit so the owner can respond. Zoho Mail for
+            this account uses a United States data centre; mailbox copies are
+            subject to Zoho's processing and retention practices.
+          </li>
+          <li>
+            <strong>The private local Business Auditor CRM</strong> — the owner may
+            import enquiries from Firestore and runs the full audit on a private
+            computer. The CRM and full audit are not served to website visitors.
+          </li>
+          <li>
+            <strong>Online customer reports</strong> — report publishing and client
+            responses are currently disabled in production. If enabled, only the
+            owner-reviewed customer-safe report would be stored in Johannesburg
+            Firestore; its private link would expire after 30 days. A client's
+            response would be emailed to the business inbox.
           </li>
           <li>
             Professional advisers or authorities, where the law requires it.
           </li>
         </ul>
         <p>
-          Some providers may process information outside South Africa. Where that
-          happens, we require protections that are at least equivalent to POPIA.
+          Although enquiry and report records are stored in Johannesburg, Cloudflare
+          and Zoho may process information outside South Africa. This can involve a
+          cross-border transfer under POPIA. A South African database location on
+          its own does not establish compliance; appropriate legal grounds and
+          safeguards must apply to each transfer. Contact us if you need more
+          information about a particular service provider or transfer.
         </p>
 
         <h2>5. How long we keep it</h2>
         <p>
-          When online reports are enabled, their private links are scheduled to
-          expire and the report records to be deleted after 30 days. The customer
-          response is sent to the business by email and is not stored in the
-          website's report store. Enquiries and email records are kept only as long
-          as needed to respond, deliver agreed work and meet record-keeping
-          obligations. We review these records and delete or anonymise them when
-          they are no longer needed, unless a legal or accounting obligation
-          requires continued retention.
+          A website enquiry stays in the private Firestore queue until the owner
+          imports and acknowledges it; the queue copy is then deleted. The owner
+          may retain the local CRM and Zoho mailbox copies as needed to respond,
+          deliver agreed work and meet record-keeping obligations. No automatic
+          deletion schedule is configured for those copies. Online report
+          publishing is currently disabled; if enabled, report links and stored
+          report records are scheduled to expire and be deleted after 30 days.
         </p>
 
         <h2>6. Cookies and analytics</h2>

@@ -1,39 +1,42 @@
-# Owner-confirmed details and launch checklist
+# Owner-confirmed details and current launch checklist
 
-This checklist separates owner-confirmed public information from operational steps that still need to happen. Public copy uses only the locality supplied by the owner and does not invent a street address or company registration.
+Updated 18 November 2026. This file distinguishes public facts from operational work that remains. No street address, company-registration number, founder photo, or unapproved service-area claim is invented.
 
-## Confirmed and reflected on the site
+## Confirmed public details
 
-| Item | Published information or behavior |
+| Item | Current information |
 | --- | --- |
-| Business identity | St. John Ritchie trading as Straight Up Digital; described as a sole proprietor, not as a registered company. |
-| Public locality | Port Alfred, Eastern Cape, South Africa. No street address is published. |
+| Business identity | St. John Ritchie trading as Straight Up Digital. Do not call the sole proprietorship a registered company. |
+| Locality | Port Alfred, Eastern Cape, South Africa. No street address is published. |
 | Contact | `Hello@straightupdigital.co.za` and `+27 62 065 3503`. |
-| Policies | Owner says the policies have been checked. Privacy notice and terms show the supplied name/locality and no draft or owner-confirmation banners. The privacy contact is St. John Ritchie. |
-| Audit limitations | Footer and terms say audits are human-reviewed assessments of public information and do not promise ranking, traffic or financial outcomes. The full scorecard and CRM remain private. |
-| Netlify Forms | `straightupdigital@zohomail.com` is the configured notifications destination; synthetic contact and audit requests were received in Zoho on 15 November 2026. |
-| Hosting tiers | Email & Starter Site R99/month (2 GB, up to 5 mailboxes); Business Growth R149/month (5 GB, up to 15 mailboxes); Managed Care R399–R599/month (10 GB, monthly website updates and backups). Plan CTAs send a request with the chosen tier selected. |
-| Domain pricing | Indicative .co.za registration/renewal range R149–R169 per year, subject to registrar, extension and renewal confirmation; domain charges are separate from hosting. |
-| Payment copy | The site takes a plan request; owner confirms availability, recurring terms, payment method and start date before any payment or provisioning. |
-| SEO origin | Canonical URLs, sitemap, social URLs and organization data use `https://straightupdigital.co.za/` in advance of DNS cutover. |
-| Online audit reports | Owner manually runs the private audit, reviews the client-safe translation, and publishes only after confirmation. Links are private, no-index and expire after 30 days. Prior synthetic rendering/response-email checks passed on 15 November. A 16 November synthetic report rendered with `noindex`/`no-store`, but live DELETE returned 405 because production still runs the POST-only `eaeb305` function. No real client data or email was involved; current GitHub `main` has the revocation fix but is not live. |
+| Hosting tiers | Email & Starter Site R99/month; Business Growth R149/month; Managed Care R399–R599/month. Customers submit a request; availability and terms are confirmed before payment or provisioning. |
+| Domains | Domain registration is a separate annual add-on; the published .co.za range is indicative and must be confirmed with the reseller. |
+| Audits | Full audit is owner-run in the private local Business Auditor. Public reports are customer-safe, owner-reviewed web pages, not PDF downloads. |
+| Analytics | Tracking is disabled. Reputation/review checks remain in development and are not currently offered as a finished service. |
+| Canonical metadata | Uses `https://straightupdigital.co.za/`; this does not mean the domain has been registered or connected. |
 
-## Still to do before the full launch
+## Cloudflare production status
 
-| Item | Current status | Action |
-| --- | --- | --- |
-| Custom domain and DNS | The domain remains intentionally unpurchased. Public DNS previously returned NXDOMAIN for apex and `www`; the Netlify hostname remains reachable. The final hosting target is still pending Cloudflare test and privacy sign-off. | After all tests pass and the owner approves purchase, register the domain, select the final host, verify apex/`www` DNS and HTTPS, and preserve Zoho mail records. No DNS or domain purchase was made. |
-| Hosting and domain reseller operations | Public due diligence is complete; Cyber Circuit is the user's selected hosting-reseller candidate. HostAfrica appears the better low-volume domain-reseller fit than Domains.co.za based on published minimums and prices. No supplier account or paid service was created. | Review [`docs/sa-hosting-and-domain-reseller-options.md`](docs/sa-hosting-and-domain-reseller-options.md); confirm VAT, mailbox quotas, reseller credit/top-up rules, backups/restore, cancellation, support, renewal/transfer terms and actual margin directly before buying or taking orders. |
-| Paystack onboarding and integration | Checkout is not open. Paystack merchant activation/KYC, test credentials, recurring plan codes and the merchant's supported recurring method are not configured. The request flow remains manual. | Complete onboarding and test mode; confirm recurring method and plan codes; implement and test server-side transaction verification and idempotent webhooks before live checkout. Store secrets only in the selected hosting provider's secret settings. Capitec Pay remains once-off-only unless Paystack confirms otherwise. See [`docs/paystack-setup.md`](docs/paystack-setup.md). |
-| Enquiry and client-record handling | Online report expiry is automated, but enquiry emails/forms and client records may remain in provider systems. The live Netlify deploy processes Functions in `cmh` (Columbus) and reports Blob storage region `us-east-2`; the Johannesburg Firestore branch is not deployed. This does not establish a complete POPIA conclusion. | Review provider processing terms, retention and cross-border flow. Agree and document a retention/deletion routine for forms, Firestore/Netlify records, CRM and Zoho mailbox copies before real Cloudflare intake. |
-| Privacy contact/regulatory administration | St. John Ritchie is published as the privacy contact; public copy makes no formal Information Officer registration claim. | Confirm any appointment or registration obligations with the Information Regulator or the owner's adviser. |
-| Service availability | Digital presence audits are available; web design, SEO, Google Business Profile, content/social, and hosting/domains are on request; reputation/review checks remain in development. | Confirm statuses still match capacity. Do not sell reputation checks as currently available. |
-| Private CRM/report safeguards | Full Python Auditor and CRM remain local-only on `127.0.0.1`. The local CRM has a Cloudflare opt-in but the new Worker has not been deployed. Report publication remains manual and owner-reviewed. | Preserve local-only binding and manual approval. Run synthetic CRM/report sync and revoke tests on each platform after its deployment. |
-| Analytics | Tracking is disabled. | Keep disabled unless a specific tool and appropriate notice/consent are approved. |
-| Optional profile content | Operating locality is Port Alfred, Eastern Cape, South Africa. No founder photo/social-profile URL was supplied and no broader service area is claimed. | Add photos or profiles only if desired, with exact URLs and permission to publish. Confirm service area case by case. |
-| Production deployment | Netlify connector reports current production deploy `6af90efe` as ready at commit `eaeb305`; current GitHub `main` is `e81cb4a` and is not live. Netlify Functions run in `cmh` and Blob storage is in `us-east-2`. The connector does not expose current credit balance; a prior credit-pause was recorded. | Confirm credits and obtain approval for the exact deployment before publishing. Do not purchase a plan or deploy the Cloudflare migration branch to Netlify without explicit approval. |
-| Cloudflare production readiness | Test and production Firestore projects and databases exist on Spark/no-cost, both in Johannesburg; project IDs are in Wrangler. No service accounts, keys or Worker secrets exist, and the test Worker remains unrouted. | Obtain approval for the credential method, set secrets without chat/Git exposure, deploy to the private test Worker, and verify synthetic flows and real Zoho delivery before any cutover. |
+The static Astro site is live on `https://straight-up-digital-cloudflare.stjohn-toperformer.workers.dev`. Read-only checks returned HTTP 200 for the homepage, contact page and privacy page. The public contact/audit forms use the Cloudflare Worker API, not Netlify Forms. Production email uses Zoho Mail API and the recipient is `straightupdigital@zohomail.com`. The production Firestore database is in `africa-south1` (Johannesburg).
 
-## Pricing source and reconciliation
+A synthetic contact submission returned HTTP 200. The Zoho API accepted the email request, but inbox arrival was not independently verified. The same synthetic Firestore row was imported by the real CRM sync routine into an isolated SQLite database, acknowledged, and removed from the Firestore queue. It contained fake test data only.
 
-Business Auditor proposal rates remain separate from owner-approved hosting/domain prices. Audit proposals use R40 per missing point out of 100; a website build is R1,500 once-off for up to five pages; hourly work is R650/hour with a two-hour estimate minimum; one-off edits are R150 for a small text change, R150 for a photo swap, R350 for an additional form and R650 for a new page. Monthly retainers remain Fresh Start R200, Steady Presence R400, Local Growth R700, Content Partner R1,000 and Digital Partner R1,500, with inclusions shown on the pricing page. Domain registration/renewal is separate from hosting. Retail prices do not guarantee wholesale costs or domain availability.
+## Data handling and privacy
+
+The updated privacy notice describes Cloudflare edge processing, Firestore storage in Johannesburg, Zoho Mail processing in its United States data centre, and the local CRM import. A South African Firestore region alone does not establish POPIA compliance. The owner/adviser still needs to review the legal basis and safeguards for cross-border processing and decide/document retention for Zoho mailbox and local CRM copies.
+
+The Python Business Auditor and CRM remain private and bound to `127.0.0.1`; do not expose them through a public tunnel. Enquiry rows are kept in Firestore until the owner imports and acknowledges them; the queue copy is then deleted. The local CRM and mailbox copies do not have an automated deletion schedule configured.
+
+## Still to complete before broader launch
+
+| Item | Current status and next action |
+| --- | --- |
+| Online customer reports | Disabled in production (`AUDIT_REPORTS_ENABLED=false`); `AUDIT_REPORT_PUBLISH_TOKEN` is not set on the Worker, and the local `CLOUDFLARE_AUDIT_REPORT_PUBLISH_TOKEN` is unset. Configure a separate secret, allowlist the workers.dev hostname, and run synthetic publish/render/respond/revoke/expiry tests before enabling. See [`docs/online-report-setup.md`](docs/online-report-setup.md). |
+| Zoho inbox verification | API acceptance was observed, but the message was not independently located in the inbox during this session. Verify before calling email delivery fully end-to-end. |
+| Custom domain and DNS | `straightupdigital.co.za` remains unpurchased/unconfigured; public DNS previously returned NXDOMAIN. Do not purchase or change DNS without separate owner approval. Preserve Zoho mail records if a domain cutover is later approved. |
+| Paystack | No merchant onboarding/KYC, recurring method, test keys/plan codes, Worker checkout endpoint, verified webhook or production secret is configured. Current calls to action are manual plan requests. See [`docs/paystack-setup.md`](docs/paystack-setup.md). |
+| Hosting/domain resellers | No supplier account or paid service was created. Confirm current wholesale terms, VAT, quotas, backups, cancellation, support, renewals and margins before taking orders. |
+| Netlify leftovers | Legacy Netlify functions/config/forms remain in the repository. `.github/workflows/netlify-production.yml` still listens to `main` pushes/manual dispatch and was not changed. Do not push/merge to `main`, trigger Netlify or alter its build hooks without separate approval. |
+| Social/profile assets | No founder photo or social-profile URLs were supplied. Add only with exact approved assets/URLs and permission. |
+
+See [`TODO.md`](TODO.md) for the detailed technical completion record and current priorities.
