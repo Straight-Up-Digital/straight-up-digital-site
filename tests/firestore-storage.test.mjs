@@ -195,6 +195,29 @@ test("missing Firestore configuration fails closed and API errors do not expose 
   });
 });
 
+test("default fetch retains the globalThis receiver required by Cloudflare Workers", async () => {
+  const credentials = await makeCredentials();
+  const originalFetch = globalThis.fetch;
+  const calls = [];
+  globalThis.fetch = async function(input) {
+    assert.equal(this, globalThis, "Worker fetch must be invoked with its global receiver");
+    const url = new URL(input);
+    calls.push(url.href);
+    if (url.href === "https://oauth2.googleapis.com/token") return Response.json({ access_token: "synthetic-access-token", expires_in: 3600 });
+    assert.equal(url.pathname.endsWith("/documents:runQuery"), true);
+    return Response.json([{ done: true }]);
+  };
+  try {
+    const store = new FirestoreDataStore({ FIRESTORE_PROJECT_ID: "sud-test", GOOGLE_FIRESTORE_SERVICE_ACCOUNT_JSON: credentials.json });
+    assert.equal(await store.deleteExpiredReports("2026-11-16T00:00:00.000Z"), 0);
+    assert.equal(calls.length, 2);
+    assert.equal(new URL(calls[0]).hostname, "oauth2.googleapis.com");
+    assert.equal(new URL(calls[1]).hostname, "firestore.googleapis.com");
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
 test("OAuth token-fetch errors retain only the network exception name and message", async () => {
   const credentials = await makeCredentials();
   const store = new FirestoreDataStore({ FIRESTORE_PROJECT_ID: "sud-test", GOOGLE_FIRESTORE_SERVICE_ACCOUNT_JSON: credentials.json }, {

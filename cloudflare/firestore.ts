@@ -119,7 +119,7 @@ export class FirestoreRestClient {
     if (!/^[a-z][a-z0-9-]{4,28}[a-z0-9]$/.test(projectId)) throw new FirestoreError(0, "configuration");
     this.projectId = projectId;
     this.account = readServiceAccount(serviceAccountJson);
-    this.fetcher = options.fetcher ?? fetch;
+    this.fetcher = options.fetcher ?? globalThis.fetch.bind(globalThis);
     this.now = options.now ?? Date.now;
     this.root = `${FIRESTORE_API}/projects/${projectId}/databases/(default)/documents`;
   }
