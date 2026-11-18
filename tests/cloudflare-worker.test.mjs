@@ -209,6 +209,29 @@ test("private CRM sync uses stable 100-record pages and only acknowledges valida
   assert.equal(ack.status, 200); assert.deepEqual(await ack.json(), { deleted: 1 }); assert.equal(store.enquiries.size, 100);
 });
 
+test("protected rate-limit failure logs sanitized Firestore OAuth metadata only", async () => {
+  const store = new MemoryStore();
+  const marker = "synthetic-secret-value";
+  store.incrementRateLimit = async () => { throw new FirestoreError(0, "authentication", "oauth_fetch", "network", new TypeError(`fetch failed Bearer ${marker}`)); };
+  const logs = []; const originalWarn = console.warn; console.warn = (...args) => logs.push(args.join(" "));
+  try {
+    const response = await handleCrmEnquiries(new Request("https://site.example/api/private-enquiries", { headers: { Authorization: `Bearer ${syncToken}`, "cf-connecting-ip": "192.0.2.40" } }), productionEnv, { store });
+    assert.equal(response.status, 503);
+    const entry = JSON.parse(logs[0]);
+    assert.equal(entry.event, "request_rate_limit_unavailable");
+    assert.equal(entry.route, "crm-enquiries");
+    assert.equal(entry.firestore_status, 0);
+    assert.equal(entry.firestore_operation, "authentication");
+    assert.equal(entry.firestore_stage, "oauth_fetch");
+    assert.equal(entry.firestore_failure_type, "network");
+    assert.equal(entry.oauth_error_name, "TypeError");
+    assert.equal(entry.oauth_error_message, "fetch failed Bearer [redacted]");
+    assert.doesNotMatch(logs.join(" "), new RegExp(marker));
+  } finally {
+    console.warn = originalWarn;
+  }
+});
+
 test("report replies are emailed to the owner only after consent and expire after the private retention period", async () => {
   const store = new MemoryStore(); const token = "R".repeat(43); const key = await createReportKey(token);
   const now = Date.now(); await store.createReport(key, reportFixture(), new Date(now + 86_400_000).toISOString(), new Date(now).toISOString());

@@ -14,8 +14,15 @@ async function protectedRateLimit(request: Request, env: CloudflareWorkerEnv, de
     const result = await rateLimit(request, env, deps.store, route, limit, 60, nowFrom(deps));
     return result.allowed ? null : reportJsonResponse({ error: "rate_limited" }, 429);
   } catch (error) {
-    const details = error instanceof FirestoreError ? { firestore_status: error.status, firestore_operation: error.operation } : {};
-    console.log(JSON.stringify({ event: "request_rate_limit_unavailable", route, error_type: error instanceof Error ? error.name : "UnknownError", ...details }));
+    const details = error instanceof FirestoreError ? {
+      firestore_status: error.status,
+      firestore_operation: error.operation,
+      ...(error.stage ? { firestore_stage: error.stage } : {}),
+      ...(error.failureType ? { firestore_failure_type: error.failureType } : {}),
+      ...(error.causeName ? { oauth_error_name: error.causeName } : {}),
+      ...(error.causeMessage ? { oauth_error_message: error.causeMessage } : {}),
+    } : {};
+    console.warn(JSON.stringify({ event: "request_rate_limit_unavailable", route, error_type: error instanceof Error ? error.name : "UnknownError", ...details }));
     return reportJsonResponse({ error: error instanceof RateLimitUnavailable ? "rate_limit_not_configured" : "rate_limit_unavailable" }, 503);
   }
 }
