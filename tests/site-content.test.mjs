@@ -16,6 +16,7 @@ const styles = read("../src/styles/global.css");
 const layout = read("../src/layouts/BaseLayout.astro");
 const footer = read("../src/components/SiteFooter.astro");
 const astro = read("../astro.config.mjs");
+const robots = read("../src/pages/robots.txt.ts");
 const paystack = read("../docs/paystack-setup.md");
 const faqs = read("../src/data/faqs.ts");
 const digitalAudit = read("../src/pages/digital-audit.astro");
@@ -119,6 +120,11 @@ test("the intended custom domain is canonical and present in social/business met
   assert.match(layout, /name="twitter:card"/);
   assert.match(layout, /"@type": "PostalAddress"/);
   assert.match(layout, /addressLocality: "Port Alfred"/);
+});
+
+test("private CRM is excluded from search indexing and the public sitemap", () => {
+  assert.match(astro, /!page\.includes\("\/crm"\)/);
+  assert.match(robots, /Disallow: \/crm/);
 });
 
 test("Paystack readiness copy does not promise recurring Capitec Pay", () => {

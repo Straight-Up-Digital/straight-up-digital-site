@@ -1,6 +1,6 @@
 # Cloudflare Workers migration plan
 
-> **Current status — 20 November 2026:** The static website and Worker are deployed at `https://straight-up-digital-cloudflare.stjohn-toperformer.workers.dev`. This does not complete the CRM migration or production cutover: the Worker still uses Firestore, no D1 binding is configured, audit-report publishing remains disabled, and the custom domain is not active. The Python CRM remains a separate local SQLite application. Deployment success does not verify live email or Firestore credentials. Sections below that describe the 16 November deployment state are historical.
+> **Current status — 20 November 2026:** The original public website is at `https://straight-up-digital-cloudflare.stjohn-toperformer.workers.dev`. A separate Worker deployment with the CRM page is now at `https://straight-up-digital-cloudflare.straightupdigital.workers.dev`; it has a Cloudflare D1 binding and an empty CRM schema applied in region `WEUR` (Western Europe). No local customer records were migrated. CRM sign-in is deliberately disabled until the owner sets the `CRM_ADMIN_PASSWORD` Worker secret (32+ random characters). The new Worker is a separate deployment, not a DNS cutover or update to the original host. Online audit-report publishing and Paystack checkout remain disabled/not implemented, and the custom domain is not active. Review cross-border data handling before adding real client data to the WEUR database. Sections below that describe the 16 November state are historical.
 
 ## Goal and safety boundary
 

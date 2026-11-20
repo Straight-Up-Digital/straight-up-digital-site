@@ -23,7 +23,8 @@ export default defineConfig({
     sitemap({
       filter: (page) =>
         !page.includes("/thank-you") &&
-        !page.includes("/404"),
+        !page.includes("/404") &&
+        !page.includes("/crm"),
       changefreq: "monthly",
       priority: 0.7,
     }),

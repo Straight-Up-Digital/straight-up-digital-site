@@ -10,7 +10,7 @@
     "directory": "./dist",
     "binding": "ASSETS",
     "not_found_handling": "404-page",
-    "run_worker_first": ["/api/*", "/.netlify/functions/*", "/report/*"]
+    "run_worker_first": ["/api/*", "/.netlify/functions/*", "/report/*", "/crm/*", "/crm"]
   },
   "vars": {
     "APP_ENV": "development",
@@ -45,6 +45,14 @@
       "name": "straight-up-digital-cloudflare",
       // Turn this off once the custom domain is live.
       "workers_dev": true,
+      "d1_databases": [
+        {
+          "binding": "CRM_DB",
+          "database_name": "straight-up-digital-crm",
+          "database_id": "693b8ec7-2463-4387-8903-987e91a8ee8c",
+          "migrations_dir": "./cloudflare/migrations"
+        }
+      ],
       "vars": {
         "APP_ENV": "production",
         "EMAIL_PROVIDER": "zoho-mail-api",

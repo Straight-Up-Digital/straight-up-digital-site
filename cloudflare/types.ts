@@ -24,6 +24,8 @@ export interface StoredReport { report: CustomerReport; expiresAt: string }
 
 export interface CloudflareWorkerEnv {
   ASSETS: StaticAssetBinding;
+  CRM_DB?: D1Database;
+  CRM_ADMIN_PASSWORD?: string;
   FIRESTORE_PROJECT_ID?: string;
   GOOGLE_FIRESTORE_SERVICE_ACCOUNT_JSON?: string;
   APP_ENV?: string;

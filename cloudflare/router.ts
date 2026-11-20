@@ -1,11 +1,23 @@
 import { FirestoreDataStore } from "./storage.ts";
 import { handleSubmitEnquiry, handleClientReport } from "./public-routes.ts";
 import { handleCrmEnquiries, handlePublishReport } from "./private-routes.ts";
+import { handleCrmRequest } from "./crm-routes.ts";
 import { sendEnquiryEmail, sendReportResponseEmail } from "./email.ts";
 import type { CloudflareWorkerEnv, SocketConnect, WorkerExecutionContext } from "./types.ts";
 
 export async function handleWorkerRequest(request: Request, env: CloudflareWorkerEnv, _ctx?: WorkerExecutionContext, socketConnect?: SocketConnect): Promise<Response> {
   const url = new URL(request.url);
+  if (url.pathname === "/api/crm" || url.pathname.startsWith("/api/crm/")) {
+    return handleCrmRequest(request, env);
+  }
+  if (url.pathname === "/crm") return Response.redirect(new URL("/crm/", request.url), 308);
+  if (url.pathname === "/crm/") {
+    const response = await env.ASSETS.fetch(request);
+    const headers = new Headers(response.headers);
+    headers.set("Cache-Control", "private, no-store, max-age=0");
+    headers.set("X-Robots-Tag", "noindex, nofollow, noarchive, nosnippet");
+    return new Response(response.body, { status: response.status, headers });
+  }
   const store = new FirestoreDataStore(env);
   const publicDeps = {
     store,

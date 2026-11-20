@@ -4,11 +4,13 @@
 
 The Cloudflare Worker is live at `https://straight-up-digital-cloudflare.stjohn-toperformer.workers.dev`. Its production Firestore project is `straight-up-digital-prod` in `africa-south1` (Johannesburg), and enquiry email uses the Zoho Mail API. **Online report publishing and client responses are currently disabled**: production has `AUDIT_REPORTS_ENABLED=false`, and the Cloudflare secret `AUDIT_REPORT_PUBLISH_TOKEN` has not been configured. No production customer report should be published until the remaining setup and synthetic test below are complete.
 
+The CRM interface is separately deployed at `https://straight-up-digital-cloudflare.straightupdigital.workers.dev/crm/`, backed by an empty D1 database in `WEUR` (Western Europe). Its owner-password secret is not set, so login is fail-closed; no customer records have been migrated. This does not migrate the Python audit engine, and the different Worker hostname is not a custom-domain cutover. Review cross-border processing before putting real client data in D1.
+
 The email API has accepted a synthetic contact enquiry, but a report-response message has not yet been tested. The public report flow is separate from contact/audit enquiries.
 
 ## Customer journey
 
-The public form does not run the private Python audit engine. The owner reviews the request and manually runs the full audit in the local, private Business Auditor CRM. The owner previews the customer-safe version, checks the wording and accuracy, then explicitly publishes it. The Worker accepts only the normalized customer report, not the full internal scorecard, pricing, service-fit analysis, competitor strategy or CRM data.
+The public form does not run the full audit engine. Until that engine is migrated, the owner reviews the request and manually runs the audit in the existing local Business Auditor app. The owner previews the customer-safe version, checks the wording and accuracy, then explicitly publishes it. The Worker accepts only the normalized customer report, not the full internal scorecard, pricing, service-fit analysis, competitor strategy or CRM data.
 
 A published report opens as a branded web page, not a PDF download. Each finding explains what was found, why it matters to the business, and what the customer can do next. A client can ask a question, request a meeting, or indicate that they want to discuss the proposed fixes. These choices are non-binding. The response is emailed to `straightupdigital@zohomail.com`; it is not stored in the website's report collection.
 
