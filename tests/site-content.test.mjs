@@ -20,6 +20,9 @@ const paystack = read("../docs/paystack-setup.md");
 const faqs = read("../src/data/faqs.ts");
 const digitalAudit = read("../src/pages/digital-audit.astro");
 const footerNavigation = read("../src/data/navigation.ts");
+const about = read("../src/pages/about.astro");
+const core = read("../src/components/Core.astro");
+const businessIllustration = read("../public/illustrations/local-business-digital.svg");
 
 test("public business identity and locality are owner-supplied", () => {
   assert.match(siteData, /St\. John Ritchie trading as Straight Up Digital/);
@@ -40,38 +43,73 @@ test("footer has a single navigation destination for legal and audit pages", () 
   assert.doesNotMatch(footer, /href=\"\/(?:privacy|terms|digital-audit)\"/);
 });
 
-test("each hosting plan has an exact request CTA and reaches the contact form with its plan slug", () => {
+test("hosting tiers show both billing choices and prefill the requested plan", () => {
   for (const label of [
-    "Select Starter Plan (R99/mo)",
-    "Select Business Growth (R149/mo)",
-    "Request Managed Care Quote",
+    "Starter Brand",
+    "Business Pro",
+    "Team Unlimited",
+    "priceMonthlyZar: 129",
+    "priceAnnualZar: 1290",
+    "priceMonthlyZar: 249",
+    "priceAnnualZar: 2490",
+    "priceMonthlyZar: 449",
+    "priceAnnualZar: 4490",
+    "Basic Care",
+    "Local Visibility",
+    "Active Growth",
+    "Lead Builder",
+    "Full Digital Desk",
+    "priceZarPerMonth: 1549",
   ]) {
-    assert.ok(pricing.includes(label), `missing CTA: ${label}`);
+    assert.ok(pricing.includes(label), `missing package content: ${label}`);
   }
-  assert.match(home, /contact\?plan=\$\{plan\.slug\}#enquiry/);
-  assert.match(pricingPage, /contact\?plan=\$\{plan\.slug\}#enquiry/);
+  assert.match(home, /contact\?plan=\$\{plan\.slug\}&billing=monthly#enquiry/);
+  assert.match(pricingPage, /contact\?plan=\$\{plan\.slug\}&billing=monthly#enquiry/);
+  assert.match(pricingPage, /contact\?plan=\$\{plan\.slug\}&billing=annual#enquiry/);
   assert.match(home, /contact\?plan=domain#enquiry/);
   assert.match(pricingPage, /contact\?plan=domain#enquiry/);
-  assert.match(form, /Domain registration or renewal request/);
+  assert.match(form, /Additional domain registration or renewal request/);
+  assert.match(form, /data-plan-requests=\{JSON\.stringify\(planRequests\)\}/);
   assert.match(form, /new URLSearchParams\(window\.location\.search\)/);
   assert.match(form, /serviceSelect\.value = requestedPlan/);
-  assert.match(form, /Please confirm availability, payment terms and the start date/);
+  assert.match(form, /annual prepayment \(two months free\)/);
+  assert.match(form, /secure online payment steps/);
+  assert.match(form, /onceOffEdits\.map/);
 });
 
 test("WhatsApp offers audit, hosting, domain and general enquiry intents", () => {
   for (const label of ["Digital audit", "Hosting plan", "Domain registration", "Something else"]) {
     assert.ok(whatsapp.includes(`label: "${label}"`), `missing WhatsApp topic: ${label}`);
   }
+  assert.match(whatsapp, /Starter Brand, Business Pro and Team Unlimited/);
+  assert.doesNotMatch(whatsapp, /Business Growth|Managed Care/);
   assert.match(whatsapp, /wa\.me\/\$\{whatsappNumber\}/);
   assert.match(whatsapp, /aria-label=/);
   assert.match(whatsapp, /Chat on WhatsApp/);
+  assert.match(styles, /\.whatsapp-menu__panel\s*\{[^}]*max-height:[^}]*overflow-y:\s*auto/s);
 });
 
 test("mobile floating actions clear the sticky audit bar and preserve touch targets", () => {
   assert.match(styles, /body\.has-sticky-audit \.floating-actions\s*\{\s*bottom: calc\(92px \+ env\(safe-area-inset-bottom\)\)/);
   assert.match(styles, /\.whatsapp-button\s*\{[^}]*min-height: 48px/s);
   assert.match(styles, /\.back-to-top\s*\{[^}]*width: 48px/s);
+  assert.match(styles, /\.whatsapp-menu__panel\s*\{[^}]*left: 0/s);
+  assert.doesNotMatch(styles.match(/\.whatsapp-menu__panel\s*\{[^}]*\}/s)?.[0] ?? "", /right:\s*0/);
   assert.match(layout, /class="floating-actions" role="group"/);
+});
+
+test("brand and founder treatments are larger, responsive and use only supplied imagery", () => {
+  assert.match(styles, /\.brand img\s*\{[^}]*height: 40px/s);
+  assert.match(styles, /\.brand img\s*\{[^}]*height: 36px/s);
+  assert.match(about, /ownerSupplied\.founderPhoto/);
+  assert.match(about, /founder-panel__brand/);
+  assert.match(about, /founder-panel__bio/);
+  assert.match(core, /animateScore/);
+  assert.match(core, /prefers-reduced-motion/);
+  assert.match(core, /data-core-needle/);
+  assert.match(core, /needle\.setAttribute\("transform"/);
+  assert.match(home, /local-business-digital\.svg/);
+  assert.match(businessIllustration, /<svg/);
 });
 
 test("the intended custom domain is canonical and present in social/business metadata", () => {
@@ -89,12 +127,11 @@ test("Paystack readiness copy does not promise recurring Capitec Pay", () => {
   assert.match(paystack, /plan codes/i);
 });
 
-test("public FAQs describe live reviewed online reports and the owner-approved locality", () => {
-  assert.match(faqs, /After review, we share a private online report/);
-  assert.doesNotMatch(faqs, /when the online report service is enabled|Service areas are not published yet/);
+test("public audit copy describes reviewed reports without promising the disabled online report feature", () => {
+  assert.match(faqs, /After review, we share a customer-ready report/);
+  assert.doesNotMatch(`${faqs}\n${digitalAudit}`, /private online report|report page|link expires after 30 days/);
   assert.match(faqs, /based in Port Alfred, Eastern Cape, South Africa/);
   assert.match(faqs, /How do I request a hosting plan/);
-  assert.match(digitalAudit, /After review, we\s+share a private online report/);
-  assert.match(digitalAudit, /link expires after 30 days/);
-  assert.doesNotMatch(digitalAudit, /when the secure report service is enabled|Otherwise, we follow up directly/);
+  assert.match(digitalAudit, /After review, we\s+share a customer-ready report/);
+  assert.match(digitalAudit, /Ask a question or arrange a discussion with us/);
 });

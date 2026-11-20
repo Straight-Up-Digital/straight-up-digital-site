@@ -22,12 +22,12 @@ export const auditFaqs: Faq[] = [
   {
     question: "What do I receive?",
     answer:
-      "After a person runs and reviews the full audit, you receive a private online report. It explains the findings in everyday language, why they may affect customers and what to fix next. The full internal scorecard is not shared and no PDF download is needed.",
+      "After a person runs and reviews the full audit, you receive a customer-ready report. It explains the findings in everyday language, why they may affect customers and what to fix next. The full internal scorecard is not shared. Any paid work is scoped and priced separately in writing.",
   },
   {
     question: "How long does an audit take?",
     answer:
-      "It depends on the size of the site and how quickly the public profiles can be checked. We confirm the timing in writing before any work starts, so you are not left guessing.",
+      "The report is not generated instantly. A person checks the business and website details, completes the review, and shares the customer-ready report after it has been checked for accuracy.",
   },
   {
     question: "Do you guarantee better rankings?",
@@ -42,15 +42,15 @@ export const auditFaqs: Faq[] = [
   {
     question: "What happens after I send the request?",
     answer:
-      "A person checks the business and website details, then runs the full audit privately. After review, we share a private online report that explains findings in everyday language, why they may affect customers and what to fix next. The full internal scorecard stays private and no PDF download is needed. You can use the report page to ask a question or request a meeting; that response is not acceptance of paid work, and any scope and price are agreed separately in writing.",
+      "A person checks the business and website details, then runs the full audit privately. After review, we share a customer-ready report that explains findings in everyday language, why they may affect customers and what to fix next. The full internal scorecard stays private. You can ask a question or request a meeting; that is not acceptance of paid work, and any scope and price are agreed separately in writing.",
   },
 ];
 
 export const pricingFaqs: Faq[] = [
   {
-    question: "How are these prices determined?",
+    question: "Is the digital presence audit really free?",
     answer:
-      "The audit, website-build and support rates reflect the existing proposal configuration. The three reseller-hosting tiers are listed separately with their storage and email allowances; domain prices depend on the extension and are confirmed before registration. A written quote confirms the exact scope and deliverables.",
+      "Yes. The six-category audit and scorecard are free. If you ask us to fix verified gaps, the optional Audit Fix Package is priced at R40 per missing point from the score, with the exact scope and total confirmed in a written quote first.",
   },
   {
     question: "How do I get a quote?",
@@ -58,9 +58,9 @@ export const pricingFaqs: Faq[] = [
       "Send an enquiry with the website address and what you want to improve. We ask the questions we need, then send one written quote with the deliverables, the cost and the timing.",
   },
   {
-    question: "Is the audit included in a project?",
+    question: "How can I pay for hosting?",
     answer:
-      "The audit is quoted as its own piece of work unless a written proposal says otherwise. If you go ahead with implementation, the proposal will show exactly what is included and what is not.",
+      "Choose monthly billing or pay annually up front and receive two months free. We confirm the plan, inclusions, total and start date in writing, then provide the secure online payment option before the service starts.",
   },
   {
     question: "What if I only need one fix?",
@@ -75,7 +75,17 @@ export const pricingFaqs: Faq[] = [
   {
     question: "How do I request a hosting plan?",
     answer:
-      "Choose the hosting plan you want and send a request. We will confirm availability, the recurring payment method and terms, and the start date before you agree to an order. No payment is taken and no service is provisioned before you approve the written details.",
+      "Choose Starter Brand, Business Pro or Team Unlimited and select monthly billing or annual prepayment. Your request is not a payment; we confirm availability and send the agreed secure payment steps before provisioning.",
+  },
+  {
+    question: "Is hosting included in the monthly retainers?",
+    answer:
+      "Yes. Every retainer includes the hosting tier named on its card, so you pay one combined monthly amount rather than a separate retainer plus hosting bill.",
+  },
+  {
+    question: "Is the website build a once-off cost?",
+    answer:
+      "The five-page small-business website is R1,500 once-off and includes one structured revision round. A hosting plan from R129/month is also required. Online stores and custom booking engines need a separate written quote.",
   },
   {
     question: "What is not included?",

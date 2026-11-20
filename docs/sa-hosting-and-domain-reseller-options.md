@@ -6,7 +6,7 @@
 
 The owner previously selected Cyber Circuit as the hosting-reseller candidate. Its published reseller page lists Starter at **R350/month** for **50 GB NVMe**, up to **50 cPanel accounts**, 2 CPU cores and 2 GB RAM, with daily automatic backups and WHMCS included. Higher listed plans are Business at R650/month (100 GB/100 accounts), Elite at R899/month (200 GB/200 accounts), and Supreme at R1,050/month (500 GB/500 accounts). The page also advertises 24/7 ticket support, a 99.99% uptime target and JetBackup5 multi-point restore.[1]
 
-The retail offers currently shown on the site are R99/month with 2 GB, R149/month with 5 GB, and Managed Care at R399–R599/month with 10 GB.[5] On paper, a 50 GB Starter allocation could provide at most 25 full 2 GB accounts, 10 full 5 GB accounts, or 5 full 10 GB accounts before allowing for server overhead, backups, or unequal usage. The advertised cPanel-account count is not the same as guaranteed storage capacity for every customer. Simple monthly break-even against the R350 base price is four R99 customers or three R149 customers, before payment fees, tax, support time, resource overages, backups, and other costs. These calculations are illustrative, not a profit forecast.
+The public offers have since changed to Starter Brand (R129/month, 2 GB and 2 mailboxes), Business Pro (R249/month, 10 GB and up to 10 mailboxes), and Team Unlimited (R449/month, 25 GB and unlimited mailboxes). The former break-even examples based on R99/R149 retail plans are obsolete. Do not rely on reseller margin estimates until the supplier confirms that its account, mailbox, storage, backup, tax and support limits map to these exact packages.
 
 Before advertising firm mailbox allowances or taking payment, ask Cyber Circuit to confirm in writing that the selected plan supports the site’s promised mailbox count per cPanel account, whether limits are per mailbox or account, what “daily backups” retain, any restore fees, server resource fair-use limits, renewal/cancellation/refund terms, and VAT treatment. Confirm the account count and the 50 GB pool are sufficient for the intended package mix.
 
@@ -20,7 +20,7 @@ For a low-volume start, **HostAfrica is the stronger initial shortlist** because
 
 ## Recommendation and no-purchase boundary
 
-Keep Cyber Circuit as the hosting candidate the owner selected, but do not activate it until its plan limits and backup/restore terms are confirmed against the R99/R149/R399–R599 packages. Use HostAfrica as the preferred low-volume domain-reseller candidate, subject to written confirmation of VAT, funding, renewal, transfer, redemption, support, and cancellation terms. No accounts or paid services have been created. The public domain remains unpurchased; this research does not authorize a purchase, DNS change, or payment.
+Keep Cyber Circuit as the hosting candidate the owner selected, but do not activate it until its plan limits and backup/restore terms are confirmed against the Starter Brand, Business Pro and Team Unlimited package promises. Use HostAfrica as the preferred low-volume domain-reseller candidate, subject to written confirmation of VAT, funding, renewal, transfer, redemption, support, and cancellation terms. No accounts or paid services have been created. The public domain remains unpurchased; this research does not authorize a purchase, DNS change, or payment.
 
 ## Sources
 

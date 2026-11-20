@@ -9,9 +9,9 @@ Updated 18 November 2026. This file distinguishes public facts from operational 
 | Business identity | St. John Ritchie trading as Straight Up Digital. Do not call the sole proprietorship a registered company. |
 | Locality | Port Alfred, Eastern Cape, South Africa. No street address is published. |
 | Contact | `Hello@straightupdigital.co.za` and `+27 62 065 3503`. |
-| Hosting tiers | Email & Starter Site R99/month; Business Growth R149/month; Managed Care R399–R599/month. Customers submit a request; availability and terms are confirmed before payment or provisioning. |
+| Hosting tiers | Starter Brand R129/month, Business Pro R249/month, and Team Unlimited R449/month. Customers submit a request; availability and terms are confirmed before payment or provisioning. |
 | Domains | Domain registration is a separate annual add-on; the published .co.za range is indicative and must be confirmed with the reseller. |
-| Audits | Full audit is owner-run in the private local Business Auditor. Public reports are customer-safe, owner-reviewed web pages, not PDF downloads. |
+| Audits | The free audit is owner-run in the private Business Auditor. Online customer reports are disabled in production; the owner reviews findings before sharing results. |
 | Analytics | Tracking is disabled. Reputation/review checks remain in development and are not currently offered as a finished service. |
 | Canonical metadata | Uses `https://straightupdigital.co.za/`; this does not mean the domain has been registered or connected. |
 

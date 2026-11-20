@@ -2,6 +2,25 @@
 
 The hosting pages currently accept a **plan request**, not a payment. A selected tier is passed into the contact form. Domain registration has its own manual enquiry route; the owner confirms the extension, availability, price and renewal terms before placing the registration with a reseller. Straight Up Digital confirms hosting availability, recurring payment terms and the start date in writing before the customer pays or service is provisioned.
 
+## Current package prices to configure
+
+The public pricing page now uses these owner-provided amounts. Annual hosting prepayment is a once-off charge equal to ten monthly payments; it is not an automatically renewing subscription.
+
+| Offer | Monthly | Annual prepayment | Payment model |
+| --- | ---: | ---: | --- |
+| Starter Brand | R129 | R1,290 | Monthly recurring or annual once-off |
+| Business Pro | R249 | R2,490 | Monthly recurring or annual once-off |
+| Team Unlimited | R449 | R4,490 | Monthly recurring or annual once-off |
+| Basic Care | R249 | — | Monthly recurring |
+| Local Visibility | R449 | — | Monthly recurring |
+| Active Growth | R699 | — | Monthly recurring |
+| Lead Builder | R1,049 | — | Monthly recurring |
+| Full Digital Desk | R1,549 | — | Monthly recurring |
+
+Once-off website builds, audit fixes, edits and add-ons have fixed or quote-based prices and should be charged as single transactions. Score-based audit fixes and managed work must use the final owner-approved quote amount, never an amount supplied by the browser.
+
+The site buttons currently create an enquiry with the selected package and billing preference. They do not initialize or charge a Paystack transaction. Keep them as request buttons until the checkout route, merchant configuration and payment verification have been tested.
+
 ## What can be prepared now
 
 The site is static Astro output served by a Cloudflare Worker. Paystack's hosted redirect flow can be integrated in a Worker API route using the built-in `fetch`; no browser SDK or Node server is required. No checkout route, merchant keys, plan codes, webhook, or live payment processing is currently configured. Keep the secret server-side in Cloudflare Worker secrets. The secret must never be sent to browser code, committed to Git, or pasted into chat.
@@ -13,7 +32,7 @@ Using a Capitec Business account to receive or settle proceeds is separate from 
 ## Before enabling checkout
 
 1. Complete the Paystack business onboarding and KYC, and confirm the merchant account's settlement arrangement with Capitec.
-2. In Paystack test mode, create the recurring plans for the fixed monthly tiers and record the resulting plan codes. Managed Care remains quote-only because its monthly price varies from R399 to R599.
+2. In Paystack test mode, create recurring plans for the three monthly hosting tiers and five monthly retainers and record each plan code. Annual hosting prepayment and once-off project work must use one-time transactions.
 3. Confirm which methods the business account can actually use for recurring charges. Treat Capitec Pay and EFT as once-off only unless Paystack confirms a change in writing.
 4. Implement the checkout initializer on the server, with fixed plan/amount mapping, validated customer email, a unique transaction reference and an allowed callback URL. Do not accept an amount supplied by the browser.
 5. Configure a Paystack webhook endpoint. Verify `x-paystack-signature` using HMAC-SHA512 over the raw request body and the server-side secret. Verify the transaction status, ZAR currency and expected amount before recording it as paid. Make the event handler idempotent and do not provision merely because a customer visited the callback page.

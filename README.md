@@ -1,6 +1,6 @@
 # Straight Up Digital — website
 
-The public marketing site for Straight Up Digital. **Business Auditor is the flagship product.** The site accepts requests for owner-run digital presence audits and can display a customer-friendly online report after the owner manually runs and reviews the full audit in the private Python CRM. It does not run the audit engine for visitors or expose the CRM.
+The public marketing site for Straight Up Digital. **Business Auditor is the flagship product.** The site accepts requests for free, owner-run digital presence audits. The online customer-report feature is currently disabled in production; the owner manually runs and reviews the full audit in the private Python CRM. The public site does not run the audit engine or expose the CRM.
 
 This is a static Astro site with no client-side framework. Pages are pre-rendered and fonts are self-hosted. The Cloudflare target serves the static `dist/` output through Workers Static Assets and handles enquiry, report and CRM APIs in `cloudflare/worker.ts`. Netlify source remains as a legacy rollback path; a Cloudflare deployment must use `npm run build:cloudflare`.
 
@@ -67,7 +67,7 @@ The plain `npm run build` remains in legacy Netlify Forms mode. Its static decla
 
 Online customer reports are **owner-published only**. The private local CRM previews a strict issue/impact/fix report and, after explicit owner confirmation, can send only that redacted payload to an authenticated Cloudflare Worker route. Production report publishing is currently disabled (`AUDIT_REPORTS_ENABLED=false`); the production publish token is not configured. Until that separate setup is completed and tested, the public online report and response flow is unavailable. The complete audit, pricing, internal service-fit analysis and CRM records stay private. See [`docs/online-report-setup.md`](docs/online-report-setup.md) for the remaining setup.
 
-The private CRM is not hosted by or exposed through this website. No public request can trigger a full audit or access CRM routes/data.
+The private Python/SQLite CRM is not hosted on Cloudflare or exposed through this website. Migrating the CRM and audit queue to Cloudflare remains outstanding. No public request can trigger a full audit or access CRM routes/data.
 
 ## Deployment and domain
 

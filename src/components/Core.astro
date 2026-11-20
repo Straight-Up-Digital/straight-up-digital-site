@@ -34,6 +34,7 @@ const {
 const radius = 132;
 const circumference = 2 * Math.PI * radius;
 const arc = (circumference * exampleScore) / 100;
+const needleAngle = -135 + (exampleScore / 100) * 270;
 
 // Six markers around the reading, one per category.
 const markers = categories.map((category, index) => {
@@ -53,6 +54,8 @@ const markers = categories.map((category, index) => {
   data-core
   data-open-on-view={openOnView ? "true" : undefined}
   data-open={open ? "true" : undefined}
+  data-score-target={exampleScore}
+  data-arc-length={circumference}
   role={label ? "img" : undefined}
   aria-label={label || undefined}
   aria-hidden={label ? undefined : "true"}
@@ -176,6 +179,7 @@ const markers = categories.map((category, index) => {
           stroke-width="3.5"
           stroke-linecap="round"
           stroke-dasharray={`${arc} ${circumference}`}
+          data-core-arc
           transform="rotate(-90 360 360)"></circle>
 
         {
@@ -192,7 +196,17 @@ const markers = categories.map((category, index) => {
           ))
         }
 
-        <text class="core__score" x="360" y="386" text-anchor="middle" fill="#F2F4EF">{exampleScore}</text>
+        <g
+          class="core__needle"
+          data-core-needle
+          transform={`rotate(${needleAngle} 360 360)`}
+          aria-hidden="true"
+        >
+          <path d="M360 360 L360 250" stroke="#A8FF65" stroke-width="4" stroke-linecap="round"></path>
+          <circle cx="360" cy="360" r="8" fill="#121A15" stroke="#A8FF65" stroke-width="3"></circle>
+        </g>
+
+        <text class="core__score" x="360" y="386" text-anchor="middle" fill="#F2F4EF" data-core-score>{exampleScore}</text>
         <text class="core__outof" x="360" y="420" text-anchor="middle" fill="#C9CFCB">out of 100</text>
         <text class="core__example" x="360" y="452" text-anchor="middle" fill="#9AA39D">EXAMPLE</text>
       </g>
@@ -243,6 +257,34 @@ const markers = categories.map((category, index) => {
   );
 
   const openCore = (core: Element) => core.classList.add("core--open");
+  const animateScore = (core: HTMLElement) => {
+    if (reduceMotion.matches) return;
+
+    const score = core.querySelector<SVGTextElement>("[data-core-score]");
+    const arc = core.querySelector<SVGCircleElement>("[data-core-arc]");
+    const needle = core.querySelector<SVGGElement>("[data-core-needle]");
+    const target = Number(core.dataset.scoreTarget);
+    const circumference = Number(core.dataset.arcLength);
+    if (!score || !arc || !needle || !Number.isFinite(target) || !Number.isFinite(circumference)) return;
+
+    const duration = 1500;
+    const startedAt = performance.now();
+    score.textContent = "0";
+    arc.style.strokeDasharray = `0 ${circumference}`;
+    needle.setAttribute("transform", "rotate(-135 360 360)");
+
+    const tick = (now: number) => {
+      const progress = Math.min(1, (now - startedAt) / duration);
+      const eased = 1 - (1 - progress) ** 3;
+      const value = Math.round(target * eased);
+      score.textContent = String(value);
+      arc.style.strokeDasharray = `${(circumference * value) / 100} ${circumference}`;
+      needle.setAttribute("transform", `rotate(${-135 + (270 * value) / 100} 360 360)`);
+      if (progress < 1) requestAnimationFrame(tick);
+    };
+
+    requestAnimationFrame(tick);
+  };
 
   if (cores.length > 0) {
     if (reduceMotion.matches || !("IntersectionObserver" in window)) {
@@ -253,6 +295,7 @@ const markers = categories.map((category, index) => {
           entries.forEach((entry) => {
             if (!entry.isIntersecting) return;
             openCore(entry.target);
+            animateScore(entry.target as HTMLElement);
             observer.unobserve(entry.target);
           });
         },

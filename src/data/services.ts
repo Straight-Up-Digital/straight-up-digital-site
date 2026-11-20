@@ -47,13 +47,13 @@ export const services: Service[] = [
     title: "Digital presence audits",
     status: "available",
     summary:
-      "A structured read of your website, listings, profiles, content and reputation, with a prioritised list of what to fix.",
+      "A free, human-reviewed six-category scorecard with evidence, confidence notes and a prioritised list of what to fix.",
     forWho:
       "Businesses that suspect their online presence is holding them back, but do not know where to start.",
     value:
       "You stop guessing. The report shows what is strong, what is missing and which fix is worth doing first.",
     receive: [
-      "A scored report across six categories",
+      "A free six-category scorecard",
       "Coverage and confidence notes for every category",
       "Prioritised recommendations with practical next steps",
       "A walkthrough conversation about the findings",
@@ -64,16 +64,16 @@ export const services: Service[] = [
     title: "Website design and development",
     status: "on-request",
     summary:
-      "Fast, accessible websites built around one job: helping the right customer take the next step.",
+      "A five-page, mobile-ready small-business website from R1,500 once-off, built around calls and WhatsApp enquiries.",
     forWho:
       "Businesses with an outdated site, a template that no longer fits, or no site at all.",
     value:
       "A credible first impression, a clear structure and a site that works on the phone your customers actually use.",
     receive: [
-      "Page plan and content structure",
-      "Design and build",
-      "Mobile, accessibility and performance checks",
-      "Handover with editing guidance",
+      "Up to five custom pages and one structured revision round",
+      "Click-to-WhatsApp, click-to-call and an enquiry form",
+      "Google Maps embed, indexing and local on-page basics",
+      "POPIA-friendly Privacy Notice and Terms pages",
     ],
   },
   {
@@ -81,19 +81,19 @@ export const services: Service[] = [
     title: "Hosting and domain registration",
     status: "on-request",
     summary:
-      "Reseller hosting with stated storage and email allowances, plus domain registration and renewal as a separate add-on.",
+      "Three email and hosting tiers from R129/month, each with a managed domain, clear mailbox limits and annual prepayment options.",
     forWho:
       "Businesses that want website hosting and domain support from the same digital partner.",
     value:
       "A clear hosting plan, known mailbox allowance and help coordinating the domain behind your website.",
     receive: [
-      "A hosting tier with its storage and email allowance stated up front",
-      "Domain registration and renewal quoted separately by extension",
-      "Monthly website updates and backups only with the Managed Care tier",
-      "A written confirmation of availability, payment terms and service start date before an order",
+      "Starter Brand, Business Pro and Team Unlimited choices",
+      "A .co.za domain included, with .com available on Team Unlimited",
+      "Monthly billing or annual prepayment with two months free",
+      "A written order and secure payment option after availability is confirmed",
     ],
     note:
-      "Select a plan to send a request. The owner confirms availability, recurring payment terms, any domain charges and the start date before accepting an order.",
+      "Choose a plan to send a request. We confirm availability and the payment schedule in writing before collecting payment or provisioning the service.",
   },
   {
     slug: "website-improvements-and-on-page-seo",

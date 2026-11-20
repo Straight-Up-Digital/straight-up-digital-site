@@ -42,12 +42,10 @@ export const ownerSupplied = {
   informationOfficer: "St. John Ritchie",
   founderName: "St. John Ritchie",
   founderBio: [
-    "St. John Ritchie is a South African business development and sales professional with approximately 20 years of experience helping businesses identify opportunities, build relationships and achieve commercial growth.",
-    "His career spans business-to-business sales, international business development, sales management, team leadership, prospecting and customer acquisition. Throughout his career, he has worked with businesses across different industries, developing a practical understanding of what drives sales performance, customer relationships and sustainable business growth.",
-    "Having managed sales teams, trained sales professionals and developed business development processes, St. John brings a commercially focused approach to Straight Up Digital.",
-    "He established Straight Up Digital with a clear objective: to make professional digital intelligence and business growth services more accessible to businesses that want to compete, improve their visibility and attract more customers.",
-    "His philosophy is straightforward. Businesses should understand how they are performing online, where they are losing opportunities and what practical steps they can take to improve.",
-    "Through a combination of technology, intelligent analysis and personalised business services, Straight Up Digital aims to help businesses turn their digital presence into a stronger commercial asset.",
+    "A South African business development and sales professional with approximately 20 years of experience in B2B sales, international business development, sales management and team leadership.",
+    "Across that work, he has helped businesses identify opportunities, build customer relationships and improve sales performance. He has also trained sales professionals and developed practical prospecting and business-development processes.",
+    "He founded Straight Up Digital to make professional digital intelligence and practical growth support more accessible to small and growing South African businesses.",
+    "His approach is straightforward: understand what customers see online, show where opportunities may be slipping away, and focus effort on clear, useful improvements.",
   ] as const,
   founderPhoto: "",
   /** Approved service areas. Empty means no location claims are made. */

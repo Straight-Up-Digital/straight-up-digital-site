@@ -52,7 +52,7 @@
         "ENQUIRY_FROM_EMAIL": "straightupdigital@zohomail.com",
         "ZOHO_SMTP_HOST": "smtp.zoho.com",
         "ZOHO_SMTP_PORT": "587",
-        "AUDIT_REPORTS_ENABLED": "true",
+        "AUDIT_REPORTS_ENABLED": "false",
         "FIRESTORE_PROJECT_ID": "straight-up-digital-prod",
         "PUBLIC_REPORT_HOSTS": "straight-up-digital-cloudflare.stjohn-toperformer.workers.dev,straightupdigital.co.za,www.straightupdigital.co.za"
       },

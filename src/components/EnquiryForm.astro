@@ -14,6 +14,7 @@
  * later without changing the form.
  */
 import { serviceOptions } from "../data/services";
+import { hostingPlans, monthlyRetainers, onceOffEdits } from "../data/pricing";
 
 interface Props {
   variant: "audit" | "contact";
@@ -33,17 +34,56 @@ const turnstileKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? "";
 const action =
   formMode === "email" ? "/api/enquiries" : "/thank-you";
 
-const hostingPlanOptions = [
-  "Email & Starter Site hosting plan — R99/month",
-  "Business Growth hosting plan — R149/month",
-  "Managed Care hosting quote — R399–R599/month",
+const formatZar = (amount: number): string =>
+  `R${amount.toLocaleString("en-US")}`;
+const hostingPlanOptions = hostingPlans.map(
+  (plan) => `${plan.name} hosting — ${formatZar(plan.priceMonthlyZar)}/month`,
+);
+const retainerPlanOptions = monthlyRetainers.map(
+  (plan) =>
+    `Level ${plan.level}: ${plan.name} — ${formatZar(plan.priceZarPerMonth)}/month, including ${plan.includedHosting}`,
+);
+const onceOffEditOptions = onceOffEdits.map(
+  (edit) => `${edit.title} — ${formatZar(edit.priceZar)} once-off`,
+);
+const domainRequestOption = "Additional domain registration or renewal request";
+const options = [
+  ...serviceOptions,
+  "Free six-category digital presence audit",
+  "Audit Fix Package — R40 per verified missing point",
+  "5-Page Small Business Website — R1,500 once-off",
+  ...hostingPlanOptions,
+  ...retainerPlanOptions,
+  ...onceOffEditOptions,
+  "Email migration — R450 once-off",
+  "Extra 10 GB storage — R60/month",
+  domainRequestOption,
+  "Not sure yet",
+  "Something else",
 ];
-const domainRequestOption = "Domain registration or renewal request";
-const options = [...serviceOptions, ...hostingPlanOptions, domainRequestOption, "Not sure yet", "Something else"];
+const planRequests: Record<string, string> = {
+  ...Object.fromEntries(hostingPlans.map((plan) => [
+    plan.slug,
+    `${plan.name} hosting — ${formatZar(plan.priceMonthlyZar)}/month`,
+  ])),
+  ...Object.fromEntries(monthlyRetainers.map((plan) => [
+    `retainer-level-${plan.level}`,
+    `Level ${plan.level}: ${plan.name} — ${formatZar(plan.priceZarPerMonth)}/month, including ${plan.includedHosting}`,
+  ])),
+  ...Object.fromEntries(onceOffEdits.map((edit) => [
+    edit.slug,
+    `${edit.title} — ${formatZar(edit.priceZar)} once-off`,
+  ])),
+  "website-build": "5-Page Small Business Website — R1,500 once-off, plus a hosting plan from R129/month",
+  "audit-fix": "Audit Fix Package — R40 per verified missing point, quoted after the free audit",
+  "email-migration": "Email migration — R450 once-off",
+  "extra-storage": "Extra 10 GB storage — R60/month",
+  domain: "Additional domain registration or renewal request",
+};
 const consentVersion = "privacy-1.0-2026-11-15";
 ---
 
-<section class="form-panel" id={id} aria-labelledby={`${id}-heading`} data-enquiry-root data-form-mode={formMode}>
+<section class="form-panel" id={id} aria-labelledby={`${id}-heading`} data-enquiry-root data-form-mode={formMode} data-plan-requests={JSON.stringify(planRequests)}>
   <h2 id={`${id}-heading`}>{heading}</h2>
   <p class="form-panel__intro">{intro}</p>
 
@@ -333,22 +373,26 @@ const consentVersion = "privacy-1.0-2026-11-15";
       `[name="${name}"]`,
     ) ?? null;
 
-  const planRequests: Record<string, string> = {
-    starter: "Email & Starter Site hosting plan — R99/month",
-    growth: "Business Growth hosting plan — R149/month",
-    "managed-care": "Managed Care hosting quote — R399–R599/month",
-    domain: "Domain registration or renewal request",
-  };
-  const planSlug = new URLSearchParams(window.location.search).get("plan");
+  const planRequests = JSON.parse(
+    root?.dataset.planRequests ?? "{}",
+  ) as Record<string, string>;
+  const searchParams = new URLSearchParams(window.location.search);
+  const planSlug = searchParams.get("plan");
   const requestedPlan = planSlug ? planRequests[planSlug] : undefined;
+  const billingCycle = searchParams.get("billing");
+  const billingNote = billingCycle === "annual"
+    ? "annual prepayment (two months free)"
+    : billingCycle === "once-off"
+      ? "once-off project pricing"
+      : billingCycle === "monthly"
+        ? "monthly billing"
+        : "";
   const serviceSelect = field("service_of_interest") as HTMLSelectElement | null;
   if (requestedPlan && serviceSelect) {
     serviceSelect.value = requestedPlan;
     const messageInput = field("message") as HTMLTextAreaElement | null;
     if (messageInput && !messageInput.value) {
-      messageInput.value = requestedPlan === "Domain registration or renewal request"
-        ? "I would like to request domain registration or renewal. Please confirm the extension, availability, annual price and renewal terms."
-        : `I would like to request ${requestedPlan}. Please confirm availability, payment terms and the start date.`;
+      messageInput.value = `I would like to request ${requestedPlan}${billingNote ? ` with ${billingNote}` : ""}. Please confirm availability, inclusions, the total price and secure online payment steps before I commit.`;
     }
   }
 

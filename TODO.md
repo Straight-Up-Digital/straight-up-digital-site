@@ -26,6 +26,6 @@
 - Identity: **St. John Ritchie trading as Straight Up Digital**; do not describe the sole proprietorship as a registered company.
 - Locality: Port Alfred, Eastern Cape, South Africa. No street address or registration claim is invented.
 - Contact details: `Hello@straightupdigital.co.za` and `+27 62 065 3503`.
-- Hosting offers: Email & Starter Site R99/month; Business Growth R149/month; Managed Care R399–R599/month. Domain registration is a separate annual add-on.
+- Hosting offers: Starter Brand R129/month, Business Pro R249/month, and Team Unlimited R449/month. Customers submit a request; availability and terms are confirmed before payment or provisioning.
 - Analytics/tracking remain disabled. Reputation/review checks remain in development; do not market them as currently available.
 - The Python Business Auditor and CRM remain private and bound to `127.0.0.1`; customer reports are manually prepared and reviewed by the owner.
