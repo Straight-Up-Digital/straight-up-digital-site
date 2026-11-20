@@ -1,5 +1,7 @@
 # Cloudflare Workers migration plan
 
+> **Current status — 20 November 2026:** The static website and Worker are deployed at `https://straight-up-digital-cloudflare.stjohn-toperformer.workers.dev`. This does not complete the CRM migration or production cutover: the Worker still uses Firestore, no D1 binding is configured, audit-report publishing remains disabled, and the custom domain is not active. The Python CRM remains a separate local SQLite application. Deployment success does not verify live email or Firestore credentials. Sections below that describe the 16 November deployment state are historical.
+
 ## Goal and safety boundary
 
 Port the existing Astro site's Netlify-backed forms, private client reports, response workflow, report expiry, and local-CRM intake bridge on the `cloudflare-workers-migration` branch. Keep the Netlify implementation and current production site intact as rollback. Do not change public DNS, disable Netlify, or copy production client data during development. Use only synthetic records for Cloudflare tests. The isolated test Worker must remain unrouted from `workers.dev` as requested; do not switch the branded domain without separate explicit approval.
