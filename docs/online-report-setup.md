@@ -4,7 +4,7 @@
 
 The Cloudflare Worker is live at `https://straight-up-digital-cloudflare.stjohn-toperformer.workers.dev`. Its production Firestore project is `straight-up-digital-prod` in `africa-south1` (Johannesburg), and enquiry email uses the Zoho Mail API. **Online report publishing and client responses are currently disabled**: production has `AUDIT_REPORTS_ENABLED=false`, and the Cloudflare secret `AUDIT_REPORT_PUBLISH_TOKEN` has not been configured. No production customer report should be published until the remaining setup and synthetic test below are complete.
 
-The CRM interface is separately deployed at `https://straight-up-digital-cloudflare.straightupdigital.workers.dev/crm/`, backed by an empty D1 database in `WEUR` (Western Europe). Its owner-password secret is not set, so login is fail-closed; no customer records have been migrated. This does not migrate the Python audit engine, and the different Worker hostname is not a custom-domain cutover. Review cross-border processing before putting real client data in D1.
+The CRM interface is separately deployed at `https://straight-up-digital-cloudflare.straightupdigital.workers.dev/crm/`, backed by an empty D1 database in `WEUR` (Western Europe). Its owner-password secret is configured and live sign-in has been verified; no customer records have been migrated. This does not migrate the Python audit engine, and the different Worker hostname is not a custom-domain cutover. Review cross-border processing before putting real client data in D1.
 
 The email API has accepted a synthetic contact enquiry, but a report-response message has not yet been tested. The public report flow is separate from contact/audit enquiries.
 

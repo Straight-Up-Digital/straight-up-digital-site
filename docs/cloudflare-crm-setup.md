@@ -7,9 +7,11 @@
 - D1 database: `straight-up-digital-crm` (`693b8ec7-2463-4387-8903-987e91a8ee8c`)
 - Database location: `WEUR` (Western Europe)
 
-The CRM interface and D1 schema are deployed. The database is empty, and sign-in is intentionally unavailable until `CRM_ADMIN_PASSWORD` is configured. This Worker hostname is separate from the existing public website hostname `straight-up-digital-cloudflare.stjohn-toperformer.workers.dev`; it is not a DNS or custom-domain cutover.
+The CRM interface and D1 schema are deployed, and the database is empty. The owner-password secret is configured; production login and the authenticated contacts API have been verified. This Worker hostname is separate from the existing public website hostname `straight-up-digital-cloudflare.stjohn-toperformer.workers.dev`; it is not a DNS or custom-domain cutover.
 
-## Enable owner sign-in
+## Owner sign-in and password rotation
+
+Use the bootstrap password provided directly in the setup handoff for your first sign-in. Save it in your password manager and rotate it promptly. To replace it:
 
 1. Generate a unique password with a password manager (at least 32 random characters). Do not use a client password or reuse another service's credential.
 2. From the website repository, run:
@@ -20,8 +22,6 @@ The CRM interface and D1 schema are deployed. The database is empty, and sign-in
 
 3. Paste the password only into Wrangler's secure prompt. Do not put it in source, a command argument, Git, chat, or a checked-in `.env` file.
 4. Open the CRM URL over HTTPS, sign in, and sign out when finished. Do not use a shared/public computer without signing out.
-
-The production secret is not currently configured. Until it is, login returns `503 crm_auth_not_configured`, by design.
 
 ## Scope and data handling
 
