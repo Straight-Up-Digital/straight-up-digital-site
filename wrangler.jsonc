@@ -43,8 +43,8 @@
     },
     "production": {
       "name": "straight-up-digital-cloudflare",
-      // Keep workers.dev on until https://straightupdigital.co.za is verified, then set to false.
-      "workers_dev": true,
+      // Root and www HTTPS endpoints verified on 25 November 2026; serve production only on these custom domains.
+      "workers_dev": false,
       "observability": { "enabled": true, "head_sampling_rate": 1 },
       "routes": [
         { "pattern": "straightupdigital.co.za", "custom_domain": true, "zone_id": "5a208566e74f58203eeeafb3b36e0d35" },

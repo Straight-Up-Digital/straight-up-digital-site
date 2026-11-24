@@ -144,7 +144,7 @@ export const services: Service[] = [
     title: "Website design and development",
     status: "on-request",
     summary:
-      "A mobile-ready one-page starter website from R1,500 once-off. Larger websites are scoped and priced in writing before work begins.",
+      "One-page website starter from R1,500 once-off: one mobile-ready page with business contact details and a main call to action. Hosting is required from R129/month. Extra pages, online shops, booking tools and custom integrations are scoped and priced separately.",
     forWho:
       "Businesses with an outdated site, a template that no longer fits, or no site at all.",
     value:

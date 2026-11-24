@@ -109,6 +109,11 @@ test("the R1,500 website price is limited to the one-page starter", () => {
   assert.doesNotMatch(faqs, /five-page small-business website is R1,500/i);
   assert.match(form, /One-page starter website — from R1,500 once-off/);
   assert.match(pricingPage, /One-page starter website/);
+  const servicesData = read("../src/data/services.ts");
+  assert.match(servicesData, /One-page website starter from R1,500 once-off: one mobile-ready page with business contact details and a main call to action\./);
+  assert.match(servicesData, /Hosting is required from R129\/month\. Extra pages, online shops, booking tools and custom integrations are scoped and priced separately\./);
+  assert.match(home, /service\.summary/);
+  assert.doesNotMatch(servicesData, /five-page.*R1,500/i);
 });
 
 test("services open dedicated pages and expose specialist build scopes and plan links", () => {
