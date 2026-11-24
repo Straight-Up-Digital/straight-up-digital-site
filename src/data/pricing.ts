@@ -12,9 +12,9 @@ export const auditPricing = {
 export const websiteOffer = {
   buildOnceOffZar: 1500,
   hostingMonthlyZar: 129,
-  maximumPages: 5,
+  maximumPages: 1,
   guardrail:
-    "Website builds are once-off. A hosting plan is required from R129/month; the selected plan includes its stated domain, mailboxes and storage. Online payment is arranged after you approve the written order.",
+    "The one-page starter website begins at R1,500 once-off. Larger sites are scoped and priced separately. A hosting plan is required from R129/month. We confirm the accepted payment method after you approve the written order.",
 } as const;
 
 export interface HostingPlan {
@@ -104,7 +104,7 @@ export const domainOffer = {
 } as const;
 
 export const hostingBillingNotice =
-  "Choose monthly billing or pay annually up front and get two months free. A plan request does not charge you; we confirm availability, inclusions and start date in writing, then send the secure online payment option you approve.";
+  "Choose monthly billing or pay annually up front and get two months free. A plan enquiry does not charge you. We confirm availability, inclusions and start date in writing, then confirm the accepted payment method before you decide.";
 
 export interface MonthlyRetainer {
   level: number;
@@ -224,12 +224,12 @@ export const auditFixPackage = {
 } as const;
 
 export const websiteBuildDeliverables = [
-  "Up to 5 custom pages: Home, Services, About, Gallery/Reviews and Contact",
-  "Click-to-WhatsApp, click-to-call and a direct enquiry form",
-  "Google Maps embed, indexing and local town-focused page titles and headings",
-  "POPIA-friendly Privacy Notice and Terms of Use pages",
+  "One mobile-ready custom page with clear contact details and a main call to action",
+  "Click-to-WhatsApp, click-to-call and an enquiry form when included in the agreed scope",
+  "Google Maps embed, indexing and local page titles and headings when relevant",
+  "Privacy Notice and Terms pages based on confirmed business details",
   "1 structured revision round before launch",
-  "Excludes online stores and custom booking engines",
+  "Larger page counts, online stores and custom booking engines need a separate scope",
 ] as const;
 
 export const hostingAddOns: { name: string; price: string; billing: string }[] = [

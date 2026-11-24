@@ -8,7 +8,7 @@ import {
 } from "../data/services";
 
 const description =
-  "Six services from Straight Up Digital: digital presence audits, website design and development, on-page improvements, Google Business Profile support, content and reputation checks. Each carries an honest status.";
+  "Explore Straight Up Digital services, hosting plans and specialist website builds for South African small businesses. Open a service card for clear details and next steps.";
 
 const statuses: ServiceStatus[] = ["available", "on-request", "planned"];
 
@@ -71,69 +71,41 @@ const serviceJsonLd = services.map((service) => ({
     </div>
   </section>
 
-  <section class="section section--flush" aria-label="Services in detail">
-    <div class="container services-layout" data-placeholder="service-statuses">
-      <nav class="services-index" aria-label="Services on this page" data-services-index>
+  <section class="section ivory" aria-labelledby="service-catalog-title">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <p class="kicker"><span>01</span> Choose a service</p>
+          <h2 class="h2" id="service-catalog-title" style="margin-top: 14px;">Start with the work you need.</h2>
+        </div>
+        <p class="body">Select a card to open a full service page. It explains who the service is for, what is included and how to take the next step.</p>
+      </div>
+
+      <div class="service-catalog" aria-label="Service options">
         {
-          services.map((service, index) => (
-            <a href={`#${service.slug}`} data-service-link={service.slug}>
-              <span>{String(index + 1).padStart(2, "0")}</span>
-              {service.title}
+          services.map((service) => (
+            <a class="service-catalog__card" href={`/services/${service.slug}`}>
+              <span class:list={["status", `status--${service.status}`]}>
+                {serviceStatusMeta[service.status].label}
+              </span>
+              <h3>{service.title}</h3>
+              <p>{service.summary}</p>
+              <span class="service-catalog__link">Read service details <span aria-hidden="true">→</span></span>
             </a>
           ))
         }
-      </nav>
-
-      <div>
-        {
-          services.map((service, index) => (
-            <article class="service-detail" id={service.slug}>
-              <div class="service-detail__head">
-                <h2 class="service-detail__title">{service.title}</h2>
-                <span class:list={["status", `status--${service.status}`]}>
-                  {serviceStatusMeta[service.status].label}
-                </span>
-              </div>
-              <p class="service-detail__summary">{service.summary}</p>
-
-              <div class="service-detail__grid">
-                <div class="stack--lg">
-                  <div class="detail-block">
-                    <h3>Who it is for</h3>
-                    <p>{service.forWho}</p>
-                  </div>
-                  <div class="detail-block">
-                    <h3>The business value</h3>
-                    <p>{service.value}</p>
-                  </div>
-                </div>
-
-                <div class="detail-block">
-                  <h3>What you receive</h3>
-                  <ul>
-                    {service.receive.map((item) => <li>{item}</li>)}
-                  </ul>
-                </div>
-              </div>
-
-              {service.note && <p class="service-note">{service.note}</p>}
-
-              {index === 0 && (
-                <p style="margin-top: 24px;">
-                  <a class="link-arrow" href="/digital-audit#what-we-check">
-                    See what the audit checks
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg>
-                  </a>
-                </p>
-              )}
-            </article>
-          ))
-        }
-
-        <p class="small" style="margin-top: 28px;">
-          A client portal for reports and project updates is planned. At launch,
-          reports are delivered as a PDF and discussed directly.
-        </p>
+        <a class="service-catalog__card service-catalog__card--feature" href="/pricing#monthly-support">
+          <span class="pricing-label">Monthly support plans</span>
+          <h3>Monthly support plans</h3>
+          <p>Compare the existing support levels, what each includes and its monthly price.</p>
+          <span class="service-catalog__link">See monthly plans <span aria-hidden="true">→</span></span>
+        </a>
+        <a class="service-catalog__card service-catalog__card--feature" href="/pricing#hosting-packages">
+          <span class="pricing-label">Hosting plans</span>
+          <h3>Choose email and domain support</h3>
+          <p>Compare mailbox, storage and domain options, with monthly and annual request choices.</p>
+          <span class="service-catalog__link">Compare hosting plans <span aria-hidden="true">→</span></span>
+        </a>
       </div>
     </div>
   </section>

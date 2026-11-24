@@ -23,6 +23,86 @@ export interface Service {
   note?: string;
 }
 
+export interface WebsiteBuildOption {
+  title: string;
+  summary: string;
+  scope: string[];
+}
+
+/** Complex build categories are request-only until each project is scoped and quoted. */
+export const websiteBuildOptions: WebsiteBuildOption[] = [
+  {
+    title: "Online shops",
+    summary: "Sell products online with a clear catalogue and a checkout that suits the business.",
+    scope: [
+      "Product categories, product details, variants and stock rules",
+      "Cart, delivery areas, shipping charges, returns and order emails",
+      "Payment-provider selection, checkout testing and handover",
+      "Product imports, payment fees and third-party subscriptions are listed separately in the quote",
+    ],
+  },
+  {
+    title: "Bookings and appointments",
+    summary: "Let customers see availability and request or book a time without calling first.",
+    scope: [
+      "Service and staff details, available hours and booking rules",
+      "Calendar, confirmation messages, reminders and cancellation flow",
+      "Optional deposits or online payment, subject to the chosen provider",
+      "Calendar, SMS, email and booking-platform fees are checked before the quote is approved",
+    ],
+  },
+  {
+    title: "Guest houses and tourism",
+    summary: "Show rooms, stays, activities or tours with the practical details visitors need to plan.",
+    scope: [
+      "Room or experience pages, facilities, location and travel information",
+      "Seasonal rates, availability, policies and enquiry or booking links",
+      "Mobile-ready galleries and clear links to maps and local attractions",
+      "Booking-engine connections and third-party listing fees are scoped separately",
+    ],
+  },
+  {
+    title: "Property listings and directories",
+    summary: "Help visitors browse listings by area or type and send enquiries to the right person.",
+    scope: [
+      "Structured listing fields, search filters and enquiry routing",
+      "Agent or member profiles and owner-controlled listing updates",
+      "Import, moderation and removal rules for listing data",
+      "Paid listings, maps, user accounts and large data imports require a separate scope",
+    ],
+  },
+  {
+    title: "Clinics and wellness practices",
+    summary: "Explain services, practitioners, opening hours and appointment options clearly.",
+    scope: [
+      "Service pages, practitioner profiles, location and patient-facing instructions",
+      "Appointment request or booking-provider integration",
+      "Clear accessibility, privacy and contact information",
+      "The public website should not collect health details unless secure handling and legal requirements are separately assessed",
+    ],
+  },
+  {
+    title: "Restaurants and food businesses",
+    summary: "Make menus, opening hours, location and ordering options easy to find on a phone.",
+    scope: [
+      "Menu sections, prices, dietary and allergen information supplied by the client",
+      "Opening hours, location, table enquiries or online-order links",
+      "Seasonal menu updates and photo-gallery structure",
+      "Ordering, delivery, reservations and point-of-sale integrations are scoped separately",
+    ],
+  },
+  {
+    title: "Membership and learning sites",
+    summary: "Offer member-only content, courses or resources behind a sign-in area.",
+    scope: [
+      "Member access levels, sign-up, sign-in and password recovery",
+      "Course or resource structure, progress tracking and content updates",
+      "Payments, recurring billing, user support and access cancellation rules",
+      "Account security, privacy, data migration and platform subscriptions are priced only after discovery",
+    ],
+  },
+];
+
 export const serviceStatusMeta: Record<
   ServiceStatus,
   { label: string; description: string }
@@ -64,16 +144,16 @@ export const services: Service[] = [
     title: "Website design and development",
     status: "on-request",
     summary:
-      "A five-page, mobile-ready small-business website from R1,500 once-off, built around calls and WhatsApp enquiries.",
+      "A mobile-ready one-page starter website from R1,500 once-off. Larger websites are scoped and priced in writing before work begins.",
     forWho:
       "Businesses with an outdated site, a template that no longer fits, or no site at all.",
     value:
       "A credible first impression, a clear structure and a site that works on the phone your customers actually use.",
     receive: [
-      "Up to five custom pages and one structured revision round",
+      "A one-page starter option, with larger page counts scoped separately",
       "Click-to-WhatsApp, click-to-call and an enquiry form",
       "Google Maps embed, indexing and local on-page basics",
-      "POPIA-friendly Privacy Notice and Terms pages",
+      "Privacy Notice and Terms pages based on confirmed business details",
     ],
   },
   {
@@ -90,7 +170,7 @@ export const services: Service[] = [
       "Starter Brand, Business Pro and Team Unlimited choices",
       "A .co.za domain included, with .com available on Team Unlimited",
       "Monthly billing or annual prepayment with two months free",
-      "A written order and secure payment option after availability is confirmed",
+      "A written order and confirmed payment method after availability is checked",
     ],
     note:
       "Choose a plan to send a request. We confirm availability and the payment schedule in writing before collecting payment or provisioning the service.",

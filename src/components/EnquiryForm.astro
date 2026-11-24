@@ -7,6 +7,7 @@
  * Turnstile is used when PUBLIC_TURNSTILE_SITE_KEY is set.
  */
 import { serviceOptions } from "../data/services";
+import { services } from "../data/services";
 import { hostingPlans, monthlyRetainers, onceOffEdits } from "../data/pricing";
 
 interface Props {
@@ -42,7 +43,8 @@ const options = [
   ...serviceOptions,
   "Free six-category digital presence audit",
   "Audit Fix Package — R40 per verified missing point",
-  "5-Page Small Business Website — R1,500 once-off",
+  "One-page starter website — from R1,500 once-off",
+  "Larger business website — scope and price confirmed in writing",
   ...hostingPlanOptions,
   ...retainerPlanOptions,
   ...onceOffEditOptions,
@@ -61,11 +63,15 @@ const planRequests: Record<string, string> = {
     `retainer-level-${plan.level}`,
     `Level ${plan.level}: ${plan.name} — ${formatZar(plan.priceZarPerMonth)}/month, including ${plan.includedHosting}`,
   ])),
+  ...Object.fromEntries(services.map((service) => [
+    service.slug,
+    service.title,
+  ])),
   ...Object.fromEntries(onceOffEdits.map((edit) => [
     edit.slug,
     `${edit.title} — ${formatZar(edit.priceZar)} once-off`,
   ])),
-  "website-build": "5-Page Small Business Website — R1,500 once-off, plus a hosting plan from R129/month",
+  "website-build": "One-page starter website — from R1,500 once-off, plus a hosting plan from R129/month; larger websites are scoped separately",
   "audit-fix": "Audit Fix Package — R40 per verified missing point, quoted after the free audit",
   "email-migration": "Email migration — R450 once-off",
   "extra-storage": "Extra 10 GB storage — R60/month",
@@ -381,7 +387,7 @@ const consentVersion = "privacy-1.0-2026-11-15";
     serviceSelect.value = requestedPlan;
     const messageInput = field("message") as HTMLTextAreaElement | null;
     if (messageInput && !messageInput.value) {
-      messageInput.value = `I would like to request ${requestedPlan}${billingNote ? ` with ${billingNote}` : ""}. Please confirm availability, inclusions, the total price and secure online payment steps before I commit.`;
+      messageInput.value = `I would like to discuss ${requestedPlan}${billingNote ? ` with ${billingNote}` : ""}. Please confirm availability, inclusions, the total price and accepted payment method before I commit.`;
     }
   }
 

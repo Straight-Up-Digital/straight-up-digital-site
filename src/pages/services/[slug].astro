@@ -1,0 +1,165 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import CtaBand from "../../components/CtaBand.astro";
+import { services, serviceStatusMeta, websiteBuildOptions } from "../../data/services";
+import { hostingPlans } from "../../data/pricing";
+import type { Service } from "../../data/services";
+
+interface Props {
+  service: Service;
+}
+
+export function getStaticPaths() {
+  return services.map((service) => ({
+    params: { slug: service.slug },
+    props: { service },
+  }));
+}
+
+const { service } = Astro.props;
+const description = `${service.summary} Straight Up Digital serves small businesses in Port Alfred and across South Africa.`;
+const serviceJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  name: service.title,
+  description: service.summary,
+  serviceType: service.title,
+  provider: {
+    "@type": "Organization",
+    name: "Straight Up Digital",
+    url: "https://straightupdigital.co.za/",
+  },
+  areaServed: { "@type": "Country", name: "South Africa" },
+};
+const isHosting = service.slug === "managed-hosting-and-domains";
+const isWebsiteBuild = service.slug === "website-design-and-development";
+const isAudit = service.slug === "digital-presence-audits";
+const isAvailable = service.status === "available";
+const primaryHref = isAudit
+  ? "/digital-audit#request"
+  : service.status === "planned"
+    ? "/digital-audit"
+    : `/contact?plan=${encodeURIComponent(service.slug)}#enquiry`;
+const primaryLabel = isAudit
+  ? "Get your free audit"
+  : isHosting
+    ? "Check plan availability"
+  : service.status === "planned"
+    ? "Start with the available audit"
+    : isWebsiteBuild
+      ? "Discuss your website"
+      : "Ask about this service";
+---
+
+<BaseLayout
+  title={service.title}
+  description={description}
+  canonicalPath={`/services/${service.slug}`}
+  jsonLd={[serviceJsonLd]}
+>
+  <section class="page-hero">
+    <div class="container page-hero__inner">
+      <div>
+        <p class="kicker"><a href="/services">Services</a> / {serviceStatusMeta[service.status].label}</p>
+        <h1 class="page-hero__title">{service.title}</h1>
+        <div class="page-hero__actions">
+          <a class="btn btn--primary" href={primaryHref}>
+            {primaryLabel}
+            <svg class="btn__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg>
+          </a>
+          <a class="btn btn--secondary" href={isHosting ? "/pricing#hosting-packages" : "/pricing#packages"}>
+            {isHosting ? "Compare hosting plans" : "See pricing"}
+          </a>
+        </div>
+      </div>
+      <p class="page-hero__lede">{service.summary}</p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="service-overview-title">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <p class="kicker">What to expect</p>
+          <h2 class="h2" id="service-overview-title" style="margin-top: 14px;">Clear work, agreed before it starts.</h2>
+        </div>
+        <p class="lede">{service.note ?? "We confirm the scope, price and timing in writing before work begins."}</p>
+      </div>
+
+      <div class="service-detail__grid">
+        <div class="detail-block">
+          <h3>Who this is for</h3>
+          <p>{service.forWho}</p>
+          <h3 style="margin-top: 28px;">Why it helps</h3>
+          <p>{service.value}</p>
+        </div>
+        <div class="detail-block">
+          <h3>What you receive</h3>
+          <ul>{service.receive.map((item) => <li>{item}</li>)}</ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {isWebsiteBuild && (
+    <section class="section ivory" aria-labelledby="specialist-builds-title">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <p class="kicker">Specialist website builds</p>
+            <h2 class="h2" id="specialist-builds-title" style="margin-top: 14px;">More complex websites, scoped around your business.</h2>
+          </div>
+          <p class="body">These projects need discovery before a price can be confirmed. The cards show the main requirements, not a fixed package or promise of a specific third-party system.</p>
+        </div>
+        <div class="service-catalog service-catalog--builds">
+          {websiteBuildOptions.map((option) => (
+            <article class="service-catalog__card service-catalog__card--static">
+              <h3>{option.title}</h3>
+              <p>{option.summary}</p>
+              <ul>{option.scope.map((item) => <li>{item}</li>)}</ul>
+            </article>
+          ))}
+        </div>
+        <p class="pricing-guardrail" style="margin-top: 24px;">Payment gateways, booking or membership platforms, hosting, licences, transaction fees, large data imports and ongoing maintenance are included only when the written quote says so. We will confirm third-party costs before you approve the work.</p>
+        <p style="margin-top: 28px;"><a class="btn btn--primary btn--on-ivory" href={`/contact?plan=${encodeURIComponent(service.slug)}#enquiry`}>Discuss a specialist build</a></p>
+      </div>
+    </section>
+  )}
+
+  {isHosting && (
+    <section class="section ivory" id="hosting-packages" aria-labelledby="hosting-plans-title">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <p class="kicker">Hosting choices</p>
+            <h2 class="h2" id="hosting-plans-title" style="margin-top: 14px;">Choose the plan that fits your team.</h2>
+          </div>
+          <p class="body">A plan request does not charge you. We confirm availability and the written terms before sending the approved payment option.</p>
+        </div>
+        <div class="service-catalog service-catalog--plans">
+          {hostingPlans.map((plan) => (
+            <article class="service-catalog__card service-catalog__card--static" id={`plan-${plan.slug}`}>
+              <p class="pricing-label">Hosting plan</p>
+              <h3>{plan.name}</h3>
+              <p class="service-plan-price">R{plan.priceMonthlyZar.toLocaleString("en-ZA")} / month</p>
+              <p>{plan.headline}</p>
+              <p><strong>Best for:</strong> {plan.bestFor}</p>
+              <ul>{plan.whatYouGet.map((item) => <li>{item}</li>)}</ul>
+              <a class="link-arrow" href={`/contact?plan=${plan.slug}&billing=monthly#enquiry`}>Check {plan.name} availability</a>
+            </article>
+          ))}
+        </div>
+        <p class="pricing-guardrail" style="margin-top: 24px;">Annual hosting prepayment is a once-off payment. Monthly plans are not described as automatic renewals unless that payment method is confirmed in writing.</p>
+      </div>
+    </section>
+  )}
+
+  <CtaBand
+    title={isAvailable ? "Ready to take the next step?" : service.status === "planned" ? "Start with what is available today." : "Tell us what you need."}
+    body={isAudit ? "The audit is free and reviewed by a person. We will explain the findings and agree any paid work with you first." : "Send a short description. We will reply with questions, scope and a written quote before you commit."}
+    primaryLabel={primaryLabel}
+    primaryHref={primaryHref}
+    secondaryLabel="Browse all services"
+    secondaryHref="/services"
+  />
+</BaseLayout>

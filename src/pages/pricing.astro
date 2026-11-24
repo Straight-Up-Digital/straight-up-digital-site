@@ -135,16 +135,16 @@ const exampleFixPrice =
           <p>Start with an honest scorecard, evidence and a prioritised action plan.</p>
           <p><strong>{formatZar(auditPricing.pricePerMissingPointZar)} per verified missing point</strong> for optional fixes. Example: {exampleScore}/100 means {auditPricing.maximumScore - exampleScore} points × {formatZar(auditFixPackage.pricePerMissingPointZar)} = {formatZar(exampleFixPrice)} once-off.</p>
           <a class="link-arrow" href="/digital-audit#request">
-            Request your free audit
+            Get your free audit
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg>
           </a>
         </article>
         <article class="pricing-overview__card">
-          <p class="pricing-label">5-page small business website</p>
-          <p class="pricing-overview__price">{formatZar(websiteOffer.buildOnceOffZar)}<span> once-off</span></p>
-          <p>Mobile-ready, local-search-focused and built to turn visits into calls and WhatsApp enquiries.</p>
+          <p class="pricing-label">One-page starter website</p>
+          <p class="pricing-overview__price">From {formatZar(websiteOffer.buildOnceOffZar)}<span> once-off</span></p>
+          <p>A mobile-ready starting point. Larger sites are scoped and priced separately.</p>
           <p>Hosting is required from {formatZar(websiteOffer.hostingMonthlyZar)}/month.</p>
-          <a class="link-arrow" href="/contact?plan=website-build&billing=once-off#enquiry">Request a website build</a>
+          <a class="link-arrow" href="/contact?plan=website-build&billing=once-off#enquiry">Discuss your website</a>
         </article>
         <article class="pricing-overview__card">
           <p class="pricing-label">Hosting and domain</p>
@@ -186,16 +186,16 @@ const exampleFixPrice =
               {auditFixPackage.deliverables.map((item) => <li>{item}</li>)}
             </ul>
             <a class="link-arrow" href="/digital-audit#request">Get the free scorecard first</a>
-          </article>
-          <article class="pricing-overview__card">
-            <p class="pricing-label">Small business website · once-off</p>
-            <p class="pricing-overview__price">{formatZar(websiteOffer.buildOnceOffZar)}<span> once-off</span></p>
-            <p>A fast, mobile-ready website designed to turn local visits into calls and WhatsApp enquiries.</p>
+        </article>
+        <article class="pricing-overview__card">
+          <p class="pricing-label">One-page starter website · once-off</p>
+          <p class="pricing-overview__price">From {formatZar(websiteOffer.buildOnceOffZar)}<span> once-off</span></p>
+          <p>A mobile-ready starting point. Larger sites are scoped and priced separately.</p>
             <ul class="package-includes">
               {websiteBuildDeliverables.map((item) => <li>{item}</li>)}
             </ul>
             <p>Requires a hosting plan from {formatZar(websiteOffer.hostingMonthlyZar)}/month.</p>
-            <a class="link-arrow" href="/contact?plan=website-build&billing=once-off#enquiry">Request a website build</a>
+            <a class="link-arrow" href="/contact?plan=website-build&billing=once-off#enquiry">Discuss your website</a>
           </article>
         </div>
       </div>
@@ -246,7 +246,7 @@ const exampleFixPrice =
         <p class="pricing-guardrail">{hostingBillingNotice}</p>
       </div>
 
-      <div class="pricing-subsection">
+      <div class="pricing-subsection" id="monthly-support">
         <div class="section-head">
           <div>
             <p class="kicker"><span>06</span> Monthly support</p>

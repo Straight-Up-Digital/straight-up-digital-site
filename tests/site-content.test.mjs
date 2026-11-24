@@ -74,8 +74,40 @@ test("hosting tiers show both billing choices and prefill the requested plan", (
   assert.match(form, /new URLSearchParams\(window\.location\.search\)/);
   assert.match(form, /serviceSelect\.value = requestedPlan/);
   assert.match(form, /annual prepayment \(two months free\)/);
-  assert.match(form, /secure online payment steps/);
+  assert.match(form, /accepted payment method/);
   assert.match(form, /onceOffEdits\.map/);
+});
+
+test("the R1,500 website price is limited to the one-page starter", () => {
+  const pricingData = read("../src/data/pricing.ts");
+  assert.match(pricingData, /buildOnceOffZar: 1500/);
+  assert.match(pricingData, /maximumPages: 1/);
+  assert.match(faqs, /one-page starter website begins at R1,500/i);
+  assert.doesNotMatch(faqs, /five-page small-business website is R1,500/i);
+  assert.match(form, /One-page starter website — from R1,500 once-off/);
+  assert.match(pricingPage, /One-page starter website/);
+});
+
+test("services open dedicated pages and expose specialist build scopes and plan links", () => {
+  const servicesPage = read("../src/pages/services.astro");
+  const servicesData = read("../src/data/services.ts");
+  const serviceDetailPage = read("../src/pages/services/[slug].astro");
+
+  assert.match(servicesPage, /href=\{`\/services\/\$\{service\.slug\}`\}/);
+  assert.match(servicesPage, /href="\/pricing#monthly-support"/);
+  assert.match(servicesPage, /href="\/pricing#hosting-packages"/);
+  assert.match(form, /Object\.fromEntries\(services\.map/);
+  assert.match(serviceDetailPage, /getStaticPaths/);
+  assert.match(serviceDetailPage, /\/contact\?plan=/);
+  assert.match(serviceDetailPage, /canonicalPath=\{`\/services\/\$\{service\.slug\}`\}/);
+  assert.match(serviceDetailPage, /websiteBuildOptions\.map/);
+  assert.match(serviceDetailPage, /hostingPlans\.map/);
+  assert.match(servicesData, /Online shops/);
+  assert.match(servicesData, /Bookings and appointments/);
+  assert.match(servicesData, /Guest houses and tourism/);
+  assert.match(servicesData, /Clinics and wellness practices/);
+  assert.match(servicesData, /payment fees and third-party subscriptions are listed separately/i);
+  assert.match(servicesData, /should not collect health details unless secure handling and legal requirements are separately assessed/i);
 });
 
 test("WhatsApp offers audit, hosting, domain and general enquiry intents", () => {

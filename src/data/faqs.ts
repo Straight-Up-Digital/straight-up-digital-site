@@ -85,7 +85,7 @@ export const pricingFaqs: Faq[] = [
   {
     question: "Is the website build a once-off cost?",
     answer:
-      "The five-page small-business website is R1,500 once-off and includes one structured revision round. A hosting plan from R129/month is also required. Online stores and custom booking engines need a separate written quote.",
+      "The one-page starter website begins at R1,500 once-off. Larger sites are scoped and priced separately. Hosting is required from R129/month. Online stores and custom booking engines need a separate written scope.",
   },
   {
     question: "What is not included?",
