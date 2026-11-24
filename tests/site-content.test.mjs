@@ -10,6 +10,8 @@ const terms = read("../src/pages/terms.astro");
 const pricing = read("../src/data/pricing.ts");
 const home = read("../src/pages/index.astro");
 const pricingPage = read("../src/pages/pricing.astro");
+const bundlesPage = read("../src/pages/bundles.astro");
+const bundleData = read("../src/data/bundles.ts");
 const form = read("../src/components/EnquiryForm.astro");
 const whatsapp = read("../src/components/WhatsAppButton.astro");
 const styles = read("../src/styles/global.css");
@@ -77,6 +79,26 @@ test("hosting tiers show both billing choices and prefill the requested plan", (
   assert.match(form, /annual prepayment \(two months free\)/);
   assert.match(form, /accepted payment method/);
   assert.match(form, /onceOffEdits\.map/);
+});
+
+test("website and hosting bundles use the current rates and transparent small-discount math", () => {
+  assert.match(bundleData, /bundleDiscountPercent = 5/);
+  assert.match(bundleData, /websiteOffer\.buildOnceOffZar \+ hostingPlan\.priceMonthlyZar/);
+  assert.match(bundleData, /websiteOffer\.buildOnceOffZar \+ hostingPlan\.priceAnnualZar/);
+  assert.match(bundleData, /roundToNearestTen/);
+  const discount = 0.05;
+  const annualListedTotals = [2790, 3990, 5990];
+  const annualBundlePrices = annualListedTotals.map((total) => Math.round((total * (1 - discount)) / 10) * 10);
+  assert.deepEqual(annualBundlePrices, [2650, 3790, 5690]);
+  assert.deepEqual(annualListedTotals.map((total, index) => total - annualBundlePrices[index]), [140, 200, 300]);
+  const monthlyListedTotals = [1629, 1749, 1949];
+  assert.deepEqual(monthlyListedTotals.map((total) => Math.round((total * (1 - discount)) / 10) * 10), [1550, 1660, 1850]);
+  assert.match(bundlesPage, /Online checkout is not active from this page/);
+  assert.match(bundlesPage, /applicable taxes and payment terms/);
+  assert.match(bundleData, /hostingAnnualZar: hostingPlan\.priceAnnualZar/);
+  assert.match(form, /websiteHostingBundles\.map/);
+  assert.match(styles, /\.bundle-prices\s*\{[^}]*display:\s*grid/s);
+  assert.match(footerNavigation, /label: "Bundles", href: "\/bundles"/);
 });
 
 test("the R1,500 website price is limited to the one-page starter", () => {

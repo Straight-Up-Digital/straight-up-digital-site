@@ -3767,6 +3767,23 @@ body.has-open-menu .floating-actions {
   font-weight: 600;
   line-height: 1.5;
 }
+.bundle-prices {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid rgba(8, 10, 9, 0.12);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.52);
+}
+.bundle-prices p {
+  margin: 0;
+  color: var(--on-ivory-muted);
+  font-size: var(--text-sm);
+  line-height: 1.55;
+}
+.bundle-prices strong {
+  color: var(--on-ivory);
+}
 .hosting-card__best-for,
 .retainer-card__best-for,
 .retainer-card__hosting,

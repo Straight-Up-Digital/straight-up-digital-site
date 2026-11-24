@@ -9,6 +9,7 @@
 import { serviceOptions } from "../data/services";
 import { services } from "../data/services";
 import { hostingPlans, monthlyRetainers, onceOffEdits } from "../data/pricing";
+import { websiteHostingBundles } from "../data/bundles";
 
 interface Props {
   variant: "audit" | "contact";
@@ -38,6 +39,9 @@ const retainerPlanOptions = monthlyRetainers.map(
 const onceOffEditOptions = onceOffEdits.map(
   (edit) => `${edit.title} — ${formatZar(edit.priceZar)} once-off`,
 );
+const bundlePlanOptions = websiteHostingBundles.map(
+  (bundle) => `${bundle.name} — ${formatZar(bundle.monthly.priceZar)} monthly start or ${formatZar(bundle.annual.priceZar)} annual start`,
+);
 const domainRequestOption = "Additional domain registration or renewal request";
 const options = [
   ...serviceOptions,
@@ -45,6 +49,7 @@ const options = [
   "Audit Fix Package — R40 per verified missing point",
   "One-page starter website — from R1,500 once-off",
   "Larger business website — scope and price confirmed in writing",
+  ...bundlePlanOptions,
   ...hostingPlanOptions,
   ...retainerPlanOptions,
   ...onceOffEditOptions,
@@ -70,6 +75,10 @@ const planRequests: Record<string, string> = {
   ...Object.fromEntries(onceOffEdits.map((edit) => [
     edit.slug,
     `${edit.title} — ${formatZar(edit.priceZar)} once-off`,
+  ])),
+  ...Object.fromEntries(websiteHostingBundles.map((bundle) => [
+    `bundle-${bundle.slug}`,
+    `${bundle.name} — one-page website plus ${bundle.hostingPlan.name}; monthly first bill ${formatZar(bundle.monthly.priceZar)}, then ${formatZar(bundle.monthly.ongoingHostingMonthlyZar)}/month, or annual first year ${formatZar(bundle.annual.priceZar)} once-off`,
   ])),
   "website-build": "One-page starter website — from R1,500 once-off, plus a hosting plan from R129/month; larger websites are scoped separately",
   "audit-fix": "Audit Fix Package — R40 per verified missing point, quoted after the free audit",

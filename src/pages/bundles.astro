@@ -1,0 +1,133 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import CtaBand from "../components/CtaBand.astro";
+import { bundleDiscountPercent, websiteHostingBundles } from "../data/bundles";
+import { websiteBuildDeliverables } from "../data/pricing";
+
+const description =
+  "Compare Straight Up Digital's website and hosting bundles: a one-page business website combined with Starter Brand, Business Pro or Team Unlimited hosting.";
+const formatZar = (amount: number): string => `R${amount.toLocaleString("en-US")}`;
+---
+
+<BaseLayout
+  title="Website and Hosting Bundles"
+  description={description}
+  canonicalPath="/bundles"
+>
+  <section class="page-hero">
+    <div class="container page-hero__inner">
+      <div>
+        <p class="kicker">Website + hosting bundles</p>
+        <h1 class="page-hero__title">
+          Start with a website and business email, together.
+        </h1>
+        <div class="page-hero__actions">
+          <a class="btn btn--primary" href="#bundle-packages">
+            Compare the bundles
+            <svg class="btn__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg>
+          </a>
+          <a class="btn btn--secondary" href="/services/website-design-and-development">See specialist website options</a>
+        </div>
+      </div>
+      <p class="page-hero__lede">
+        Choose a one-page starter website with the hosting and email plan that
+        fits your business. Request a written quote first; a request does not
+        charge you or activate an automatic renewal.
+      </p>
+    </div>
+  </section>
+
+  <section class="section ivory" id="bundle-packages" aria-labelledby="bundle-packages-title">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <p class="kicker"><span>01</span> Choose your bundle</p>
+          <h2 class="h2" id="bundle-packages-title" style="margin-top: 14px;">
+            One-page site. Managed hosting. One clear request.
+          </h2>
+        </div>
+        <p class="body">
+          Each option pairs the R1,500 one-page starter with one of the current
+          hosting plans. The website price does not cover an online shop, booking
+          engine or other custom functionality.
+        </p>
+      </div>
+
+      <div class="package-grid package-grid--retainers">
+        {websiteHostingBundles.map((bundle) => (
+          <article class:list={["package-slot", "package-slot--retainer", "hosting-card", bundle.hostingPlan.featured && "hosting-card--featured"]}>
+            {bundle.hostingPlan.featured && <span class="package-badge">Most popular</span>}
+            <img class="package-icon" src="/brand/symbol.svg" alt="" width="42" height="34" loading="lazy" />
+            <p class="pricing-label">{bundleDiscountPercent}% bundle discount · request a quote</p>
+            <h3>{bundle.name}</h3>
+            <p class="hosting-card__headline">One-page starter website with {bundle.hostingPlan.name}.</p>
+            <p class="hosting-card__best-for"><strong>Best for:</strong> {bundle.hostingPlan.bestFor}</p>
+
+            <div class="bundle-prices">
+              <p><strong>Monthly start:</strong> {formatZar(bundle.monthly.priceZar)} for the website and first month of hosting. Save {formatZar(bundle.monthly.savingZar)} against the listed prices.</p>
+              <p><strong>Annual start:</strong> {formatZar(bundle.annual.priceZar)} once-off for the website and first year of hosting. Save {formatZar(bundle.annual.savingZar)} against the listed prices.</p>
+            </div>
+
+            <h4>Hosting plan includes</h4>
+            <ul class="package-includes">
+              {bundle.hostingPlan.whatYouGet.map((item) => <li>{item}</li>)}
+            </ul>
+
+            <details class="hosting-card__details">
+              <summary>See the one-page website scope</summary>
+              <ul class="package-includes">
+                {websiteBuildDeliverables.map((item) => <li>{item}</li>)}
+              </ul>
+            </details>
+
+            <div class="package-actions">
+              <a class="btn btn--primary btn--on-ivory" href={`/contact?plan=bundle-${bundle.slug}&billing=monthly#enquiry`}>Request monthly start</a>
+              <a class="link-arrow" href={`/contact?plan=bundle-${bundle.slug}&billing=annual#enquiry`}>Request annual prepay</a>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="bundle-terms-title">
+    <div class="container container--narrow">
+      <p class="kicker"><span>02</span> How the bundle prices work</p>
+      <h2 class="h2" id="bundle-terms-title" style="margin-top: 14px;">The discount is shown against current list prices.</h2>
+      <div class="prose" style="margin-top: 24px;">
+        <p>
+          The {bundleDiscountPercent}% discount is applied to the listed one-page
+          website price plus the selected hosting price, then rounded to the
+          nearest R10. The annual option uses the current annual prepayment rate,
+          which already includes two months free.
+        </p>
+        <p>
+          With monthly billing, the bundle discount applies to the first bill
+          only. Hosting then continues at the plan's current monthly list rate;
+          the payment and renewal method will be confirmed in writing. Annual
+          hosting is paid once up front and is not described as automatically
+          renewing unless that is confirmed in the written order.
+        </p>
+        <p>
+          These are guide prices based on the current package list. The written
+          quote confirms scope, availability, applicable taxes and payment terms
+          before you commit. Specialist website features, third-party charges,
+          domain extensions outside the chosen plan and extra work are quoted
+          separately. Online checkout is not active from this page.
+        </p>
+      </div>
+      <p style="margin-top: 28px;">
+        <a class="link-arrow" href="/pricing">See every service and current rate</a>
+      </p>
+    </div>
+  </section>
+
+  <CtaBand
+    title="Need more than a one-page starter?"
+    body="Online shops, bookings, tourism, property, clinics, restaurants and membership sites are scoped for the features your business actually needs."
+    primaryLabel="Discuss a website bundle"
+    primaryHref="/contact?plan=bundle-starter-brand&billing=annual#enquiry"
+    secondaryLabel="Compare specialist builds"
+    secondaryHref="/services/website-design-and-development"
+  />
+</BaseLayout>
