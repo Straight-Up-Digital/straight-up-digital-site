@@ -1,4 +1,4 @@
-import type { CleanEnquiry } from "../netlify/lib/validation.mts";
+import type { CleanEnquiry } from "../shared/validation.mts";
 import type { CloudflareWorkerEnv, SocketConnect } from "./types.ts";
 
 export class EmailConfigError extends Error {}

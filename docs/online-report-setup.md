@@ -18,7 +18,7 @@ Report links are unguessable bearer links, use `noindex`/`no-store` protections,
 
 ## Required configuration before enabling reports
 
-1. Generate a new, high-entropy token locally, distinct from any Netlify token. Keep it private. In the website repository, run `npx wrangler secret put AUDIT_REPORT_PUBLISH_TOKEN --env production` and enter the token directly into Wrangler's prompt. Do not put the value in Git, chat, or a command line that saves shell history.
+1. Generate a new, high-entropy token locally, distinct from every other token. Keep it private. In the website repository, run `npx wrangler secret put AUDIT_REPORT_PUBLISH_TOKEN --env production` and enter the token directly into Wrangler's prompt. Do not put the value in Git, chat, or a command line that saves shell history.
 2. In the production `wrangler.jsonc` environment, set `AUDIT_REPORTS_ENABLED` to `true`. Add the exact production `workers.dev` hostname (`straight-up-digital-cloudflare.stjohn-toperformer.workers.dev`) to `PUBLIC_REPORT_HOSTS`; that allowlist is required for safe report revocation. When a custom domain is approved and live, include its exact hostname(s) too.
 3. In the ignored local Business Auditor `.env`, set these names using the same token and the current production endpoint. Never commit `.env` or share values:
 

@@ -8,8 +8,8 @@
   },
   "include": [
     "cloudflare/**/*.ts",
-    "netlify/lib/validation.mts",
-    "netlify/lib/client-report.mts"
+    "shared/validation.mts",
+    "shared/client-report.mts"
   ],
   "exclude": ["node_modules", "dist", ".work"]
 }

@@ -20,7 +20,7 @@
 /brand/*
   Cache-Control: public, max-age=604800
 
-# Netlify's /*.png policy applies to root-level PNG files. List current root assets
+# The /*.png policy applies to root-level PNG files. List current root assets
 # explicitly because a greedy Cloudflare splat could also match nested images.
 /app-icon-1024.png
   Cache-Control: public, max-age=604800
@@ -37,6 +37,6 @@
 /og-image.png
   Cache-Control: public, max-age=604800
 
-# Netlify's /*.ico policy applies to the current root favicon.
+# The /*.ico policy applies to the current root favicon.
 /favicon.ico
   Cache-Control: public, max-age=604800

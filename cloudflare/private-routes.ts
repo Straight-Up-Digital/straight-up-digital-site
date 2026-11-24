@@ -1,4 +1,4 @@
-import { createReportToken, normalizeCustomerReport, readJsonBodyLimited, reportFlowReady } from "../netlify/lib/client-report.mts";
+import { createReportToken, normalizeCustomerReport, readJsonBodyLimited, reportFlowReady } from "../shared/client-report.mts";
 import { decodeCursor, createReportKey, type PrivateDataStore } from "./storage.ts";
 import { FirestoreError } from "./firestore.ts";
 import { bearerAuthorized, isProduction, rateLimit, RateLimitUnavailable } from "./security.ts";
@@ -28,7 +28,7 @@ async function protectedRateLimit(request: Request, env: CloudflareWorkerEnv, de
 }
 
 const hostAllowlist = (env: CloudflareWorkerEnv): Set<string> => {
-  const configured = (env.PUBLIC_REPORT_HOSTS || "straight-up-digital-site.netlify.app,straightupdigital.co.za,www.straightupdigital.co.za")
+  const configured = (env.PUBLIC_REPORT_HOSTS || "straightupdigital.co.za,www.straightupdigital.co.za")
     .split(",").map((host) => host.trim().toLowerCase()).filter(Boolean);
   return new Set(configured);
 };

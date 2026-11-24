@@ -122,10 +122,6 @@ test("the intended custom domain is canonical and present in social/business met
   assert.match(layout, /addressLocality: "Port Alfred"/);
 });
 
-test("private CRM is excluded from search indexing and the public sitemap", () => {
-  assert.match(astro, /!page\.includes\("\/crm"\)/);
-  assert.match(robots, /Disallow: \/crm/);
-});
 
 test("Paystack readiness copy does not promise recurring Capitec Pay", () => {
   assert.match(paystack, /Capitec Pay.*once-off/);

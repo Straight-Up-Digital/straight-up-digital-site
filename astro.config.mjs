@@ -2,18 +2,14 @@
 import { defineConfig } from "astro/config";
 import sitemap from "@astrojs/sitemap";
 
-/**
- * The owner-selected public origin is used for canonicals and the sitemap
- * before DNS cutover, so search metadata is already aligned with the intended
- * custom domain.
- */
+/** Public origin used for canonicals and the sitemap. */
 const site = "https://straightupdigital.co.za";
 
 export default defineConfig({
   site,
   output: "static",
-  // Netlify's static directory hosting resolves nested routes with a trailing
-  // slash; keep page canonicals and sitemap URLs aligned with those 200 URLs.
+  // Cloudflare static assets serve nested routes with a trailing slash; keep
+  // canonicals and sitemap URLs aligned with those URLs.
   trailingSlash: "always",
   compressHTML: true,
   build: {
@@ -23,8 +19,7 @@ export default defineConfig({
     sitemap({
       filter: (page) =>
         !page.includes("/thank-you") &&
-        !page.includes("/404") &&
-        !page.includes("/crm"),
+        !page.includes("/404"),
       changefreq: "monthly",
       priority: 0.7,
     }),

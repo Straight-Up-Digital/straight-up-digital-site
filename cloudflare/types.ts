@@ -1,5 +1,5 @@
-import type { CleanEnquiry } from "../netlify/lib/validation.mts";
-import type { CustomerReport } from "../netlify/lib/client-report.mts";
+import type { CleanEnquiry } from "../shared/validation.mts";
+import type { CustomerReport } from "../shared/client-report.mts";
 
 export interface StaticAssetBinding { fetch(request: Request): Promise<Response> }
 export interface TcpSocketLike {
@@ -24,8 +24,6 @@ export interface StoredReport { report: CustomerReport; expiresAt: string }
 
 export interface CloudflareWorkerEnv {
   ASSETS: StaticAssetBinding;
-  CRM_DB?: D1Database;
-  CRM_ADMIN_PASSWORD?: string;
   FIRESTORE_PROJECT_ID?: string;
   GOOGLE_FIRESTORE_SERVICE_ACCOUNT_JSON?: string;
   APP_ENV?: string;

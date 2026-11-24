@@ -2,16 +2,9 @@
 /**
  * Enquiry form, used on the Digital audit and Contact pages.
  *
- * Delivery modes (build-time env):
- *  - PUBLIC_FORM_MODE=netlify (default): Netlify Forms receives the submission.
- *    Works without any third-party account, stores submissions in the Netlify
- *    dashboard and can email the owner from there.
- *  - PUBLIC_FORM_MODE=email: the Cloudflare Worker validates the submission at
- *    /api/enquiries and sends it through the configured email adapter. Turnstile
- *    is used when a site key is present.
- *
- * Both paths keep the same payload shape so the private CRM can be connected
- * later without changing the form.
+ * The Cloudflare Worker validates every submission at /api/enquiries, sends it
+ * through the configured email adapter and keeps it for the private CRM.
+ * Turnstile is used when PUBLIC_TURNSTILE_SITE_KEY is set.
  */
 import { serviceOptions } from "../data/services";
 import { hostingPlans, monthlyRetainers, onceOffEdits } from "../data/pricing";
@@ -28,11 +21,9 @@ const { variant, heading, intro, submitLabel, id = "request" } = Astro.props;
 const isAudit = variant === "audit";
 const formName = isAudit ? "audit-request" : "contact-enquiry";
 
-const formMode =
-  import.meta.env.PUBLIC_FORM_MODE === "email" ? "email" : "netlify";
+const formMode = "email";
 const turnstileKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? "";
-const action =
-  formMode === "email" ? "/api/enquiries" : "/thank-you";
+const action = "/api/enquiries";
 
 const formatZar = (amount: number): string =>
   `R${amount.toLocaleString("en-US")}`;
@@ -95,8 +86,6 @@ const consentVersion = "privacy-1.0-2026-11-15";
     name={formName}
     method="POST"
     action={action}
-    data-netlify={formMode === "netlify" ? "true" : undefined}
-    netlify-honeypot={formMode === "netlify" ? "company_website_confirm" : undefined}
     data-enquiry-form
     data-form-name={formName}
     data-form-type={variant}
@@ -347,7 +336,7 @@ const consentVersion = "privacy-1.0-2026-11-15";
   const alertText = root?.querySelector<HTMLElement>("[data-form-alert-text]");
   const success = root?.querySelector<HTMLElement>("[data-form-success]");
   const submitButton = form?.querySelector<HTMLButtonElement>("[data-submit]");
-  const mode = (root?.dataset.formMode ?? "netlify") as "netlify" | "email";
+  const mode = (root?.dataset.formMode ?? "email") as "email";
   const isAuditForm = form?.dataset.formType === "audit";
 
   const messages: Record<FieldName, string> = {

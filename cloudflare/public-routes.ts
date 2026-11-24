@@ -1,8 +1,8 @@
-import { isHoneypotFilled, isImplausiblyFast, validateEnquiry } from "../netlify/lib/validation.mts";
+import { isHoneypotFilled, isImplausiblyFast, validateEnquiry } from "../shared/validation.mts";
 import {
   normalizeCustomerReport, readJsonBodyLimited, reportFlowReady, renderMissingPage,
   renderReportPage, renderResponseConfirmation, renderResponseError, renderUnavailablePage,
-} from "../netlify/lib/client-report.mts";
+} from "../shared/client-report.mts";
 import { EmailConfigError } from "./email.ts";
 import { enquiryErrorHtml, htmlResponse, jsonResponse, readEnquiryBody, readUrlEncodedLimited, textField, validEmail } from "./http.ts";
 import { FirestoreError, hasFirestoreConfiguration } from "./firestore.ts";

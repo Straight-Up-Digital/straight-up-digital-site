@@ -6,7 +6,7 @@ The Cloudflare Worker code uses the Firestore REST API for enquiry records, priv
 
 No service accounts, service-account keys, Worker secrets, or production data have been created or configured. The test Worker remains unrouted from `workers.dev`, and the Firestore-backed Worker code has not yet been deployed.
 
-This is a technical data-location choice, not a legal certification or a claim that every part of request processing remains in South Africa. Cloudflare receives and processes live form requests at the Worker edge, and Zoho receives notification emails. The current live Netlify site still serves the old production build and stores its Netlify Blob data in `us-east-2`; the Johannesburg Firestore migration has not been cut over. Confirm provider terms, processing locations, and the privacy notice before production cutover.
+This is a technical data-location choice, not a legal certification or a claim that every part of request processing remains in South Africa. Cloudflare receives and processes live form requests at the Worker edge, and Zoho receives notification emails.  Confirm provider terms, processing locations, and the privacy notice before production cutover.
 
 ## No-cost guardrails
 
@@ -61,7 +61,7 @@ The Worker stores:
 
 The scheduled Worker cleanup deletes up to 450 expired report or rate-limit documents per run. Expired reports are rejected by the public route based on expiry even if cleanup is delayed. Enquiry records are removed through the authenticated CRM acknowledgement/delete workflow; database cleanup does not delete Zoho mailbox messages. Configure mailbox retention and erasure separately.
 
-No production client data has been copied from Netlify or the former D1 database. Both new Firestore databases are empty.
+No production client data was migrated from the previous hosting. Both Firestore databases started empty.
 
 ## POPIA and production cutover checks
 
@@ -72,7 +72,7 @@ A South African Firestore region addresses storage location for the Firestore da
 3. Verify the Zoho account's data centre and email-retention behavior; the mailbox address alone does not prove its data location.
 4. Update the public privacy notice to name the actual deployed providers, purposes, retention, deletion/opt-out route, and any cross-border processing that applies.
 5. Obtain explicit authorization before creating service-account keys and configuring Cloudflare secrets; then deploy only to the unrouted test Worker and run synthetic enquiry, CRM sync/acknowledgement, report expiry/revocation, and email checks.
-6. Keep the test Worker's `workers.dev` route disabled and do not change DNS or the live Netlify site without separate owner approval.
+6. Keep the test Worker's `workers.dev` route disabled.
 
 This checklist is an implementation aid, not legal advice. A South African privacy professional should review the final data flow and notices if a formal POPIA assessment is required.
 

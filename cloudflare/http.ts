@@ -1,4 +1,4 @@
-import type { RawEnquiry } from "../netlify/lib/validation.mts";
+import type { RawEnquiry } from "../shared/validation.mts";
 
 export const MAX_BODY_BYTES = 32_000;
 

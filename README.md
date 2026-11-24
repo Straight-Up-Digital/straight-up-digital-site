@@ -2,7 +2,7 @@
 
 The public marketing site for Straight Up Digital. **Business Auditor is the flagship product.** The site accepts requests for free, owner-run digital presence audits. The online customer-report feature is currently disabled in production; the owner manually runs and reviews the full audit in the private Python CRM. The public site does not run the audit engine or expose the CRM.
 
-This is a static Astro site with no client-side framework. Pages are pre-rendered and fonts are self-hosted. The Cloudflare target serves the static `dist/` output through Workers Static Assets and handles enquiry, report and CRM APIs in `cloudflare/worker.ts`. Netlify source remains as a legacy rollback path; a Cloudflare deployment must use `npm run build:cloudflare`.
+This is a static Astro site with no client-side framework. Pages are pre-rendered and fonts are self-hosted. The Cloudflare target serves the static `dist/` output through Workers Static Assets and handles enquiry, report and CRM APIs in `cloudflare/worker.ts`. Deploy with `npm run deploy`.
 
 ## Stack
 
@@ -13,8 +13,7 @@ This is a static Astro site with no client-side framework. Pages are pre-rendere
 | Type | Montserrat + Inter, self-hosted WOFF2 | Approved brand typefaces, no font CDN requests |
 | Hosting | Cloudflare Worker + Workers Static Assets | Static Astro output plus a custom Worker router |
 | Data | Google Firestore, `africa-south1` (Johannesburg) | Production enquiry records and private reports are stored in the South African region |
-| Forms | Cloudflare Worker on Cloudflare builds | `/api/enquiries` validates, screens, emails and optionally stores a private CRM copy |
-| Legacy path | Netlify source remains in the repository | Not used by the Cloudflare build; do not trigger a Netlify publish |
+| Forms | Cloudflare Worker | `/api/enquiries` validates, screens, emails and optionally stores a private CRM copy |
 | Analytics | None | Tracking remains disabled |
 
 ## Run it locally
@@ -37,10 +36,10 @@ The site is then at `http://localhost:4321`.
 | `npm run check:worker` | Type-checks Cloudflare Worker code |
 | `npm test` | Validation, function and email-adapter tests |
 | `npm run test:links` | Checks every internal link in `dist/` |
-| `npm run build:cloudflare` | Static Astro build in Cloudflare email mode; removes the Netlify-only form declaration |
+| `npm run build:cloudflare` | Static Astro build for the Cloudflare Worker |
 | `npm run worker:dev` | Builds Cloudflare output, then starts Wrangler locally |
 | `npm run worker:dry-run` | Builds and dry-runs Wrangler for the test environment |
-| `npm run netlify:dev` | Legacy Netlify-only local mode; not used for Cloudflare deployment |
+| `npm run deploy` | Builds and deploys the production Worker |
 
 ## Where content lives
 
@@ -53,7 +52,6 @@ The site is then at `http://localhost:4321`.
 | `src/data/steps.ts` | Six-step customer journey |
 | `src/data/faqs.ts` | Audit and pricing answers |
 | `src/data/navigation.ts` | Header and footer navigation |
-| `public/__forms.html` | Legacy Netlify Forms definitions; excluded from Cloudflare `dist/` |
 | `public/_redirects` | Cloudflare Static Assets compatibility redirects |
 | `public/_headers` | Cloudflare Static Assets cache and security headers |
 
@@ -61,9 +59,7 @@ Audit, website-build, hourly, once-off-edit and monthly-retainer rates were veri
 
 ## Enquiries
 
-The Cloudflare build sets `PUBLIC_FORM_MODE=email`. Both forms submit to the Cloudflare-native `/api/enquiries` Worker route. Production uses the Zoho Mail API and the `straight-up-digital-prod` Firestore project in Johannesburg. The Worker validates the request, checks honeypot/timing signals and applies a Firestore-backed rate limit. It sends the email before best-effort Firestore storage. If Firestore is unavailable, it falls back to a per-Worker-instance hashed-IP limit, logs a warning and still acknowledges an email accepted by Zoho; the local CRM queue copy can be missing if storage fails. On 18 November 2026, one synthetic contact submission returned HTTP 200, was imported through the local CRM sync into an isolated test database and was acknowledged/deleted from Firestore. Zoho's API accepted the send; mailbox arrival was not independently verified in that test.
-
-The plain `npm run build` remains in legacy Netlify Forms mode. Its static declarations are in `public/__forms.html`; they are retained for rollback but are removed from the Cloudflare build output. Netlify-style API URLs remain only as compatibility aliases in `cloudflare/router.ts`; the Cloudflare forms do not use them.
+Both forms submit to the Cloudflare-native `/api/enquiries` Worker route. Production uses the Zoho Mail API and the `straight-up-digital-prod` Firestore project in Johannesburg. The Worker validates the request, checks honeypot/timing signals and applies a Firestore-backed rate limit. It sends the email before best-effort Firestore storage. If Firestore is unavailable, it falls back to a per-Worker-instance hashed-IP limit, logs a warning and still acknowledges an email accepted by Zoho; the local CRM queue copy can be missing if storage fails. On 18 November 2026, one synthetic contact submission returned HTTP 200, was imported through the local CRM sync into an isolated test database and was acknowledged/deleted from Firestore. Zoho's API accepted the send; mailbox arrival was not independently verified in that test.
 
 Online customer reports are **owner-published only**. The private local CRM previews a strict issue/impact/fix report and, after explicit owner confirmation, can send only that redacted payload to an authenticated Cloudflare Worker route. Production report publishing is currently disabled (`AUDIT_REPORTS_ENABLED=false`); the production publish token is not configured. Until that separate setup is completed and tested, the public online report and response flow is unavailable. The complete audit, pricing, internal service-fit analysis and CRM records stay private. See [`docs/online-report-setup.md`](docs/online-report-setup.md) for the remaining setup.
 
@@ -81,7 +77,7 @@ npx wrangler deploy --env production
 
 Production `workers_dev` is temporarily enabled so the Worker can be reached on its generated `workers.dev` hostname. Disable it once the custom domain is live. Canonical URLs and the sitemap target `https://straightupdigital.co.za/`. The domain has not been purchased or connected in this migration task; the last DNS check found the apex and `www` unresolved. Verify before any DNS change and do not overwrite Zoho mail records.
 
-`public/_redirects` and `public/_headers` replace the static redirects, cache rules and security headers formerly configured in `netlify.toml`. `_headers` covers static assets; `cloudflare/worker.ts` also attaches site security headers to Worker-generated responses. `netlify.toml`, `netlify/functions/` and `public/__forms.html` remain as legacy source but are not used by the Cloudflare build. `.github/workflows/netlify-production.yml` remains in the repository and listens to pushes on `main` and manual dispatch; it was not changed. Do not merge this branch into `main` until the owner separately authorizes how to retire that Netlify workflow.
+`public/_redirects` and `public/_headers` hold the static redirects, cache rules and security headers; `cloudflare/worker.ts` adds the response security headers for Worker-handled routes.
 
 ## Security and privacy
 

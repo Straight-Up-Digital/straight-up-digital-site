@@ -1,5 +1,5 @@
-import type { CleanEnquiry } from "../netlify/lib/validation.mts";
-import type { CustomerReport } from "../netlify/lib/client-report.mts";
+import type { CleanEnquiry } from "../shared/validation.mts";
+import type { CustomerReport } from "../shared/client-report.mts";
 import { FirestoreError, firestoreClientFromEnv, type FirestoreClientOptions, type FirestoreDocument, type FirestoreValue } from "./firestore.ts";
 import type { CloudflareWorkerEnv, IntakeFields, StoredEnquiry, StoredReport } from "./types.ts";
 

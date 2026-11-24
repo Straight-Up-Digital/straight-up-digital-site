@@ -17,7 +17,7 @@ Updated 18 November 2026. This file distinguishes public facts from operational 
 
 ## Cloudflare production status
 
-The static Astro site is live on `https://straight-up-digital-cloudflare.stjohn-toperformer.workers.dev`. Read-only checks returned HTTP 200 for the homepage, contact page and privacy page. The public contact/audit forms use the Cloudflare Worker API, not Netlify Forms. Production email uses Zoho Mail API and the recipient is `straightupdigital@zohomail.com`. The production Firestore database is in `africa-south1` (Johannesburg).
+The static Astro site is served by the Cloudflare Worker `straight-up-digital-cloudflare` on `https://straightupdigital.co.za` and `https://www.straightupdigital.co.za` (the generated `workers.dev` address stays on until the custom domain is verified). The public contact/audit forms use the Cloudflare Worker API. Production email uses Zoho Mail API and the recipient is `straightupdigital@zohomail.com`. The production Firestore database is in `africa-south1` (Johannesburg).
 
 A synthetic contact submission returned HTTP 200. The Zoho API accepted the email request, but inbox arrival was not independently verified. The same synthetic Firestore row was imported by the real CRM sync routine into an isolated SQLite database, acknowledged, and removed from the Firestore queue. It contained fake test data only.
 
@@ -33,10 +33,10 @@ The Python Business Auditor and CRM remain private and bound to `127.0.0.1`; do 
 | --- | --- |
 | Online customer reports | Disabled in production (`AUDIT_REPORTS_ENABLED=false`); `AUDIT_REPORT_PUBLISH_TOKEN` is not set on the Worker, and the local `CLOUDFLARE_AUDIT_REPORT_PUBLISH_TOKEN` is unset. Configure a separate secret, allowlist the workers.dev hostname, and run synthetic publish/render/respond/revoke/expiry tests before enabling. See [`docs/online-report-setup.md`](docs/online-report-setup.md). |
 | Zoho inbox verification | API acceptance was observed, but the message was not independently located in the inbox during this session. Verify before calling email delivery fully end-to-end. |
-| Custom domain and DNS | `straightupdigital.co.za` remains unpurchased/unconfigured; public DNS previously returned NXDOMAIN. Do not purchase or change DNS without separate owner approval. Preserve Zoho mail records if a domain cutover is later approved. |
+| Custom domain and DNS | `straightupdigital.co.za` is registered with HostAfrica and its DNS is hosted on Cloudflare. The apex and `www` are attached to the Worker. Add an MX record and the Zoho Mail records before relying on `Hello@straightupdigital.co.za`. |
 | Paystack | No merchant onboarding/KYC, recurring method, test keys/plan codes, Worker checkout endpoint, verified webhook or production secret is configured. Current calls to action are manual plan requests. See [`docs/paystack-setup.md`](docs/paystack-setup.md). |
 | Hosting/domain resellers | No supplier account or paid service was created. Confirm current wholesale terms, VAT, quotas, backups, cancellation, support, renewals and margins before taking orders. |
-| Netlify leftovers | Legacy Netlify functions/config/forms remain in the repository. `.github/workflows/netlify-production.yml` still listens to `main` pushes/manual dispatch and was not changed. Do not push/merge to `main`, trigger Netlify or alter its build hooks without separate approval. |
+| Netlify | Removed from the code, build and workflow. Pause or delete the old Netlify site and any build hooks in the Netlify dashboard. |
 | Social/profile assets | No founder photo or social-profile URLs were supplied. Add only with exact approved assets/URLs and permission. |
 
 See [`TODO.md`](TODO.md) for the detailed technical completion record and current priorities.
