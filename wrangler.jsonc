@@ -46,8 +46,8 @@
       // Keep workers.dev on until https://straightupdigital.co.za is verified, then set to false.
       "workers_dev": true,
       "routes": [
-        { "pattern": "straightupdigital.co.za", "custom_domain": true },
-        { "pattern": "www.straightupdigital.co.za", "custom_domain": true }
+        { "pattern": "straightupdigital.co.za", "custom_domain": true, "zone_id": "5a208566e74f58203eeeafb3b36e0d35" },
+        { "pattern": "www.straightupdigital.co.za", "custom_domain": true, "zone_id": "5a208566e74f58203eeeafb3b36e0d35" }
       ],
       "vars": {
         "APP_ENV": "production",
