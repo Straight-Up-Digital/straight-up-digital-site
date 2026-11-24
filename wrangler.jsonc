@@ -45,6 +45,7 @@
       "name": "straight-up-digital-cloudflare",
       // Keep workers.dev on until https://straightupdigital.co.za is verified, then set to false.
       "workers_dev": true,
+      "observability": { "enabled": true, "head_sampling_rate": 1 },
       "routes": [
         { "pattern": "straightupdigital.co.za", "custom_domain": true, "zone_id": "5a208566e74f58203eeeafb3b36e0d35" },
         { "pattern": "www.straightupdigital.co.za", "custom_domain": true, "zone_id": "5a208566e74f58203eeeafb3b36e0d35" }
@@ -52,7 +53,7 @@
       "vars": {
         "APP_ENV": "production",
         "EMAIL_PROVIDER": "zoho-mail-api",
-        "ENQUIRY_TO_EMAIL": "straightupdigital@zohomail.com",
+        "ENQUIRY_TO_EMAIL": "hello@straightupdigital.co.za",
         "ENQUIRY_FROM_EMAIL": "straightupdigital@zohomail.com",
         "ZOHO_SMTP_HOST": "smtp.zoho.com",
         "ZOHO_SMTP_PORT": "587",
