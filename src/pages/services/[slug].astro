@@ -49,6 +49,23 @@ const primaryLabel = isAudit
     : isWebsiteBuild
       ? "Discuss your website"
       : "Ask about this service";
+const websiteBuildImages = [
+  {
+    title: "Online shops",
+    src: "/images/services/ecommerce-shop.webp",
+    alt: "A customer holds a payment card while using a laptop.",
+  },
+  {
+    title: "Guest houses and tourism",
+    src: "/images/services/guest-accommodation.webp",
+    alt: "A neatly made guest bedroom with white bedding and a bedside table.",
+  },
+  {
+    title: "Clinics and wellness",
+    src: "/images/services/clinic-wellness.webp",
+    alt: "A bright dental treatment room with an orange treatment chair and equipment.",
+  },
+];
 ---
 
 <BaseLayout
@@ -110,6 +127,14 @@ const primaryLabel = isAudit
             <h2 class="h2" id="specialist-builds-title" style="margin-top: 14px;">More complex websites, scoped around your business.</h2>
           </div>
           <p class="body">These projects need discovery before a price can be confirmed. The cards show the main requirements, not a fixed package or promise of a specific third-party system.</p>
+        </div>
+        <div class="build-gallery" aria-label="Examples of business types supported by specialist websites">
+          {websiteBuildImages.map((image) => (
+            <figure class="build-gallery__item">
+              <img src={image.src} width="1080" height="720" alt={image.alt} loading="lazy" decoding="async" />
+              <figcaption>{image.title}</figcaption>
+            </figure>
+          ))}
         </div>
         <div class="service-catalog service-catalog--builds">
           {websiteBuildOptions.map((option) => (

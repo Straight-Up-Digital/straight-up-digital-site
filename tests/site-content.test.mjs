@@ -18,6 +18,7 @@ const footer = read("../src/components/SiteFooter.astro");
 const astro = read("../astro.config.mjs");
 const robots = read("../src/pages/robots.txt.ts");
 const paystack = read("../docs/paystack-setup.md");
+const imageCredits = read("../docs/image-credits.md");
 const faqs = read("../src/data/faqs.ts");
 const digitalAudit = read("../src/pages/digital-audit.astro");
 const footerNavigation = read("../src/data/navigation.ts");
@@ -108,6 +109,18 @@ test("services open dedicated pages and expose specialist build scopes and plan 
   assert.match(servicesData, /Clinics and wellness practices/);
   assert.match(servicesData, /payment fees and third-party subscriptions are listed separately/i);
   assert.match(servicesData, /should not collect health details unless secure handling and legal requirements are separately assessed/i);
+});
+
+test("specialist website gallery uses local, accessible and credited photos", () => {
+  const serviceDetailPage = read("../src/pages/services/[slug].astro");
+  for (const file of ["ecommerce-shop.webp", "guest-accommodation.webp", "clinic-wellness.webp"]) {
+    assert.ok(serviceDetailPage.includes(`/images/services/${file}`), `missing gallery asset: ${file}`);
+    assert.ok(imageCredits.includes(file), `missing image credit: ${file}`);
+  }
+  assert.match(serviceDetailPage, /alt=\{image\.alt\}/);
+  assert.match(serviceDetailPage, /loading="lazy"/);
+  assert.match(imageCredits, /https:\/\/unsplash\.com\/license/);
+  assert.match(imageCredits, /Unsplash\+ or other premium/i);
 });
 
 test("WhatsApp offers audit, hosting, domain and general enquiry intents", () => {
