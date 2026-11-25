@@ -1,0 +1,6 @@
+# Redirects served by Cloudflare Workers Static Assets.
+/audit /digital-audit/ 301
+/audit-request /digital-audit/#request 301
+/privacy-notice /privacy/ 301
+/terms-and-conditions /terms/ 301
+/home / 301

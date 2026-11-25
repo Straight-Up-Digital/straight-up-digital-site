@@ -6,8 +6,7 @@ import {
   reportKeyForToken,
   reportSecurityHeaders,
   renderReportPage,
-} from "../netlify/lib/client-report.mts";
-import { config as publishConfig, handlePublishAuditReport } from "../netlify/functions/publish-audit-report.mts";
+} from "../shared/client-report.mts";
 
 const reportInput = {
   schemaVersion: 1,
@@ -30,11 +29,11 @@ const reportInput = {
 
 const readyEnv = {
   AUDIT_REPORTS_ENABLED: "true",
-  EMAIL_PROVIDER: "zoho-smtp",
+  EMAIL_PROVIDER: "zoho-mail-api",
   ENQUIRY_TO_EMAIL: "straightupdigital@zohomail.com",
   ENQUIRY_FROM_EMAIL: "straightupdigital@zohomail.com",
-  ZOHO_SMTP_USERNAME: "straightupdigital@zohomail.com",
-  ZOHO_SMTP_PASSWORD: "example-placeholder-not-a-real-password",
+  ZOHO_API_CLIENT_ID: "example-client-id",
+  ZOHO_API_CLIENT_SECRET: "example-client-secret",
 };
 const reader = (config) => (key) => config[key];
 
@@ -85,43 +84,8 @@ test("public report tokens are never used as storage keys directly", () => {
 test("report flow requires explicit feature flag and a Zoho mailbox configuration", () => {
   assert.equal(reportFlowReady(reader(readyEnv)), true);
   assert.equal(reportFlowReady(reader({ ...readyEnv, AUDIT_REPORTS_ENABLED: "false" })), false);
-  assert.equal(reportFlowReady(reader({ ...readyEnv, ZOHO_SMTP_PASSWORD: "" })), false);
+  assert.equal(reportFlowReady(reader({ ...readyEnv, ZOHO_API_CLIENT_SECRET: "" })), false);
   assert.equal(reportFlowReady(reader({ ...readyEnv, ENQUIRY_TO_EMAIL: "elsewhere@example.com" })), false);
 });
 
 
-test("publish handler rejects non-production and disabled requests before storage", async () => {
-  const request = new Request("https://straight-up-digital-site.netlify.app/.netlify/functions/publish-audit-report", { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" });
-  const development = await handlePublishAuditReport(request.clone(), { deploy: { context: "deploy-preview" }, params: {} }, reader(readyEnv));
-  assert.equal(development.status, 404);
-  const disabled = await handlePublishAuditReport(request.clone(), { deploy: { context: "production" }, params: {} }, reader({ ...readyEnv, AUDIT_REPORTS_ENABLED: "false" }));
-  assert.equal(disabled.status, 503);
-});
-
-
-test("publish handler rejects wrong owner token and malformed client report", async () => {
-  const ownerToken = "A".repeat(43);
-  const config = { ...readyEnv, AUDIT_REPORT_PUBLISH_TOKEN: ownerToken };
-  const context = { deploy: { context: "production" }, params: {} };
-  const url = "https://straight-up-digital-site.netlify.app/.netlify/functions/publish-audit-report";
-  const wrongToken = await handlePublishAuditReport(new Request(url, { method: "POST", headers: { Authorization: `Bearer ${"B".repeat(43)}`, "Content-Type": "application/json" }, body: JSON.stringify({ report: reportInput }) }), context, reader(config));
-  assert.equal(wrongToken.status, 401);
-  const malformed = await handlePublishAuditReport(new Request(url, { method: "POST", headers: { Authorization: `Bearer ${ownerToken}`, "Content-Type": "application/json" }, body: JSON.stringify({ report: { ...reportInput, schemaVersion: 99 } }) }), context, reader(config));
-  assert.equal(malformed.status, 422);
-});
-
-
-test("report revocation is DELETE-only, owner-authenticated and restricted to approved report URLs", async () => {
-  assert.deepEqual(publishConfig.method, ["POST", "DELETE"]);
-  const ownerToken = "A".repeat(43);
-  const config = { ...readyEnv, AUDIT_REPORT_PUBLISH_TOKEN: ownerToken };
-  const context = { deploy: { context: "production" }, params: {} };
-  const url = "https://straight-up-digital-site.netlify.app/.netlify/functions/publish-audit-report";
-  const headers = { Authorization: `Bearer ${ownerToken}`, "Content-Type": "application/json" };
-  const unauthorized = await handlePublishAuditReport(new Request(url, { method: "DELETE", headers: { ...headers, Authorization: `Bearer ${"B".repeat(43)}` }, body: JSON.stringify({ reportUrl: "https://straight-up-digital-site.netlify.app/report/" + "A".repeat(43) }) }), context, reader(config));
-  assert.equal(unauthorized.status, 401);
-  const rejected = await handlePublishAuditReport(new Request(url, { method: "DELETE", headers, body: JSON.stringify({ reportUrl: "https://attacker.example/report/" + "A".repeat(43) }) }), context, reader(config));
-  assert.equal(rejected.status, 400);
-  const preview = await handlePublishAuditReport(new Request(url, { method: "DELETE", headers, body: JSON.stringify({ reportUrl: "https://straight-up-digital-site.netlify.app/report/" + "A".repeat(43) }) }), { deploy: { context: "deploy-preview" }, params: {} }, reader(config));
-  assert.equal(preview.status, 404);
-});

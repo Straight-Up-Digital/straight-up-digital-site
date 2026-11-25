@@ -1,0 +1,67 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "straight-up-digital-migration",
+  "main": "./cloudflare/worker.ts",
+  "compatibility_date": "2026-11-16",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": true,
+  "preview_urls": false,
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "not_found_handling": "404-page",
+    "run_worker_first": ["/api/*", "/report/*"]
+  },
+  "vars": {
+    "APP_ENV": "development",
+    "EMAIL_PROVIDER": "console",
+    "ENQUIRY_TO_EMAIL": "straightupdigital@zohomail.com",
+    "ENQUIRY_FROM_EMAIL": "straightupdigital@zohomail.com",
+    "ZOHO_SMTP_HOST": "smtp.zoho.com",
+    "ZOHO_SMTP_PORT": "465",
+    "AUDIT_REPORTS_ENABLED": "false",
+    "FIRESTORE_PROJECT_ID": "",
+    "PUBLIC_REPORT_HOSTS": "straightupdigital.co.za,www.straightupdigital.co.za"
+  },
+  "triggers": { "crons": ["15 2 * * *"] },
+  "env": {
+    "test": {
+      "name": "straight-up-digital-migration-test",
+      "workers_dev": false,
+      "vars": {
+        "APP_ENV": "test",
+        "EMAIL_PROVIDER": "console",
+        "ENQUIRY_TO_EMAIL": "straightupdigital@zohomail.com",
+        "ENQUIRY_FROM_EMAIL": "straightupdigital@zohomail.com",
+        "ZOHO_SMTP_HOST": "smtp.zoho.com",
+        "ZOHO_SMTP_PORT": "465",
+        "AUDIT_REPORTS_ENABLED": "false",
+        "FIRESTORE_PROJECT_ID": "straight-up-digital-test",
+        "PUBLIC_REPORT_HOSTS": "straightupdigital.co.za,www.straightupdigital.co.za"
+      },
+      "triggers": { "crons": [] }
+    },
+    "production": {
+      "name": "straight-up-digital-cloudflare",
+      // Root and www HTTPS endpoints verified on 25 November 2026; serve production only on these custom domains.
+      "workers_dev": false,
+      "observability": { "enabled": true, "head_sampling_rate": 1 },
+      "routes": [
+        { "pattern": "straightupdigital.co.za", "custom_domain": true, "zone_id": "5a208566e74f58203eeeafb3b36e0d35" },
+        { "pattern": "www.straightupdigital.co.za", "custom_domain": true, "zone_id": "5a208566e74f58203eeeafb3b36e0d35" }
+      ],
+      "vars": {
+        "APP_ENV": "production",
+        "EMAIL_PROVIDER": "zoho-mail-api",
+        "ENQUIRY_TO_EMAIL": "hello@straightupdigital.co.za",
+        "ENQUIRY_FROM_EMAIL": "straightupdigital@zohomail.com",
+        "ZOHO_SMTP_HOST": "smtp.zoho.com",
+        "ZOHO_SMTP_PORT": "587",
+        "AUDIT_REPORTS_ENABLED": "false",
+        "FIRESTORE_PROJECT_ID": "straight-up-digital-prod",
+        "PUBLIC_REPORT_HOSTS": "straight-up-digital-cloudflare.stjohn-toperformer.workers.dev,straightupdigital.co.za,www.straightupdigital.co.za"
+      },
+      "triggers": { "crons": ["15 2 * * *"] }
+    }
+  }
+}

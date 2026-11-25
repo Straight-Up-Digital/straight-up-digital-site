@@ -197,9 +197,29 @@ const working = [
       </div>
 
       <div class="founder-panel">
-        <p class="caption">{ownerSupplied.founderName} · Founder</p>
-        {ownerSupplied.founderBio.map((paragraph) => <p>{paragraph}</p>)}
-        <p><strong>INTELLIGENCE. VISIBILITY. GROWTH.</strong></p>
+        <div class="founder-panel__visual">
+          {ownerSupplied.founderPhoto ? (
+            <img
+              class="founder-panel__photo"
+              src={ownerSupplied.founderPhoto}
+              alt={`${ownerSupplied.founderName}, founder of Straight Up Digital`}
+              loading="lazy"
+            />
+          ) : (
+            <div class="founder-panel__brand" aria-hidden="true">
+              <img src="/brand/symbol.svg" alt="" width="128" height="100" />
+              <span>Founder-led</span>
+            </div>
+          )}
+        </div>
+        <div class="founder-panel__content">
+          <p class="caption">Founder · Port Alfred, Eastern Cape</p>
+          <h3>{ownerSupplied.founderName}</h3>
+          <div class="founder-panel__bio">
+            {ownerSupplied.founderBio.map((paragraph) => <p>{paragraph}</p>)}
+          </div>
+          <p class="founder-panel__tagline"><strong>INTELLIGENCE. VISIBILITY. GROWTH.</strong></p>
+        </div>
       </div>
     </div>
   </section>

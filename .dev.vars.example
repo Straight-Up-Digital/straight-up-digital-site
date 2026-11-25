@@ -1,0 +1,11 @@
+# Copy to .dev.vars only for local Wrangler testing. Never commit real values.
+# The local test suite mocks Firestore and does not need a Google project or credential.
+RATE_LIMIT_HASH_SECRET=local-development-only-change-me
+FIRESTORE_PROJECT_ID=
+# Optional local live-API testing only: a minified service-account JSON value.
+# Prefer Cloudflare environment secrets for deployed Workers; never put keys in Git or chat.
+GOOGLE_FIRESTORE_SERVICE_ACCOUNT_JSON=
+# Local tests use the console provider; they do not send mail.
+EMAIL_PROVIDER=console
+AUDIT_REPORTS_ENABLED=false
+# Leave production-only secrets unset in local development.

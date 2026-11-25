@@ -23,6 +23,86 @@ export interface Service {
   note?: string;
 }
 
+export interface WebsiteBuildOption {
+  title: string;
+  summary: string;
+  scope: string[];
+}
+
+/** Complex build categories are request-only until each project is scoped and quoted. */
+export const websiteBuildOptions: WebsiteBuildOption[] = [
+  {
+    title: "Online shops",
+    summary: "Set up a focused catalogue, cart and straightforward delivery rules; payment-provider activation is separate and subject to approval and testing.",
+    scope: [
+      "Product categories, product details, variants and stock rules",
+      "Cart, delivery areas, shipping charges, returns and order emails",
+      "Payment-provider selection and sandbox checkout testing; production activation only after separate approval, provider verification and end-to-end testing",
+      "Product imports, payment fees and third-party subscriptions are listed separately in the quote",
+    ],
+  },
+  {
+    title: "Bookings and appointments",
+    summary: "Let customers request or book a time through one compatible booking provider, subject to its features and fees.",
+    scope: [
+      "Service and staff details, available hours and booking rules",
+      "Calendar, confirmation messages, reminders and cancellation flow",
+      "Optional deposits or online payments are scoped only after provider approval and end-to-end testing",
+      "Calendar, SMS, email and booking-platform fees are checked before the quote is approved",
+    ],
+  },
+  {
+    title: "Guest houses and tourism",
+    summary: "Show rooms, stays, activities or tours with the practical details visitors need to plan.",
+    scope: [
+      "Room or experience pages, facilities, location and travel information",
+      "Seasonal rates, availability, policies and enquiry or booking links",
+      "Mobile-ready galleries and clear links to maps and local attractions",
+      "Booking-engine connections and third-party listing fees are scoped separately",
+    ],
+  },
+  {
+    title: "Property listings and directories",
+    summary: "Help visitors browse listings by area or type and send enquiries to the right person.",
+    scope: [
+      "Structured listing fields, search filters and enquiry routing",
+      "Agent or member profiles and owner-controlled listing updates",
+      "Import, moderation and removal rules for listing data",
+      "Paid listings, maps, user accounts and large data imports require a separate scope",
+    ],
+  },
+  {
+    title: "Clinics and wellness practices",
+    summary: "Explain services, practitioners, opening hours and appointment options clearly.",
+    scope: [
+      "Service pages, practitioner profiles, location and patient-facing instructions",
+      "Appointment request or booking-provider integration",
+      "Clear accessibility, privacy and contact information",
+      "The public website should not collect health details unless secure handling and legal requirements are separately assessed",
+    ],
+  },
+  {
+    title: "Restaurants and food businesses",
+    summary: "Make menus, opening hours, location and ordering options easy to find on a phone.",
+    scope: [
+      "Menu sections, prices, dietary and allergen information supplied by the client",
+      "Opening hours, location, table enquiries or online-order links",
+      "Seasonal menu updates and photo-gallery structure",
+      "Ordering, delivery, reservations and point-of-sale integrations are scoped separately",
+    ],
+  },
+  {
+    title: "Membership and learning sites",
+    summary: "Offer member-only content, courses or resources behind a sign-in area.",
+    scope: [
+      "Member access levels, sign-up, sign-in and password recovery",
+      "Course or resource structure, progress tracking and content updates",
+      "Payments, recurring billing, user support and access cancellation rules",
+      "Account security, privacy, data migration and platform subscriptions are priced only after discovery",
+    ],
+  },
+];
+
 export const serviceStatusMeta: Record<
   ServiceStatus,
   { label: string; description: string }
@@ -47,13 +127,13 @@ export const services: Service[] = [
     title: "Digital presence audits",
     status: "available",
     summary:
-      "A structured read of your website, listings, profiles, content and reputation, with a prioritised list of what to fix.",
+      "A free, human-reviewed six-category scorecard with evidence, confidence notes and a prioritised list of what to fix.",
     forWho:
       "Businesses that suspect their online presence is holding them back, but do not know where to start.",
     value:
       "You stop guessing. The report shows what is strong, what is missing and which fix is worth doing first.",
     receive: [
-      "A scored report across six categories",
+      "A free six-category scorecard",
       "Coverage and confidence notes for every category",
       "Prioritised recommendations with practical next steps",
       "A walkthrough conversation about the findings",
@@ -64,16 +144,17 @@ export const services: Service[] = [
     title: "Website design and development",
     status: "on-request",
     summary:
-      "Fast, accessible websites built around one job: helping the right customer take the next step.",
+      "Confirmed once-off packages: One-Page Starter R1,500; Five-Page Business R3,500; Restaurant & Café R3,950; Guest House & Stay R4,500; Bookings & Appointments R5,500; and Small Online Shop R7,500. Standalone builds are paid 50% to start and 50% at launch, after a preview. Discounted annual bundles are paid in full upfront and include the build plus the first year of hosting; annual renewals begin after that year. Hosting is separate for standalone builds from R129/month.",
     forWho:
       "Businesses with an outdated site, a template that no longer fits, or no site at all.",
     value:
       "A credible first impression, a clear structure and a site that works on the phone your customers actually use.",
     receive: [
-      "Page plan and content structure",
-      "Design and build",
-      "Mobile, accessibility and performance checks",
-      "Handover with editing guidance",
+      "The pages, buttons, content types and revision rounds listed for the selected package",
+      "Client-supplied words, logo and photos for the Five-Page Business package",
+      "Standalone builds: 50% to start and 50% at launch after a preview; discounted annual bundles are paid in full and include the first hosting year",
+      "Booking-tool fees paid by the client for the Bookings & Appointments package",
+      "Small Online Shop orders by WhatsApp or email; live Paystack checkout is not active and needs successful end-to-end testing and SinJin's confirmation",
     ],
   },
   {
@@ -81,19 +162,19 @@ export const services: Service[] = [
     title: "Hosting and domain registration",
     status: "on-request",
     summary:
-      "Reseller hosting with stated storage and email allowances, plus domain registration and renewal as a separate add-on.",
+      "Three email and hosting tiers from R129/month, each with a managed domain, clear mailbox limits and monthly or annual recurring Plans.",
     forWho:
       "Businesses that want website hosting and domain support from the same digital partner.",
     value:
       "A clear hosting plan, known mailbox allowance and help coordinating the domain behind your website.",
     receive: [
-      "A hosting tier with its storage and email allowance stated up front",
-      "Domain registration and renewal quoted separately by extension",
-      "Monthly website updates and backups only with the Managed Care tier",
-      "A written confirmation of availability, payment terms and service start date before an order",
+      "Starter Brand, Business Pro and Team Unlimited choices",
+      "A .co.za domain included, with .com available on Team Unlimited",
+      "Monthly recurring billing or an annual recurring Plan; annual pricing includes the equivalent of two months free",
+      "A written order and confirmed payment method after availability is checked",
     ],
     note:
-      "Select a plan to send a request. The owner confirms availability, recurring payment terms, any domain charges and the start date before accepting an order.",
+      "Choose a plan to send a request. We confirm availability and the payment schedule in writing before collecting payment or provisioning the service.",
   },
   {
     slug: "website-improvements-and-on-page-seo",

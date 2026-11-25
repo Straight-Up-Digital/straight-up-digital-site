@@ -10,6 +10,7 @@ export const primaryNav: NavItem[] = [
   { label: "How it works", href: "/how-it-works" },
   { label: "Digital audit", href: "/digital-audit" },
   { label: "Pricing", href: "/pricing" },
+  { label: "Bundles", href: "/bundles" },
   { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
 ];
@@ -21,6 +22,7 @@ export const footerNav: { title: string; items: NavItem[] }[] = [
       { label: "Services", href: "/services" },
       { label: "How it works", href: "/how-it-works" },
       { label: "Digital audit", href: "/digital-audit" },
+      { label: "Bundles", href: "/bundles" },
     ],
   },
   {
@@ -36,6 +38,7 @@ export const footerNav: { title: string; items: NavItem[] }[] = [
     items: [
       { label: "Privacy notice", href: "/privacy", shortLabel: "Privacy" },
       { label: "Terms of use", href: "/terms", shortLabel: "Terms" },
+      { label: "Delivery, cancellations and refunds", href: "/policies", shortLabel: "Delivery & refunds" },
     ],
   },
 ];

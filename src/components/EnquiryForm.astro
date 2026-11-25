@@ -2,18 +2,14 @@
 /**
  * Enquiry form, used on the Digital audit and Contact pages.
  *
- * Delivery modes (build-time env):
- *  - PUBLIC_FORM_MODE=netlify (default): Netlify Forms receives the submission.
- *    Works without any third-party account, stores submissions in the Netlify
- *    dashboard and can email the owner from there.
- *  - PUBLIC_FORM_MODE=email: the Netlify Function validates the submission and
- *    sends it through the configured email adapter. Turnstile is used when a
- *    site key is present.
- *
- * Both paths keep the same payload shape so the private CRM can be connected
- * later without changing the form.
+ * The Cloudflare Worker validates every submission at /api/enquiries, sends it
+ * through the configured email adapter and keeps it for the private CRM.
+ * Turnstile is used when PUBLIC_TURNSTILE_SITE_KEY is set.
  */
 import { serviceOptions } from "../data/services";
+import { services } from "../data/services";
+import { hostingPlans, monthlyRetainers, onceOffEdits, websiteBuildPackages } from "../data/pricing";
+import { websiteBuildHostingBundles, websiteHostingBundles } from "../data/bundles";
 
 interface Props {
   variant: "audit" | "contact";
@@ -27,23 +23,90 @@ const { variant, heading, intro, submitLabel, id = "request" } = Astro.props;
 const isAudit = variant === "audit";
 const formName = isAudit ? "audit-request" : "contact-enquiry";
 
-const formMode =
-  import.meta.env.PUBLIC_FORM_MODE === "email" ? "email" : "netlify";
+const formMode = "email";
 const turnstileKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? "";
-const action =
-  formMode === "email" ? "/.netlify/functions/submit-enquiry" : "/thank-you";
+const action = "/api/enquiries";
 
-const hostingPlanOptions = [
-  "Email & Starter Site hosting plan — R99/month",
-  "Business Growth hosting plan — R149/month",
-  "Managed Care hosting quote — R399–R599/month",
+const formatZar = (amount: number): string =>
+  `R${amount.toLocaleString("en-US")}`;
+const buildMilestoneText = (amount: number): string =>
+  `50% to start (${formatZar(amount / 2)}) and 50% at launch after preview (${formatZar(amount / 2)})`;
+const hostingPlanOptions = hostingPlans.map(
+  (plan) => `${plan.name} hosting — ${formatZar(plan.priceMonthlyZar)}/month or ${formatZar(plan.priceAnnualZar)}/year recurring annually`,
+);
+const retainerPlanOptions = monthlyRetainers.map(
+  (plan) =>
+    `Level ${plan.level}: ${plan.name} — ${formatZar(plan.priceZarPerMonth)}/month, including ${plan.includedHosting}`,
+);
+const onceOffEditOptions = onceOffEdits.map(
+  (edit) => `${edit.title} — ${formatZar(edit.priceZar)} once-off`,
+);
+const bundlePlanOptions = websiteHostingBundles.map(
+  (bundle) => `${bundle.name} — ${formatZar(bundle.annual.priceZar)} once-off, paid in full; includes the ${formatZar(bundle.buildPriceZar)} build and first hosting year; ${formatZar(bundle.annual.hostingAnnualZar)}/year recurring after year one; 5% discount`,
+);
+const websiteBuildPlanOptions = websiteBuildPackages.map(
+  (websitePackage) => `${websitePackage.title} — ${formatZar(websitePackage.priceZar)} once-off; ${buildMilestoneText(websitePackage.priceZar)}`,
+);
+const websiteBuildBundlePlanOptions = websiteBuildHostingBundles.map(
+  (bundle) => `${bundle.name} — ${formatZar(bundle.annual.priceZar)} once-off, paid in full; includes the ${formatZar(bundle.websitePackage.priceZar)} build and first hosting year; ${formatZar(bundle.annual.hostingAnnualZar)}/year recurring after year one; 5% discount`,
+);
+const domainRequestOption = "Additional domain registration or renewal request";
+const options = [
+  ...serviceOptions,
+  "Free six-category digital presence audit",
+  "Audit Fix Package — R40 per verified missing point",
+  ...websiteBuildPlanOptions,
+  ...bundlePlanOptions,
+  ...websiteBuildBundlePlanOptions,
+  ...hostingPlanOptions,
+  ...retainerPlanOptions,
+  ...onceOffEditOptions,
+  "Email migration — R450 once-off",
+  "Extra 10 GB storage — R60/month",
+  domainRequestOption,
+  "Not sure yet",
+  "Something else",
 ];
-const domainRequestOption = "Domain registration or renewal request";
-const options = [...serviceOptions, ...hostingPlanOptions, domainRequestOption, "Not sure yet", "Something else"];
+const planRequests: Record<string, string> = {
+  ...Object.fromEntries(hostingPlans.map((plan) => [
+    plan.slug,
+    `${plan.name} hosting — ${formatZar(plan.priceMonthlyZar)}/month`,
+  ])),
+  ...Object.fromEntries(monthlyRetainers.map((plan) => [
+    `retainer-level-${plan.level}`,
+    `Level ${plan.level}: ${plan.name} — ${formatZar(plan.priceZarPerMonth)}/month, including ${plan.includedHosting}`,
+  ])),
+  ...Object.fromEntries(services.map((service) => [
+    service.slug,
+    service.title,
+  ])),
+  ...Object.fromEntries(onceOffEdits.map((edit) => [
+    edit.slug,
+    `${edit.title} — ${formatZar(edit.priceZar)} once-off`,
+  ])),
+  ...Object.fromEntries(websiteHostingBundles.map((bundle) => [
+    `bundle-${bundle.slug}`,
+    `${bundle.name} — ${formatZar(bundle.annual.priceZar)} once-off, paid in full; includes the website build and first year of ${bundle.hostingPlan.name} hosting; saves ${formatZar(bundle.annual.savingZar)}; after the included year, hosting renews at ${formatZar(bundle.annual.hostingAnnualZar)}/year recurring annually`,
+  ])),
+  ...Object.fromEntries(websiteBuildPackages.map((websitePackage) => [
+    `website-${websitePackage.slug}`,
+    `${websitePackage.title} — ${formatZar(websitePackage.priceZar)} once-off; ${buildMilestoneText(websitePackage.priceZar)}; hosting separate from R129/month`,
+  ])),
+  ...Object.fromEntries(websiteBuildHostingBundles.map((bundle) => [
+    `bundle-build-${bundle.slug}`,
+    `${bundle.name} — ${formatZar(bundle.annual.priceZar)} once-off, paid in full; includes the website build and first year of ${bundle.hostingPlan.name} hosting; saves ${formatZar(bundle.annual.savingZar)}; after the included year, hosting renews at ${formatZar(bundle.annual.hostingAnnualZar)}/year recurring annually`,
+  ])),
+  "website-build": "Website build enquiry — choose a listed package or describe your requirements; we will confirm scope and price in writing",
+  "website-one-page-starter": "One-Page Starter — R1,500 once-off for one mobile page, one call or WhatsApp button, a contact form and one round of changes; R750 to start and R750 at launch after preview; hosting is separate",
+  "audit-fix": "Audit Fix Package — R40 per verified missing point, quoted after the free audit",
+  "email-migration": "Email migration — R450 once-off",
+  "extra-storage": "Extra 10 GB storage — R60/month",
+  domain: "Additional domain registration or renewal request",
+};
 const consentVersion = "privacy-1.0-2026-11-15";
 ---
 
-<section class="form-panel" id={id} aria-labelledby={`${id}-heading`} data-enquiry-root data-form-mode={formMode}>
+<section class="form-panel" id={id} aria-labelledby={`${id}-heading`} data-enquiry-root data-form-mode={formMode} data-plan-requests={JSON.stringify(planRequests)}>
   <h2 id={`${id}-heading`}>{heading}</h2>
   <p class="form-panel__intro">{intro}</p>
 
@@ -55,8 +118,6 @@ const consentVersion = "privacy-1.0-2026-11-15";
     name={formName}
     method="POST"
     action={action}
-    data-netlify={formMode === "netlify" ? "true" : undefined}
-    netlify-honeypot={formMode === "netlify" ? "company_website_confirm" : undefined}
     data-enquiry-form
     data-form-name={formName}
     data-form-type={variant}
@@ -307,7 +368,7 @@ const consentVersion = "privacy-1.0-2026-11-15";
   const alertText = root?.querySelector<HTMLElement>("[data-form-alert-text]");
   const success = root?.querySelector<HTMLElement>("[data-form-success]");
   const submitButton = form?.querySelector<HTMLButtonElement>("[data-submit]");
-  const mode = (root?.dataset.formMode ?? "netlify") as "netlify" | "email";
+  const mode = (root?.dataset.formMode ?? "email") as "email";
   const isAuditForm = form?.dataset.formType === "audit";
 
   const messages: Record<FieldName, string> = {
@@ -333,22 +394,28 @@ const consentVersion = "privacy-1.0-2026-11-15";
       `[name="${name}"]`,
     ) ?? null;
 
-  const planRequests: Record<string, string> = {
-    starter: "Email & Starter Site hosting plan — R99/month",
-    growth: "Business Growth hosting plan — R149/month",
-    "managed-care": "Managed Care hosting quote — R399–R599/month",
-    domain: "Domain registration or renewal request",
-  };
-  const planSlug = new URLSearchParams(window.location.search).get("plan");
+  const planRequests = JSON.parse(
+    root?.dataset.planRequests ?? "{}",
+  ) as Record<string, string>;
+  const searchParams = new URLSearchParams(window.location.search);
+  const planSlug = searchParams.get("plan");
   const requestedPlan = planSlug ? planRequests[planSlug] : undefined;
+  const billingCycle = searchParams.get("billing");
+  const billingNote = billingCycle === "annual"
+    ? planSlug?.startsWith("bundle-")
+      ? "annual hosting renewal after the first year included in the bundle"
+      : "annual recurring hosting (Plan start and first collection date to be confirmed in writing)"
+    : billingCycle === "once-off"
+      ? "once-off project pricing"
+      : billingCycle === "monthly"
+        ? "monthly billing"
+        : "";
   const serviceSelect = field("service_of_interest") as HTMLSelectElement | null;
   if (requestedPlan && serviceSelect) {
     serviceSelect.value = requestedPlan;
     const messageInput = field("message") as HTMLTextAreaElement | null;
     if (messageInput && !messageInput.value) {
-      messageInput.value = requestedPlan === "Domain registration or renewal request"
-        ? "I would like to request domain registration or renewal. Please confirm the extension, availability, annual price and renewal terms."
-        : `I would like to request ${requestedPlan}. Please confirm availability, payment terms and the start date.`;
+      messageInput.value = `I would like to discuss ${requestedPlan}${billingNote ? ` with ${billingNote}` : ""}. Please confirm availability, inclusions, the total price and accepted payment method before I commit.`;
     }
   }
 
@@ -495,7 +562,7 @@ const consentVersion = "privacy-1.0-2026-11-15";
       let response: Response;
 
       if (mode === "email") {
-        response = await fetch("/.netlify/functions/submit-enquiry", {
+        response = await fetch("/api/enquiries", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),

@@ -8,7 +8,7 @@ import { auditFaqs } from "../data/faqs";
 import { contact, has } from "../data/site";
 
 const description =
-  "Request an owner-run digital presence review and receive a private online report explaining what was found, why it matters, and what to fix.";
+  "Request an owner-run digital presence review and receive a customer-ready report explaining what was found, why it matters, and what to fix.";
 
 const faqJsonLd = {
   "@context": "https://schema.org",
@@ -26,18 +26,18 @@ const serviceJsonLd = {
   name: "Digital presence audit",
   serviceType: "Digital presence audit",
   description:
-    "An owner-run review of public digital evidence. After review, the customer receives a private online report explaining observed issues, their customer impact and practical fixes.",
+    "An owner-run review of public digital evidence. After review, the customer receives a customer-ready report explaining observed issues, their customer impact and practical fixes.",
   provider: { "@type": "Organization", name: "Straight Up Digital" },
 };
 
 const receive = [
   {
-    title: "A private online report",
-    body: "Open your reviewed findings in a browser using a private link. No PDF download or account is needed. The link expires after 30 days.",
+    title: "A customer-ready report",
+    body: "A person checks the findings and shares a clear report that explains the evidence, confidence and practical next steps.",
   },
   {
     title: "What was actually found",
-    body: "The online report describes evidence in everyday language. If something could not be verified, it says so rather than guessing.",
+    body: "The report describes evidence in everyday language. If something could not be verified, it says so rather than guessing.",
   },
   {
     title: "Why it matters and what to fix",
@@ -45,7 +45,7 @@ const receive = [
   },
   {
     title: "A clear next step",
-    body: "From the report page, ask a question, discuss recommendations or request a meeting. Any paid work is scoped and priced separately.",
+    body: "Ask a question or discuss recommendations with us. Any paid work is scoped and priced separately.",
   },
 ];
 ---
@@ -75,7 +75,7 @@ const receive = [
       <p class="page-hero__lede">
           Business Auditor is Straight Up Digital's flagship product. A person checks
           the business details and runs the full audit privately. After review, we
-          share a private online report explaining the real findings, why they matter
+          share a customer-ready report explaining the real findings, why they matter
           and what to fix. This website does not run instant audits.
       </p>
     </div>
@@ -134,7 +134,7 @@ const receive = [
         </div>
         <p class="lede">
           The private Business Auditor uses structured checks to assess what could
-          be verified. Your online report focuses on the actual findings and
+          be verified. Your report focuses on the actual findings and
           practical fixes, not an internal scorecard.
         </p>
       </div>
@@ -216,8 +216,8 @@ const receive = [
           </h2>
         </div>
         <p class="lede">
-          Once a person has run and reviewed your audit, open the private report on
-          our website and choose a next step.
+          Once a person has run and reviewed your audit, we share the report and
+          discuss a practical next step with you.
         </p>
       </div>
 
@@ -261,7 +261,7 @@ const receive = [
       <EnquiryForm
         variant="audit"
         heading="Request your digital audit"
-        intro="Send your business details and a short note. A person will verify the information and run the full audit privately; if suitable, we will share a clear online report with you."
+        intro="Send your business details and a short note. A person will verify the information and run the full audit privately; if suitable, we will share a clear customer-ready report with you."
         submitLabel="Send my audit request"
       />
 
@@ -270,8 +270,8 @@ const receive = [
           <h3>What happens next</h3>
           <ol>
             <li>A person checks the business details and runs the full audit privately.</li>
-            <li>You receive a private online report explaining the findings, impact and fixes.</li>
-            <li>Use the report page to ask a question or arrange a discussion. Paid work is agreed separately in writing.</li>
+            <li>You receive a customer-ready report explaining the findings, impact and fixes.</li>
+            <li>Ask a question or arrange a discussion with us. Paid work is agreed separately in writing.</li>
           </ol>
         </div>
         <div class="info-panel">

@@ -4,8 +4,8 @@ import {
   isHoneypotFilled,
   isImplausiblyFast,
   validateEnquiry,
-} from "../netlify/lib/validation.mts";
-import { EmailConfigError, sendEnquiryEmail, sendReportResponseEmail } from "../netlify/lib/email.mts";
+} from "../shared/validation.mts";
+import { EmailConfigError, sendEnquiryEmail, sendReportResponseEmail } from "../shared/email.mts";
 
 const validAudit = {
   business_name: "Example Business",
