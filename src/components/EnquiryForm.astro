@@ -8,8 +8,8 @@
  */
 import { serviceOptions } from "../data/services";
 import { services } from "../data/services";
-import { hostingPlans, monthlyRetainers, onceOffEdits } from "../data/pricing";
-import { websiteHostingBundles } from "../data/bundles";
+import { hostingPlans, monthlyRetainers, onceOffEdits, websiteBuildPackages } from "../data/pricing";
+import { websiteBuildHostingBundles, websiteHostingBundles } from "../data/bundles";
 
 interface Props {
   variant: "audit" | "contact";
@@ -29,8 +29,10 @@ const action = "/api/enquiries";
 
 const formatZar = (amount: number): string =>
   `R${amount.toLocaleString("en-US")}`;
+const buildMilestoneText = (amount: number): string =>
+  `50% to start (${formatZar(amount / 2)}) and 50% at launch after preview (${formatZar(amount / 2)})`;
 const hostingPlanOptions = hostingPlans.map(
-  (plan) => `${plan.name} hosting — ${formatZar(plan.priceMonthlyZar)}/month`,
+  (plan) => `${plan.name} hosting — ${formatZar(plan.priceMonthlyZar)}/month or ${formatZar(plan.priceAnnualZar)}/year recurring annually`,
 );
 const retainerPlanOptions = monthlyRetainers.map(
   (plan) =>
@@ -40,16 +42,22 @@ const onceOffEditOptions = onceOffEdits.map(
   (edit) => `${edit.title} — ${formatZar(edit.priceZar)} once-off`,
 );
 const bundlePlanOptions = websiteHostingBundles.map(
-  (bundle) => `${bundle.name} — ${formatZar(bundle.monthly.priceZar)} monthly start or ${formatZar(bundle.annual.priceZar)} annual start`,
+  (bundle) => `${bundle.name} — ${formatZar(bundle.annual.priceZar)} once-off, paid in full; includes the ${formatZar(bundle.buildPriceZar)} build and first hosting year; ${formatZar(bundle.annual.hostingAnnualZar)}/year recurring after year one; 5% discount`,
+);
+const websiteBuildPlanOptions = websiteBuildPackages.map(
+  (websitePackage) => `${websitePackage.title} — ${formatZar(websitePackage.priceZar)} once-off; ${buildMilestoneText(websitePackage.priceZar)}`,
+);
+const websiteBuildBundlePlanOptions = websiteBuildHostingBundles.map(
+  (bundle) => `${bundle.name} — ${formatZar(bundle.annual.priceZar)} once-off, paid in full; includes the ${formatZar(bundle.websitePackage.priceZar)} build and first hosting year; ${formatZar(bundle.annual.hostingAnnualZar)}/year recurring after year one; 5% discount`,
 );
 const domainRequestOption = "Additional domain registration or renewal request";
 const options = [
   ...serviceOptions,
   "Free six-category digital presence audit",
   "Audit Fix Package — R40 per verified missing point",
-  "One-page starter website — from R1,500 once-off",
-  "Larger business website — scope and price confirmed in writing",
+  ...websiteBuildPlanOptions,
   ...bundlePlanOptions,
+  ...websiteBuildBundlePlanOptions,
   ...hostingPlanOptions,
   ...retainerPlanOptions,
   ...onceOffEditOptions,
@@ -78,9 +86,18 @@ const planRequests: Record<string, string> = {
   ])),
   ...Object.fromEntries(websiteHostingBundles.map((bundle) => [
     `bundle-${bundle.slug}`,
-    `${bundle.name} — one-page website plus ${bundle.hostingPlan.name}; monthly first bill ${formatZar(bundle.monthly.priceZar)}, then ${formatZar(bundle.monthly.ongoingHostingMonthlyZar)}/month, or annual first year ${formatZar(bundle.annual.priceZar)} once-off`,
+    `${bundle.name} — ${formatZar(bundle.annual.priceZar)} once-off, paid in full; includes the website build and first year of ${bundle.hostingPlan.name} hosting; saves ${formatZar(bundle.annual.savingZar)}; after the included year, hosting renews at ${formatZar(bundle.annual.hostingAnnualZar)}/year recurring annually`,
   ])),
-  "website-build": "One-page starter website — from R1,500 once-off, plus a hosting plan from R129/month; larger websites are scoped separately",
+  ...Object.fromEntries(websiteBuildPackages.map((websitePackage) => [
+    `website-${websitePackage.slug}`,
+    `${websitePackage.title} — ${formatZar(websitePackage.priceZar)} once-off; ${buildMilestoneText(websitePackage.priceZar)}; hosting separate from R129/month`,
+  ])),
+  ...Object.fromEntries(websiteBuildHostingBundles.map((bundle) => [
+    `bundle-build-${bundle.slug}`,
+    `${bundle.name} — ${formatZar(bundle.annual.priceZar)} once-off, paid in full; includes the website build and first year of ${bundle.hostingPlan.name} hosting; saves ${formatZar(bundle.annual.savingZar)}; after the included year, hosting renews at ${formatZar(bundle.annual.hostingAnnualZar)}/year recurring annually`,
+  ])),
+  "website-build": "Website build enquiry — choose a listed package or describe your requirements; we will confirm scope and price in writing",
+  "website-one-page-starter": "One-Page Starter — R1,500 once-off for one mobile page, one call or WhatsApp button, a contact form and one round of changes; R750 to start and R750 at launch after preview; hosting is separate",
   "audit-fix": "Audit Fix Package — R40 per verified missing point, quoted after the free audit",
   "email-migration": "Email migration — R450 once-off",
   "extra-storage": "Extra 10 GB storage — R60/month",
@@ -385,7 +402,9 @@ const consentVersion = "privacy-1.0-2026-11-15";
   const requestedPlan = planSlug ? planRequests[planSlug] : undefined;
   const billingCycle = searchParams.get("billing");
   const billingNote = billingCycle === "annual"
-    ? "annual prepayment (two months free)"
+    ? planSlug?.startsWith("bundle-")
+      ? "annual hosting renewal after the first year included in the bundle"
+      : "annual recurring hosting (Plan start and first collection date to be confirmed in writing)"
     : billingCycle === "once-off"
       ? "once-off project pricing"
       : billingCycle === "monthly"

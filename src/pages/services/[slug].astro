@@ -2,7 +2,7 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import CtaBand from "../../components/CtaBand.astro";
 import { services, serviceStatusMeta, websiteBuildOptions } from "../../data/services";
-import { hostingPlans } from "../../data/pricing";
+import { hostingPlans, websiteBuildPackages } from "../../data/pricing";
 import type { Service } from "../../data/services";
 
 interface Props {
@@ -37,6 +37,8 @@ const isAudit = service.slug === "digital-presence-audits";
 const isAvailable = service.status === "available";
 const primaryHref = isAudit
   ? "/digital-audit#request"
+  : isWebsiteBuild
+    ? "#website-packages"
   : service.status === "planned"
     ? "/digital-audit"
     : `/contact?plan=${encodeURIComponent(service.slug)}#enquiry`;
@@ -44,6 +46,8 @@ const primaryLabel = isAudit
   ? "Get your free audit"
   : isHosting
     ? "Check plan availability"
+  : isWebsiteBuild
+    ? "Compare website packages"
   : service.status === "planned"
     ? "Start with the available audit"
     : isWebsiteBuild
@@ -119,14 +123,69 @@ const websiteBuildImages = [
   </section>
 
   {isWebsiteBuild && (
+    <section class="section ivory" id="website-packages" aria-labelledby="website-packages-title">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <p class="kicker">Website packages</p>
+            <h2 class="h2" id="website-packages-title" style="margin-top: 14px;">Choose a clear starting scope.</h2>
+          </div>
+          <p class="body">
+            Each package has a fixed once-off price for the listed scope.
+            Standalone builds are paid 50% to start and 50% at launch, after you
+            have seen a preview. Discounted annual bundles are paid in full and
+            include the first year of hosting.
+          </p>
+        </div>
+
+        <div class="package-grid package-grid--retainers">
+          {websiteBuildPackages.map((websitePackage) => (
+            <article class:list={["package-slot", "package-slot--retainer", "hosting-card", websitePackage.slug === "five-page-business" && "hosting-card--featured"]} id={`package-${websitePackage.slug}`}>
+              {websitePackage.slug === "five-page-business" && <span class="package-badge">Popular choice</span>}
+              <p class="pricing-label">{websitePackage.label}</p>
+              <h3>{websitePackage.title}</h3>
+              <p class="package-slot__price">{websitePackage.priceIsFrom ? "From " : ""}R{websitePackage.priceZar.toLocaleString("en-ZA")}<span> once-off</span></p>
+              <p class="hosting-card__best-for"><strong>Standalone payment:</strong> 50% to start and 50% at launch after preview.</p>
+              <p class="hosting-card__best-for"><strong>{websitePackage.pageCount}.</strong> {websitePackage.bestFor}</p>
+              <p>{websitePackage.summary}</p>
+
+              <h4>Included in this scope</h4>
+              <ul class="package-includes">
+                {websitePackage.includes.map((item) => <li>{item}</li>)}
+              </ul>
+              <details class="hosting-card__details">
+                <summary>What is not included</summary>
+                <ul class="package-includes">
+                  {websitePackage.notIncluded.map((item) => <li>{item}</li>)}
+                </ul>
+              </details>
+              <p class="hosting-card__best-for"><strong>Suggested hosting:</strong> {hostingPlans.find((plan) => plan.slug === websitePackage.recommendedHostingPlanSlug)?.name}. Hosting is priced separately.</p>
+              <div class="package-actions">
+                <a class="btn btn--primary btn--on-ivory" href={`/contact?plan=website-${websitePackage.slug}#enquiry`}>Request a written quote</a>
+                <a class="link-arrow" href={websitePackage.slug === "one-page-starter" ? "/bundles#bundle-packages" : `/bundles#bundle-build-${websitePackage.slug}`}>See hosting bundle</a>
+              </div>
+            </article>
+          ))}
+        </div>
+        <p class="pricing-guardrail" style="margin-top: 24px;">
+          Prices are fixed for the listed package scope. Hosting begins at
+          R129/month. We confirm the selected package, delivery date, applicable
+          taxes, licences and exclusions in writing before you commit. These
+          cards send an enquiry only; online checkout is not active.
+        </p>
+      </div>
+    </section>
+  )}
+
+  {isWebsiteBuild && (
     <section class="section ivory" aria-labelledby="specialist-builds-title">
       <div class="container">
         <div class="section-head">
           <div>
-            <p class="kicker">Specialist website builds</p>
-            <h2 class="h2" id="specialist-builds-title" style="margin-top: 14px;">More complex websites, scoped around your business.</h2>
+            <p class="kicker">Custom features and integrations</p>
+            <h2 class="h2" id="specialist-builds-title" style="margin-top: 14px;">Add specialist functionality when you need it.</h2>
           </div>
-          <p class="body">These projects need discovery before a price can be confirmed. The cards show the main requirements, not a fixed package or promise of a specific third-party system.</p>
+          <p class="body">The packages above cover defined starter scopes. The options below need discovery when they go beyond those limits or depend on custom third-party systems.</p>
         </div>
         <div class="build-gallery" aria-label="Examples of business types supported by specialist websites">
           {websiteBuildImages.map((image) => (
@@ -174,7 +233,7 @@ const websiteBuildImages = [
             </article>
           ))}
         </div>
-        <p class="pricing-guardrail" style="margin-top: 24px;">Annual hosting prepayment is a once-off payment. Monthly plans are not described as automatic renewals unless that payment method is confirmed in writing.</p>
+        <p class="pricing-guardrail" style="margin-top: 24px;">Standalone annual hosting is a recurring plan; confirm its first payment date in writing before choosing a payment method. A discounted annual bundle includes the first hosting year in its full once-off price, then annual hosting renews after that included year.</p>
       </div>
     </section>
   )}

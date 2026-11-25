@@ -1,0 +1,196 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { contact, ownerSupplied } from "../data/site";
+
+const description =
+  "Delivery, service timing, cancellations and refunds for Straight Up Digital website projects, digital reports and recurring hosting services.";
+---
+
+<BaseLayout
+  title="Delivery, cancellations and refunds"
+  description={description}
+  canonicalPath="/policies"
+>
+  <section class="legal">
+    <div class="container legal__inner">
+      <h1>Delivery, cancellations and refunds</h1>
+      <p class="legal__meta">Version 1.0 · Last updated 25 November 2026</p>
+
+      <div class="prose">
+        <p>
+          Straight Up Digital provides digital services. We do not ship physical
+          products through this website. This policy explains how project work,
+          digital files, reports and hosting are delivered, and how cancellations
+          and refunds are handled. It does not take away any rights provided by
+          South African law. If a law gives you a stronger right, that right applies.
+        </p>
+
+        <h2>1. Business and contact details</h2>
+        <p>
+          <strong>{ownerSupplied.legalEntity}</strong>, trading as Straight Up
+          Digital, operates from {contact.address}. Contact us at
+          <a href={`mailto:${contact.email}`}>{contact.email}</a> or
+          <a href={`tel:${contact.phoneInternational.replace(/[^\d+]/g, "")}`}>
+            {contact.phoneInternational}
+          </a>.
+        </p>
+
+        <h2>2. What is delivered and when</h2>
+        <p>
+          The accepted written quote or service agreement is the order record. It
+          identifies the service, included work, total price, applicable taxes or
+          third-party charges, payment schedule, agreed delivery date or timeframe,
+          customer inputs needed, and any ongoing service period. Please review it
+          and correct any errors before accepting. A website enquiry is not an
+          order and does not charge you.
+        </p>
+        <p>
+          Website designs, builds, audit reports, advice and other project outputs
+          are delivered electronically, normally by email, a secure link, an online
+          preview or an agreed website address. There is no shipping charge and no
+          physical parcel. The quote states the delivery method and timing. Unless
+          the quote says otherwise, the delivery period starts after we receive the
+          agreed starting payment and the customer has supplied the information,
+          content, approvals and access needed to do the work. We will tell you
+          about a delay and agree a revised date.
+        </p>
+        <p>
+          For a standalone website build, the confirmed package price is split
+          50% to start and 50% at launch. We show you a preview before the launch
+          balance is due. A discounted annual bundle is paid in full once-off and
+          includes the agreed build plus the first year of hosting. Its recurring
+          annual hosting term begins after that included year. The accepted quote
+          confirms the bundle total, package, hosting plan, start date and renewal
+          terms. A monthly hosting plan renews at its stated monthly rate. We will
+          state the selected plan's price and renewal timing before you authorise
+          payment.
+        </p>
+        <p>
+          Hosting and email services are provisioned electronically after the order
+          is accepted and the agreed payment and setup requirements are complete.
+          The start date and service period are stated in the quote or order
+          confirmation. Customer-owned domains, third-party booking services,
+          software licences and other external services may have their own delivery
+          times, fees and terms, which we will identify where applicable.
+        </p>
+
+        <h2>3. Cancelling before work starts</h2>
+        <p>
+          Contact us as soon as possible at
+          <a href={`mailto:${contact.email}`}>{contact.email}</a> to request a
+          cancellation. Include your name, business name, quote or order reference,
+          and the service you want to cancel. We will confirm receipt and explain
+          the next step.
+        </p>
+        <p>
+          If work or service has not started, we will assess the amount paid and
+          refund any amount due under the accepted agreement and applicable law.
+          We will not charge for work that was not performed. Any permitted amount
+          for work already completed, unavoidable third-party commitments or a
+          reasonable cancellation charge must be supported by the agreement and
+          applicable law; it will not be applied as an automatic penalty.
+        </p>
+
+        <h2>4. Cancelling after work or a recurring service starts</h2>
+        <p>
+          For a project already in progress, we will identify work completed,
+          approved third-party costs and any remaining unperformed work. Any amount
+          retained or refunded will be assessed against the accepted scope, work
+          actually performed, applicable law and any cancellation rights that
+          apply. We will provide an itemised explanation. If a project is cancelled
+          before completion, work not performed is not automatically treated as
+          earned.
+        </p>
+        <p>
+          You may ask to cancel a monthly or annual recurring service by emailing
+          <a href={`mailto:${contact.email}`}>{contact.email}</a>. We will confirm
+          the effective date and whether another renewal is due. If the Consumer
+          Protection Act or another law gives you a right to cancel a fixed-term
+          agreement on notice, we will follow that law, including any limit on a
+          reasonable cancellation charge. This policy does not create a minimum
+          term that is not stated in your accepted plan or agreement.
+        </p>
+        <p>
+          A discounted annual bundle includes its first hosting year in the
+          once-off price. The later annual hosting service is a recurring service;
+          the agreed renewal price and timing will be disclosed before you accept
+          the bundle. You can request cancellation of future renewals. Any refund
+          for a period already started is considered under the accepted agreement
+          and your statutory rights; no term of this policy removes rights you
+          cannot lawfully waive.
+        </p>
+
+        <h2>5. Online purchase cancellation rights</h2>
+        <p>
+          Where section 44 of the Electronic Communications and Transactions Act
+          applies to an online transaction, a consumer may cancel a service
+          transaction within seven days after concluding the agreement, without a
+          reason or penalty. Where payment has already been made, the Act provides
+          for a full refund within 30 days after cancellation. The Act contains
+          exceptions, including where a service began with the consumer's consent
+          before the end of the seven-day period. Whether an exception applies
+          depends on the transaction and the facts. Any consent to begin early will
+          be requested clearly; please contact us if you want to exercise a
+          cancellation right.
+        </p>
+        <p>
+          Other rights may also apply, including rights under the Consumer
+          Protection Act for direct-marketing transactions, fixed-term services,
+          advance bookings and unsatisfactory services. We will assess each request
+          under the law that applies. Nothing here limits a consumer's rights to
+          timely, quality service or an appropriate remedy where the law provides
+          one.
+        </p>
+
+        <h2>6. Service problems and remedies</h2>
+        <p>
+          Tell us promptly if a delivered service does not match the accepted scope,
+          is materially incomplete or has a fault. We will review the issue and, if
+          appropriate, correct or complete the work, or provide another remedy
+          required by the agreement or law. Where a service is substandard, the
+          Consumer Protection Act may require the supplier to remedy the defect or
+          refund a reasonable portion of the price. The facts and work performed
+          will be considered in each case.
+        </p>
+        <p>
+          A search-ranking, traffic or revenue result is not promised unless a
+          written agreement expressly says otherwise. A change in a third-party
+          platform, domain provider or booking service is not by itself proof that
+          the agreed work was defective, but we will help identify the issue and
+          explain any separately chargeable work before proceeding.
+        </p>
+
+        <h2>7. Refund processing</h2>
+        <p>
+          If a refund is due, we will confirm the amount and process it through the
+          original payment method where available, or agree another lawful method
+          with you. Refund timing may depend on the payment provider and your bank.
+          Paystack states that customers generally receive a processed refund
+          within 3 to 10 working days; this is the provider's estimate, not a
+          guarantee by Straight Up Digital. We will share the refund reference or
+          status where available. Provider processing charges paid by us do not
+          reduce a refund to which you are legally entitled.
+        </p>
+
+        <h2>8. How to contact us about an order</h2>
+        <p>
+          Email <a href={`mailto:${contact.email}`}>{contact.email}</a> with
+          “Cancellation”, “Refund” or “Delivery” in the subject line, or use the
+          <a href="/contact">enquiry form</a>. We aim to acknowledge your request
+          within two business days. If a law sets a shorter deadline, the legal
+          deadline applies.
+        </p>
+
+        <h2>9. Related terms and changes</h2>
+        <p>
+          Read this policy with our <a href="/terms">Terms of Use</a> and
+          <a href="/privacy">Privacy Notice</a>. The accepted quote or agreement
+          gives the order-specific scope and schedule. If this policy, an agreement
+          and the law differ, applicable law prevails. We may update this policy;
+          the version date above will change. The version supplied with your order
+          remains part of your transaction record.
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

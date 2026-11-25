@@ -1,12 +1,14 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
+import { websiteBuildHostingBundles, websiteHostingBundles } from "../src/data/bundles.ts";
 
 const read = (path) => readFileSync(new URL(path, import.meta.url), "utf8");
 
 const siteData = read("../src/data/site.ts");
 const privacy = read("../src/pages/privacy.astro");
 const terms = read("../src/pages/terms.astro");
+const policies = read("../src/pages/policies.astro");
 const pricing = read("../src/data/pricing.ts");
 const home = read("../src/pages/index.astro");
 const pricingPage = read("../src/pages/pricing.astro");
@@ -76,27 +78,35 @@ test("hosting tiers show both billing choices and prefill the requested plan", (
   assert.match(form, /data-plan-requests=\{JSON\.stringify\(planRequests\)\}/);
   assert.match(form, /new URLSearchParams\(window\.location\.search\)/);
   assert.match(form, /serviceSelect\.value = requestedPlan/);
-  assert.match(form, /annual prepayment \(two months free\)/);
+  assert.match(form, /annual recurring hosting/);
   assert.match(form, /accepted payment method/);
   assert.match(form, /onceOffEdits\.map/);
 });
 
-test("website and hosting bundles use the current rates and transparent small-discount math", () => {
+test("website and hosting bundles separate one-time builds from recurring hosting", () => {
+  assert.deepEqual(
+    [...websiteHostingBundles, ...websiteBuildHostingBundles].map((bundle) => bundle.annual.priceZar),
+    [2650, 3790, 5690, 4550, 4980, 6640, 7590, 11390],
+  );
   assert.match(bundleData, /bundleDiscountPercent = 5/);
-  assert.match(bundleData, /websiteOffer\.buildOnceOffZar \+ hostingPlan\.priceMonthlyZar/);
-  assert.match(bundleData, /websiteOffer\.buildOnceOffZar \+ hostingPlan\.priceAnnualZar/);
-  assert.match(bundleData, /roundToNearestTen/);
-  const discount = 0.05;
-  const annualListedTotals = [2790, 3990, 5990];
-  const annualBundlePrices = annualListedTotals.map((total) => Math.round((total * (1 - discount)) / 10) * 10);
-  assert.deepEqual(annualBundlePrices, [2650, 3790, 5690]);
-  assert.deepEqual(annualListedTotals.map((total, index) => total - annualBundlePrices[index]), [140, 200, 300]);
-  const monthlyListedTotals = [1629, 1749, 1949];
-  assert.deepEqual(monthlyListedTotals.map((total) => Math.round((total * (1 - discount)) / 10) * 10), [1550, 1660, 1850]);
-  assert.match(bundlesPage, /Online checkout is not active from this page/);
-  assert.match(bundlesPage, /applicable taxes and payment terms/);
+  assert.match(bundleData, /buildPriceZar: websiteOffer\.buildOnceOffZar/);
+  assert.match(bundleData, /hostingMonthlyZar: hostingPlan\.priceMonthlyZar/);
   assert.match(bundleData, /hostingAnnualZar: hostingPlan\.priceAnnualZar/);
+  assert.match(bundleData, /roundToNearestTen\(listedTotalZar/);
+  assert.match(bundleData, /savingZar: listedTotalZar - priceZar/);
+  assert.match(bundlesPage, /Online checkout is not active from\s+this page/);
+  assert.match(bundlesPage, /Build list price:<\/strong> .*once-off/s);
+  assert.match(bundlesPage, /Discounted bundle total:<\/strong> \{formatZar\(bundle\.annual\.priceZar\)\} once-off, paid in full/s);
+  assert.match(bundlesPage, /bundleDiscountPercent/);
+  assert.match(bundlesPage, /After the included first year:<\/strong> .*recurring annually/s);
+  assert.match(bundlesPage, /paid in full once-off and include the\s+website build plus the first year of hosting/s);
+  assert.match(bundlesPage, /Standalone website\s+builds remain 50% to start and 50% at launch/);
+  assert.match(bundlesPage, /bundleDiscountPercent\}% annual bundle discount/);
+  assert.match(bundleData, /websiteOffer\.buildOnceOffZar \+ hostingPlan\.priceAnnualZar/);
+  assert.match(bundleData, /websitePackage\.priceZar \+ hostingPlan\.priceAnnualZar/);
   assert.match(form, /websiteHostingBundles\.map/);
+  assert.match(form, /5% discount/s);
+  assert.match(form, /hosting renews at .*recurring annually/s);
   assert.match(styles, /\.bundle-prices\s*\{[^}]*display:\s*grid/s);
   assert.match(footerNavigation, /label: "Bundles", href: "\/bundles"/);
 });
@@ -105,15 +115,62 @@ test("the R1,500 website price is limited to the one-page starter", () => {
   const pricingData = read("../src/data/pricing.ts");
   assert.match(pricingData, /buildOnceOffZar: 1500/);
   assert.match(pricingData, /maximumPages: 1/);
-  assert.match(faqs, /one-page starter website begins at R1,500/i);
+  assert.match(faqs, /One-Page Starter R1,500; Five-Page Business R3,500/i);
   assert.doesNotMatch(faqs, /five-page small-business website is R1,500/i);
-  assert.match(form, /One-page starter website — from R1,500 once-off/);
+  assert.match(form, /One-Page Starter/);
+  assert.match(form, /R1,500/);
   assert.match(pricingPage, /One-page starter website/);
   const servicesData = read("../src/data/services.ts");
-  assert.match(servicesData, /One-page website starter from R1,500 once-off: one mobile-ready page with business contact details and a main call to action\./);
-  assert.match(servicesData, /Hosting is required from R129\/month\. Extra pages, online shops, booking tools and custom integrations are scoped and priced separately\./);
+  assert.match(servicesData, /One-Page Starter/);
+  assert.match(servicesData, /Hosting is separate for standalone builds from R129\/month/);
   assert.match(home, /service\.summary/);
   assert.doesNotMatch(servicesData, /five-page.*R1,500/i);
+});
+
+test("owner-confirmed website packages show fixed rates, scopes, milestones and Paystack guardrails", () => {
+  const pricingData = read("../src/data/pricing.ts");
+  const expectedPackages = [
+    ["one-page-starter", 1500], ["five-page-business", 3500], ["restaurant-cafe", 3950],
+    ["guesthouse", 4500], ["booking-site", 5500], ["online-shop", 7500],
+  ];
+  for (const [slug, price] of expectedPackages) {
+    const start = pricingData.indexOf(`slug: "${slug}"`);
+    assert.notEqual(start, -1, `missing package ${slug}`);
+    const packageBlock = pricingData.slice(start).split("\n  },")[0];
+    if (slug === "one-page-starter") {
+      assert.match(packageBlock, /priceZar: websiteOffer\.buildOnceOffZar/);
+    } else {
+      assert.match(packageBlock, new RegExp(`priceZar: ${price}\\b`), `${slug} has the wrong price`);
+    }
+    assert.match(packageBlock, /priceIsFrom: false/, `${slug} should be a fixed price`);
+  }
+  assert.match(pricingData, /50% to start and 50% at launch/i);
+  assert.match(pricingData, /Live Paystack checkout is not included; it will only be considered after end-to-end testing passes and SinJin confirms/i);
+  assert.match(pricingData, /Up to six pages covering rooms, facilities, photos, location and enquiries/);
+  for (const price of ["R1,500", "R3,500", "R3,950", "R4,500", "R5,500", "R7,500"]) {
+    assert.ok(faqs.includes(price), `FAQ is missing ${price}`);
+  }
+  assert.match(faqs, /Paystack checkout is not active/i);
+  assert.match(home, /websiteBuildPackages\.map/);
+  assert.match(home, /See full scope/);
+  assert.match(bundlesPage, /Build list price:<\/strong>/);
+  assert.match(bundlesPage, /After the included first year:<\/strong>/);
+  assert.match(bundlesPage, /first hosting year/);
+  assert.match(bundlesPage, /fixed-price website build/);
+  assert.doesNotMatch(bundlesPage, /Booking and shop prices are starting prices/);
+  assert.doesNotMatch(bundlesPage, /bundle total:<\/strong> From/);
+});
+
+test("delivery, cancellation and refunds policy is linked and preserves legal rights", () => {
+  assert.match(footerNavigation, /href: "\/policies"/);
+  assert.match(policies, /do not ship physical\s+products/);
+  assert.match(policies, /section 44 of the Electronic Communications and\s+Transactions Act/);
+  assert.match(policies, /full refund within 30 days/);
+  assert.match(policies, /service began with the consumer's consent/);
+  assert.match(policies, /an appropriate remedy/);
+  assert.match(policies, /Paystack states that customers generally receive a processed refund\s+within 3 to 10 working days/);
+  assert.match(terms, /Delivery, cancellations and refunds policy/);
+  assert.match(privacy, /Paystack payment option is offered/);
 });
 
 test("services open dedicated pages and expose specialist build scopes and plan links", () => {

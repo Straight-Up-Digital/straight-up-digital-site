@@ -33,21 +33,21 @@ export interface WebsiteBuildOption {
 export const websiteBuildOptions: WebsiteBuildOption[] = [
   {
     title: "Online shops",
-    summary: "Sell products online with a clear catalogue and a checkout that suits the business.",
+    summary: "Set up a focused catalogue, cart and straightforward delivery rules; payment-provider activation is separate and subject to approval and testing.",
     scope: [
       "Product categories, product details, variants and stock rules",
       "Cart, delivery areas, shipping charges, returns and order emails",
-      "Payment-provider selection, checkout testing and handover",
+      "Payment-provider selection and sandbox checkout testing; production activation only after separate approval, provider verification and end-to-end testing",
       "Product imports, payment fees and third-party subscriptions are listed separately in the quote",
     ],
   },
   {
     title: "Bookings and appointments",
-    summary: "Let customers see availability and request or book a time without calling first.",
+    summary: "Let customers request or book a time through one compatible booking provider, subject to its features and fees.",
     scope: [
       "Service and staff details, available hours and booking rules",
       "Calendar, confirmation messages, reminders and cancellation flow",
-      "Optional deposits or online payment, subject to the chosen provider",
+      "Optional deposits or online payments are scoped only after provider approval and end-to-end testing",
       "Calendar, SMS, email and booking-platform fees are checked before the quote is approved",
     ],
   },
@@ -144,16 +144,17 @@ export const services: Service[] = [
     title: "Website design and development",
     status: "on-request",
     summary:
-      "One-page website starter from R1,500 once-off: one mobile-ready page with business contact details and a main call to action. Hosting is required from R129/month. Extra pages, online shops, booking tools and custom integrations are scoped and priced separately.",
+      "Confirmed once-off packages: One-Page Starter R1,500; Five-Page Business R3,500; Restaurant & Café R3,950; Guest House & Stay R4,500; Bookings & Appointments R5,500; and Small Online Shop R7,500. Standalone builds are paid 50% to start and 50% at launch, after a preview. Discounted annual bundles are paid in full upfront and include the build plus the first year of hosting; annual renewals begin after that year. Hosting is separate for standalone builds from R129/month.",
     forWho:
       "Businesses with an outdated site, a template that no longer fits, or no site at all.",
     value:
       "A credible first impression, a clear structure and a site that works on the phone your customers actually use.",
     receive: [
-      "A one-page starter option, with larger page counts scoped separately",
-      "Click-to-WhatsApp, click-to-call and an enquiry form",
-      "Google Maps embed, indexing and local on-page basics",
-      "Privacy Notice and Terms pages based on confirmed business details",
+      "The pages, buttons, content types and revision rounds listed for the selected package",
+      "Client-supplied words, logo and photos for the Five-Page Business package",
+      "Standalone builds: 50% to start and 50% at launch after a preview; discounted annual bundles are paid in full and include the first hosting year",
+      "Booking-tool fees paid by the client for the Bookings & Appointments package",
+      "Small Online Shop orders by WhatsApp or email; live Paystack checkout is not active and needs successful end-to-end testing and SinJin's confirmation",
     ],
   },
   {
@@ -161,7 +162,7 @@ export const services: Service[] = [
     title: "Hosting and domain registration",
     status: "on-request",
     summary:
-      "Three email and hosting tiers from R129/month, each with a managed domain, clear mailbox limits and annual prepayment options.",
+      "Three email and hosting tiers from R129/month, each with a managed domain, clear mailbox limits and monthly or annual recurring Plans.",
     forWho:
       "Businesses that want website hosting and domain support from the same digital partner.",
     value:
@@ -169,7 +170,7 @@ export const services: Service[] = [
     receive: [
       "Starter Brand, Business Pro and Team Unlimited choices",
       "A .co.za domain included, with .com available on Team Unlimited",
-      "Monthly billing or annual prepayment with two months free",
+      "Monthly recurring billing or an annual recurring Plan; annual pricing includes the equivalent of two months free",
       "A written order and confirmed payment method after availability is checked",
     ],
     note:

@@ -43,6 +43,9 @@ export interface CloudflareWorkerEnv {
   POSTMARK_MESSAGE_STREAM?: string;
   TURNSTILE_SECRET_KEY?: string;
   TURNSTILE_SITE_KEY?: string;
+  PAYSTACK_SECRET_KEY?: string;
+  PAYSTACK_WEBHOOK_SECRET?: string;
+  PAYSTACK_WEBHOOK_PREVIOUS_SECRET?: string;
   CRM_ENQUIRY_SYNC_TOKEN?: string;
   AUDIT_REPORTS_ENABLED?: string;
   AUDIT_REPORT_PUBLISH_TOKEN?: string;

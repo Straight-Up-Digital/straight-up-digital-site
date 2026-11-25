@@ -15,12 +15,13 @@ import {
   onceOffEdits,
   pricingPrinciples,
   websiteBuildDeliverables,
+  websiteBuildPackages,
   websiteOffer,
 } from "../data/pricing";
 import { pricingFaqs } from "../data/faqs";
 
 const description =
-  "Straight Up Digital pricing for free digital presence audits, hosting and domain packages, websites, score-based fixes and monthly growth retainers.";
+  "Compare Straight Up Digital website package prices, hosting bundles, free digital audits, score-based fixes and monthly support for Eastern Cape businesses.";
 const formatZar = (amount: number): string =>
   `R${amount.toLocaleString("en-US")}`;
 const exampleScore = 70;
@@ -52,7 +53,7 @@ const exampleFixPrice =
       <p class="page-hero__lede">
         Choose a clear starting point: a free audit, one-off website work,
         monthly hosting or a growth retainer. Pick monthly billing or annual
-        prepayment for hosting; we confirm your order in writing before payment.
+        recurring hosting; we confirm your order and payment schedule in writing before you choose a payment method.
       </p>
     </div>
   </section>
@@ -140,11 +141,12 @@ const exampleFixPrice =
           </a>
         </article>
         <article class="pricing-overview__card">
-          <p class="pricing-label">One-page starter website</p>
-          <p class="pricing-overview__price">From {formatZar(websiteOffer.buildOnceOffZar)}<span> once-off</span></p>
-          <p>A mobile-ready starting point. Larger sites are scoped and priced separately.</p>
-          <p>Hosting is required from {formatZar(websiteOffer.hostingMonthlyZar)}/month.</p>
-          <a class="link-arrow" href="/contact?plan=website-build&billing=once-off#enquiry">Discuss your website</a>
+          <p class="pricing-label">Website packages</p>
+          <p class="pricing-overview__price">{formatZar(websiteOffer.buildOnceOffZar)}<span> once-off</span></p>
+          <p>Compare six fixed-price packages: R1,500, R3,500, R3,950, R4,500, R5,500 and R7,500, each for its listed scope.</p>
+          <p>Standalone builds have separate hosting from {formatZar(websiteOffer.hostingMonthlyZar)}/month. Discounted annual bundles include the first hosting year.</p>
+          <p>Standalone builds: 50% to start and 50% at launch after preview. Discounted annual bundles are paid in full and include the first hosting year; annual hosting renews after that year.</p>
+          <a class="link-arrow" href="#website-build-packages">Compare website packages</a>
         </article>
         <article class="pricing-overview__card">
           <p class="pricing-label">Hosting and domain</p>
@@ -166,10 +168,50 @@ const exampleFixPrice =
         </article>
       </div>
 
+      <div class="pricing-subsection" id="website-build-packages" aria-labelledby="website-build-packages-title">
+        <div class="section-head">
+          <div>
+            <p class="kicker"><span>04</span> Website builds</p>
+            <h3 class="h2" id="website-build-packages-title" style="margin-top: 14px;">Choose the size and features you need.</h3>
+          </div>
+          <p class="body">
+            Each package has a fixed once-off price for its listed scope. Standalone
+            website builds are paid 50% to start and 50% at launch, after you have
+            seen a preview. Discounted annual bundles are paid in full once-off
+            and include the build plus the first year of hosting.
+          </p>
+        </div>
+        <div class="package-grid package-grid--retainers">
+          {websiteBuildPackages.map((websitePackage) => (
+            <article class:list={["package-slot", "package-slot--retainer", "hosting-card", websitePackage.slug === "five-page-business" && "hosting-card--featured"]}>
+              {websitePackage.slug === "five-page-business" && <span class="package-badge">Popular choice</span>}
+              <p class="pricing-label">{websitePackage.label}</p>
+              <h3>{websitePackage.title}</h3>
+              <p class="package-slot__price">{websitePackage.priceIsFrom ? "From " : ""}{formatZar(websitePackage.priceZar)}<span> once-off</span></p>
+              <p class="hosting-card__best-for"><strong>Standalone payment:</strong> 50% to start and 50% at launch after preview.</p>
+              <p class="hosting-card__best-for"><strong>{websitePackage.pageCount}.</strong> {websitePackage.bestFor}</p>
+              <p>{websitePackage.summary}</p>
+              <div class="package-actions">
+                <a class="btn btn--primary btn--on-ivory" href={`/services/website-design-and-development#package-${websitePackage.slug}`}>See included scope</a>
+                <a class="link-arrow" href={websitePackage.slug === "one-page-starter" ? "/bundles#bundle-packages" : `/bundles#bundle-build-${websitePackage.slug}`}>See hosting bundle</a>
+              </div>
+            </article>
+          ))}
+        </div>
+        <p class="pricing-guardrail" style="margin-top: 24px;">
+          Standalone build prices are once-off and fixed for the listed scope. Pay
+          50% to start and 50% at launch; we show you a preview before collecting
+          the balance. Discounted annual bundles are a separate offer: the full
+          bundle price is paid once-off, includes the first year of hosting, and
+          annual renewal begins after that year. Every order is confirmed in
+          writing before work starts. Online checkout is not active.
+        </p>
+      </div>
+
       <div class="pricing-subsection">
         <div class="section-head">
           <div>
-            <p class="kicker"><span>04</span> Fix what matters</p>
+          <p class="kicker"><span>05</span> Fix what matters</p>
             <h3 class="h2" style="margin-top: 14px;">Only pay for the gaps your audit actually finds.</h3>
           </div>
           <p class="body">
@@ -189,13 +231,13 @@ const exampleFixPrice =
         </article>
         <article class="pricing-overview__card">
           <p class="pricing-label">One-page starter website · once-off</p>
-          <p class="pricing-overview__price">From {formatZar(websiteOffer.buildOnceOffZar)}<span> once-off</span></p>
-          <p>A mobile-ready starting point. Larger sites are scoped and priced separately.</p>
+          <p class="pricing-overview__price">{formatZar(websiteOffer.buildOnceOffZar)}<span> once-off</span></p>
+          <p>A mobile-ready one-page website. Compare the five-page and specialist packages above.</p>
             <ul class="package-includes">
               {websiteBuildDeliverables.map((item) => <li>{item}</li>)}
             </ul>
             <p>Requires a hosting plan from {formatZar(websiteOffer.hostingMonthlyZar)}/month.</p>
-            <a class="link-arrow" href="/contact?plan=website-build&billing=once-off#enquiry">Discuss your website</a>
+            <a class="link-arrow" href="/contact?plan=website-one-page-starter&billing=once-off#enquiry">Request the one-page starter</a>
           </article>
         </div>
       </div>
@@ -203,13 +245,13 @@ const exampleFixPrice =
       <div class="pricing-subsection" id="hosting-packages" aria-labelledby="hosting-packages-title">
         <div class="section-head">
           <div>
-            <p class="kicker"><span>05</span> Hosting &amp; domains</p>
+          <p class="kicker"><span>06</span> Hosting &amp; domains</p>
             <h3 class="h2" id="hosting-packages-title" style="margin-top: 14px;">A professional home for your business email.</h3>
           </div>
           <p class="body">
             Each tier includes domain registration and renewal, clear mailbox and
-            storage allowances, and a choice of monthly billing or annual
-            prepayment with two months free.
+            storage allowances, and a choice of monthly or annual recurring
+            billing. Annual pricing is equivalent to two months free.
           </p>
         </div>
         <div class="package-grid package-grid--retainers">
@@ -222,7 +264,7 @@ const exampleFixPrice =
               <p class="hosting-card__headline">{plan.headline}</p>
               <p class="hosting-card__best-for"><strong>Best for:</strong> {plan.bestFor}</p>
               <p class="package-slot__price">{formatZar(plan.priceMonthlyZar)}<span> / month</span></p>
-              <p class="hosting-card__annual">{formatZar(plan.priceAnnualZar)} / year <strong>· 2 months free</strong></p>
+              <p class="hosting-card__annual">{formatZar(plan.priceAnnualZar)} / year <strong>· recurring annually · 2 months free</strong></p>
               <h4>What you get</h4>
               <ul class="package-includes">
                 {plan.whatYouGet.map((item) => <li>{item}</li>)}
@@ -235,7 +277,7 @@ const exampleFixPrice =
               </details>
               <div class="package-actions">
                 <a class="btn btn--primary btn--on-ivory" href={`/contact?plan=${plan.slug}&billing=monthly#enquiry`}>Request monthly</a>
-                <a class="link-arrow" href={`/contact?plan=${plan.slug}&billing=annual#enquiry`}>Request annual prepay</a>
+                <a class="link-arrow" href={`/contact?plan=${plan.slug}&billing=annual#enquiry`}>Ask about annual recurring billing</a>
               </div>
             </article>
           ))}
@@ -249,7 +291,7 @@ const exampleFixPrice =
       <div class="pricing-subsection" id="monthly-support">
         <div class="section-head">
           <div>
-            <p class="kicker"><span>06</span> Monthly support</p>
+          <p class="kicker"><span>07</span> Monthly support</p>
             <h3 class="h2" style="margin-top: 14px;">Consistent growth, without a big-agency contract.</h3>
           </div>
           <p class="body">
@@ -286,7 +328,7 @@ const exampleFixPrice =
       <div class="pricing-subsection">
         <div class="section-head">
           <div>
-            <p class="kicker"><span>07</span> Once-off edits</p>
+          <p class="kicker"><span>08</span> Once-off edits</p>
             <h3 class="h2" style="margin-top: 14px;">Small changes, fixed prices.</h3>
           </div>
           <p class="body">Available to clients on a hosting plan. Ask for the change and approve the amount before work starts.</p>
@@ -305,7 +347,7 @@ const exampleFixPrice =
       <div class="pricing-subsection">
         <div class="section-head">
           <div>
-            <p class="kicker"><span>08</span> Optional add-ons</p>
+          <p class="kicker"><span>09</span> Optional add-ons</p>
             <h3 class="h2" style="margin-top: 14px;">Add only what you need.</h3>
           </div>
         </div>
@@ -337,7 +379,7 @@ const exampleFixPrice =
     <div class="container container--narrow">
       <div class="section-head" style="grid-template-columns: 1fr;">
         <div>
-          <p class="kicker"><span>09</span> Questions</p>
+          <p class="kicker"><span>10</span> Questions</p>
           <h2 class="h2" id="pricing-faq-title" style="margin-top: 14px;">
             Before you ask for a quote.
           </h2>
@@ -349,7 +391,7 @@ const exampleFixPrice =
 
   <CtaBand
     title="Tell us the scope. We will put a number on it."
-    body="Choose a package or tell us what you need. We will confirm the deliverables, payment schedule and timing in writing before sending a secure payment option."
+    body="Choose a package or tell us what you need. We will confirm the deliverables, payment schedule and timing in writing, then explain the agreed payment method."
     primaryLabel="Get a quote"
     primaryHref="/contact"
     secondaryLabel="Start with an audit"

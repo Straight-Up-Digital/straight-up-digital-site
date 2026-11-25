@@ -38,6 +38,7 @@ export const footerNav: { title: string; items: NavItem[] }[] = [
     items: [
       { label: "Privacy notice", href: "/privacy", shortLabel: "Privacy" },
       { label: "Terms of use", href: "/terms", shortLabel: "Terms" },
+      { label: "Delivery, cancellations and refunds", href: "/policies", shortLabel: "Delivery & refunds" },
     ],
   },
 ];

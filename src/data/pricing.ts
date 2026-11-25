@@ -14,7 +14,13 @@ export const websiteOffer = {
   hostingMonthlyZar: 129,
   maximumPages: 1,
   guardrail:
-    "The one-page starter website begins at R1,500 once-off. Larger sites are scoped and priced separately. A hosting plan is required from R129/month. We confirm the accepted payment method after you approve the written order.",
+    "The One-Page Starter is R1,500 once-off for one mobile page, one call or WhatsApp button, a contact form and one round of changes. All six listed website packages have fixed prices for the stated scope. Standalone builds are paid 50% to start and 50% at launch, after you have seen a preview. Discounted annual bundles are paid in full once-off and include the build plus the first year of hosting; annual hosting renews after that included year. Standalone hosting is billed monthly or on an annual recurring plan. We confirm standalone plan timing in writing before you choose a payment method. Online checkout is not active.",
+} as const;
+
+export const websiteBuildPaymentTerms = {
+  depositPercent: 50,
+  balancePercent: 50,
+  balanceDue: "At launch, after the client has seen the preview.",
 } as const;
 
 export interface HostingPlan {
@@ -91,7 +97,7 @@ export const hostingPlans: HostingPlan[] = [
     technicalFeatures: [
       "Everything in Business Pro",
       "Priority server-resource allocation",
-      "JetBackup restore points",
+      "Additional restore points to help recover email after a recent change",
       "Hands-on onboarding to Outlook and mobile mail apps",
     ],
   },
@@ -104,7 +110,7 @@ export const domainOffer = {
 } as const;
 
 export const hostingBillingNotice =
-  "Choose monthly billing or pay annually up front and get two months free. A plan enquiry does not charge you. We confirm availability, inclusions and start date in writing, then confirm the accepted payment method before you decide.";
+  "Choose monthly billing or an annual recurring plan. Annual pricing is equivalent to two months free compared with 12 monthly payments. A plan enquiry does not charge you. We confirm availability, inclusions, the plan start and first collection date in writing before you choose a payment method.";
 
 export interface MonthlyRetainer {
   level: number;
@@ -224,13 +230,137 @@ export const auditFixPackage = {
 } as const;
 
 export const websiteBuildDeliverables = [
-  "One mobile-ready custom page with clear contact details and a main call to action",
-  "Click-to-WhatsApp, click-to-call and an enquiry form when included in the agreed scope",
-  "Google Maps embed, indexing and local page titles and headings when relevant",
-  "Privacy Notice and Terms pages based on confirmed business details",
-  "1 structured revision round before launch",
-  "Larger page counts, online stores and custom booking engines need a separate scope",
+  "One mobile page",
+  "One call or WhatsApp button",
+  "A contact form",
+  "One round of changes",
 ] as const;
+
+export interface WebsiteBuildPackage {
+  slug: string;
+  title: string;
+  label: string;
+  priceZar: number;
+  priceIsFrom: boolean;
+  pageCount: string;
+  bestFor: string;
+  summary: string;
+  includes: string[];
+  notIncluded: string[];
+  recommendedHostingPlanSlug: HostingPlan["slug"];
+}
+
+/** Fixed owner-confirmed once-off prices for the stated package scopes. */
+export const websiteBuildPackages: WebsiteBuildPackage[] = [
+  {
+    slug: "one-page-starter",
+    title: "One-Page Starter",
+    label: "Get online",
+    priceZar: websiteOffer.buildOnceOffZar,
+    priceIsFrom: false,
+    pageCount: "1 mobile page",
+    bestFor: "A small business that needs one mobile page and a direct way to receive enquiries.",
+    summary: "One focused mobile page, priced for the defined starter scope.",
+    includes: [
+      "One mobile page",
+      "One call or WhatsApp button",
+      "A contact form",
+      "One round of changes",
+    ],
+    notIncluded: ["Additional pages or features not listed in this scope"],
+    recommendedHostingPlanSlug: "starter-brand",
+  },
+  {
+    slug: "five-page-business",
+    title: "Five-Page Business",
+    label: "Most popular website",
+    priceZar: 3500,
+    priceIsFrom: false,
+    pageCount: "Up to 5 pages",
+    bestFor: "Businesses that need a small multi-page site with core contact and location links.",
+    summary: "A defined business website scope of up to five pages.",
+    includes: [
+      "Up to five pages",
+      "WhatsApp and map links",
+      "Google-ready page titles",
+      "Two rounds of changes",
+      "Client supplies words, logo and photos",
+    ],
+    notIncluded: ["Copywriting, logo design or photography", "Pages or custom features beyond the listed scope"],
+    recommendedHostingPlanSlug: "starter-brand",
+  },
+  {
+    slug: "restaurant-cafe",
+    title: "Restaurant & Café",
+    label: "Food and hospitality",
+    priceZar: 3950,
+    priceIsFrom: false,
+    pageCount: "Up to 5 pages",
+    bestFor: "Restaurants and cafés that need customers to find the menu, hours, location and a contact action.",
+    summary: "A focused restaurant or café site with practical information and a WhatsApp action.",
+    includes: [
+      "Up to five pages",
+      "Menu and opening hours",
+      "Map and gallery",
+      "WhatsApp order or booking button",
+      "One round of changes",
+    ],
+    notIncluded: ["Custom online ordering or point-of-sale integrations", "Third-party platform fees"],
+    recommendedHostingPlanSlug: "starter-brand",
+  },
+  {
+    slug: "guesthouse",
+    title: "Guest House & Stay",
+    label: "Tourism and accommodation",
+    priceZar: 4500,
+    priceIsFrom: false,
+    pageCount: "Up to 6 pages",
+    bestFor: "Guest houses and small stays that want to present their rooms and facilities and link to an existing booking site.",
+    summary: "A small accommodation website with a clear enquiry route and links to your existing booking site.",
+    includes: [
+      "Up to six pages covering rooms, facilities, photos, location and enquiries",
+      "Links to your existing booking site",
+      "One round of changes",
+    ],
+    notIncluded: ["Live availability or custom booking-system integrations"],
+    recommendedHostingPlanSlug: "business-pro",
+  },
+  {
+    slug: "booking-site",
+    title: "Bookings & Appointments",
+    label: "For bookable services",
+    priceZar: 5500,
+    priceIsFrom: false,
+    pageCount: "Up to 5 pages + one standard booking tool",
+    bestFor: "Service businesses that need one standard tool for appointment requests or bookings.",
+    summary: "A small website with one standard booking tool and email confirmations.",
+    includes: [
+      "Up to five pages",
+      "One standard booking tool",
+      "Email confirmations",
+      "Booking-tool fees are paid by the client",
+    ],
+    notIncluded: ["Custom booking-system development"],
+    recommendedHostingPlanSlug: "business-pro",
+  },
+  {
+    slug: "online-shop",
+    title: "Small Online Shop",
+    label: "Sell products online",
+    priceZar: 7500,
+    priceIsFrom: false,
+    pageCount: "Up to 20 products + a basic cart",
+    bestFor: "Small retailers that want to show products and receive orders by WhatsApp or email.",
+    summary: "A small product catalogue and basic cart, with orders sent by WhatsApp or email.",
+    includes: [
+      "Up to 20 products",
+      "A basic cart",
+      "Order by WhatsApp or email",
+    ],
+    notIncluded: ["Live Paystack checkout is not included; it will only be considered after end-to-end testing passes and SinJin confirms", "Platform or transaction fees"],
+    recommendedHostingPlanSlug: "team-unlimited",
+  },
+];
 
 export const hostingAddOns: { name: string; price: string; billing: string }[] = [
   { name: "Email migration", price: "R450", billing: "once-off" },

@@ -55,12 +55,12 @@ export const pricingFaqs: Faq[] = [
   {
     question: "How do I get a quote?",
     answer:
-      "Send an enquiry with the website address and what you want to improve. We ask the questions we need, then send one written quote with the deliverables, the cost and the timing.",
+      "Choose a listed website package and send an enquiry from its card, or tell us what you need. We confirm the scope, total and timing in writing before work starts. Standalone website builds are paid 50% to start and 50% at launch, after you have seen a preview. Discounted annual bundles are paid in full once-off and include the build plus the first year of hosting; annual hosting renews after that included year.",
   },
   {
     question: "How can I pay for hosting?",
     answer:
-      "Choose monthly billing or pay annually up front and receive two months free. We confirm the plan, inclusions, total and start date in writing, then provide the secure online payment option before the service starts.",
+      "Choose monthly recurring billing or an annual recurring Plan. The annual price is equivalent to two months free compared with 12 monthly payments. We confirm the Plan, inclusions, start date and first collection date in writing before you choose a payment method. A plan request does not take payment.",
   },
   {
     question: "What if I only need one fix?",
@@ -75,7 +75,7 @@ export const pricingFaqs: Faq[] = [
   {
     question: "How do I request a hosting plan?",
     answer:
-      "Choose Starter Brand, Business Pro or Team Unlimited and select monthly billing or annual prepayment. Your request is not a payment; we confirm availability and send the agreed secure payment steps before provisioning.",
+      "Choose Starter Brand, Business Pro or Team Unlimited and select monthly or annual recurring billing. Your request is not a payment; we confirm availability, the Plan start and first collection date in writing before you choose the secure payment method.",
   },
   {
     question: "Is hosting included in the monthly retainers?",
@@ -85,7 +85,7 @@ export const pricingFaqs: Faq[] = [
   {
     question: "Is the website build a once-off cost?",
     answer:
-      "The one-page starter website begins at R1,500 once-off. Larger sites are scoped and priced separately. Hosting is required from R129/month. Online stores and custom booking engines need a separate written scope.",
+      "Yes. The confirmed once-off prices are One-Page Starter R1,500; Five-Page Business R3,500; Restaurant & Café R3,950; Guest House & Stay R4,500; Bookings & Appointments R5,500; and Small Online Shop R7,500. Each price applies to the scope listed on its package card. Standalone builds are paid 50% to start and 50% at launch, after you have seen a preview. A discounted annual bundle is paid in full once-off and includes the build plus the first year of hosting; hosting renews annually after that included year. Hosting is separate for standalone builds. Shop orders are by WhatsApp or email; live Paystack checkout is not active and will only be considered after successful end-to-end testing and SinJin's confirmation.",
   },
   {
     question: "What is not included?",
