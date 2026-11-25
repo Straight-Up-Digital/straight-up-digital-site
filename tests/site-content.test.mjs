@@ -32,7 +32,7 @@ const businessIllustration = read("../public/illustrations/local-business-digita
 
 test("public business identity and locality are owner-supplied", () => {
   assert.match(siteData, /St\. John Ritchie trading as Straight Up Digital/);
-  assert.match(siteData, /Port Alfred, Eastern Cape, South Africa/);
+  assert.match(siteData, /6 Jacks Close, Port Alfred, South Africa, 6170/);
   assert.match(privacy, /ownerSupplied\.legalEntity/);
   assert.match(terms, /ownerSupplied\.legalEntity/);
   assert.match(footer, /ownerSupplied\.legalEntity/);
@@ -248,7 +248,9 @@ test("the intended custom domain is canonical and present in social/business met
   assert.match(layout, /property="og:url" content=\{canonical\}/);
   assert.match(layout, /name="twitter:card"/);
   assert.match(layout, /"@type": "PostalAddress"/);
+  assert.match(layout, /streetAddress: "6 Jacks Close"/);
   assert.match(layout, /addressLocality: "Port Alfred"/);
+  assert.match(layout, /postalCode: "6170"/);
 });
 
 

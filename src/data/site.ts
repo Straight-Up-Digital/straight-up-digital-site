@@ -22,8 +22,8 @@ export const contact = {
   email: "Hello@straightupdigital.co.za",
   phone: "062 065 3503",
   phoneInternational: "+27 62 065 3503",
-  /** Owner-approved public locality; no street address is published. */
-  address: "Port Alfred, Eastern Cape, South Africa",
+  /** Owner-approved public street and postal address. */
+  address: "6 Jacks Close, Port Alfred, South Africa, 6170",
   /** Business hours, free text. */
   hours: "",
 } as const;
