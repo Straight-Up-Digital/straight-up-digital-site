@@ -4,7 +4,7 @@ import { handleCrmEnquiries, handlePublishReport } from "./private-routes.ts";
 import { sendEnquiryEmail, sendReportResponseEmail } from "./email.ts";
 import type { CloudflareWorkerEnv, SocketConnect, WorkerExecutionContext } from "./types.ts";
 import { handlePaystackCallback, handlePaystackInitialize, handlePaystackWebhook } from "./paystack.ts";
-import { FirestorePaystackOrderStore } from "./paystack-store.ts";
+import { D1PaystackOrderStore } from "./paystack-d1-store.ts";
 
 export async function handleWorkerRequest(request: Request, env: CloudflareWorkerEnv, _ctx?: WorkerExecutionContext, socketConnect?: SocketConnect): Promise<Response> {
   const url = new URL(request.url);
@@ -17,15 +17,15 @@ export async function handleWorkerRequest(request: Request, env: CloudflareWorke
   const privateDeps = { store };
 
   if (url.pathname === "/api/paystack/initialize") {
-    const paymentDeps = { store: env.APP_ENV === "test" ? new FirestorePaystackOrderStore(env) : undefined };
+    const paymentDeps = { store: env.APP_ENV === "test" ? new D1PaystackOrderStore(env) : undefined };
     return handlePaystackInitialize(request, env, paymentDeps);
   }
   if (url.pathname === "/api/paystack/callback") {
-    const paymentDeps = { store: env.APP_ENV === "test" ? new FirestorePaystackOrderStore(env) : undefined };
+    const paymentDeps = { store: env.APP_ENV === "test" ? new D1PaystackOrderStore(env) : undefined };
     return handlePaystackCallback(request, env, paymentDeps);
   }
   if (url.pathname === "/api/paystack/webhook") {
-    const paymentDeps = { store: env.APP_ENV === "test" ? new FirestorePaystackOrderStore(env) : undefined };
+    const paymentDeps = { store: env.APP_ENV === "test" ? new D1PaystackOrderStore(env) : undefined };
     return handlePaystackWebhook(request, env, paymentDeps);
   }
 

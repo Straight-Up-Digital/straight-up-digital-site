@@ -46,7 +46,7 @@ const TEST_CATALOG: Record<string, TestProduct> = {
 };
 
 const PAYSTACK_API = "https://api.paystack.co";
-const TEST_CALLBACK_URL = "https://straightupdigital.co.za/api/paystack/callback";
+const TEST_CALLBACK_URL = "https://straight-up-digital-migration-test.stjohn-toperformer.workers.dev/api/paystack/callback";
 const MAX_CHECKOUT_BODY = 8_192;
 const MAX_WEBHOOK_BODY = 32_000;
 const REQUEST_TIMEOUT_MS = 8_000;

@@ -21,9 +21,16 @@ export interface IntakeFields {
 }
 export interface StoredEnquiry { id: string; receivedAt: string; fields: IntakeFields }
 export interface StoredReport { report: CustomerReport; expiresAt: string }
+export interface D1StatementBinding {
+  bind(...values: Array<string | number | null>): D1StatementBinding;
+  first<T extends Record<string, unknown>>(): Promise<T | null>;
+  run(): Promise<{ success: boolean; meta?: { changes?: number } }>;
+}
+export interface D1DatabaseBinding { prepare(query: string): D1StatementBinding }
 
 export interface CloudflareWorkerEnv {
   ASSETS: StaticAssetBinding;
+  PAYMENTS_DB?: D1DatabaseBinding;
   FIRESTORE_PROJECT_ID?: string;
   GOOGLE_FIRESTORE_SERVICE_ACCOUNT_JSON?: string;
   APP_ENV?: string;

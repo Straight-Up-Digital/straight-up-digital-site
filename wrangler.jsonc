@@ -28,6 +28,13 @@
     "test": {
       "name": "straight-up-digital-migration-test",
       "workers_dev": false,
+      "d1_databases": [
+        {
+          "binding": "PAYMENTS_DB",
+          "database_name": "straight-up-digital-crm-test-eu",
+          "database_id": "bf095c5f-9377-4343-9a61-01fbe05c5ae9"
+        }
+      ],
       "vars": {
         "APP_ENV": "test",
         "EMAIL_PROVIDER": "console",

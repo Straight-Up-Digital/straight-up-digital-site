@@ -4,6 +4,7 @@ import { createHmac } from "node:crypto";
 import { handlePaystackCallback, handlePaystackInitialize, handlePaystackWebhook } from "../cloudflare/paystack.ts";
 import { handleWorkerRequest } from "../cloudflare/router.ts";
 import { FirestorePaystackOrderStore } from "../cloudflare/paystack-store.ts";
+import { D1PaystackOrderStore } from "../cloudflare/paystack-d1-store.ts";
 
 const testSecret = "sk_test_synthetic0123456789abcdef";
 const reference = "sud-test-synthetic-ref-0001";
@@ -102,7 +103,7 @@ test("test initialization uses only server-owned ZAR pricing and creates a minim
   assert.equal(initializePayload.amount, 75_000);
   assert.equal(initializePayload.currency, "ZAR");
   assert.equal(initializePayload.reference, reference);
-  assert.equal(initializePayload.callback_url, "https://straightupdigital.co.za/api/paystack/callback");
+  assert.equal(initializePayload.callback_url, "https://straight-up-digital-migration-test.stjohn-toperformer.workers.dev/api/paystack/callback");
   assert.equal(Object.hasOwn(initializePayload, "plan"), false);
   assert.deepEqual(store.orders.get(reference), starterOrder());
   assert.equal(Object.hasOwn(store.orders.get(reference), "email"), false);
@@ -331,6 +332,48 @@ test("Firestore paid-state transition is compare-and-set idempotent under concur
 
   const productionStore = new FirestorePaystackOrderStore({ APP_ENV: "production", FIRESTORE_PROJECT_ID: "straight-up-digital-prod" }, () => fakeClient);
   await assert.rejects(() => productionStore.markPaid(reference, new Date(now).toISOString()), /test_payment_store_disabled/);
+});
+
+test("D1 payment store is idempotent, atomically marks test orders paid, and rejects production use", async () => {
+  const rows = new Map();
+  const database = {
+    prepare(sql) {
+      let values = [];
+      return {
+        bind(...bound) { values = bound; return this; },
+        async first() {
+          assert.match(sql, /^SELECT /);
+          return structuredClone(rows.get(values[0]) ?? null);
+        },
+        async run() {
+          if (sql.startsWith("INSERT INTO")) {
+            if (rows.has(values[0])) throw new Error("duplicate_reference");
+            rows.set(values[0], {
+              reference: values[0], product_id: values[1], amount_subunit: values[2],
+              currency: values[3], status: values[4], created_at: values[5], paid_at: null,
+            });
+            return { success: true, meta: { changes: 1 } };
+          }
+          assert.match(sql, /^UPDATE /);
+          const row = rows.get(values[1]);
+          if (!row || row.status !== "pending") return { success: true, meta: { changes: 0 } };
+          rows.set(values[1], { ...row, status: "paid", paid_at: values[0] });
+          return { success: true, meta: { changes: 1 } };
+        },
+      };
+    },
+  };
+  const store = new D1PaystackOrderStore({ APP_ENV: "test", PAYMENTS_DB: database });
+  await store.createOrder(starterOrder());
+  await store.createOrder(starterOrder());
+  const results = await Promise.all([
+    store.markPaid(reference, new Date(now).toISOString()),
+    store.markPaid(reference, new Date(now).toISOString()),
+  ]);
+  assert.deepEqual(results.sort(), ["already_paid", "paid"]);
+  assert.equal((await store.getOrder(reference)).status, "paid");
+  const productionStore = new D1PaystackOrderStore({ APP_ENV: "production", PAYMENTS_DB: database });
+  await assert.rejects(() => productionStore.getOrder(reference), /test_payment_store_disabled/);
 });
 
 
