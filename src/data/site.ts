@@ -19,7 +19,7 @@ export const site = {
 
 /** Owner-supplied public contact details. */
 export const contact = {
-  email: "Hello@straightupdigital.co.za",
+  email: "hello@straightupdigital.co.za",
   phone: "062 065 3503",
   phoneInternational: "+27 62 065 3503",
   /** Owner-approved public street and postal address. */

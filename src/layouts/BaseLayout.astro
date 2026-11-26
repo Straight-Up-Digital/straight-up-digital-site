@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import "../styles/redesign.css";
 import SiteHeader from "../components/SiteHeader.astro";
 import SiteFooter from "../components/SiteFooter.astro";
 import StickyAuditBar from "../components/StickyAuditBar.astro";
@@ -76,8 +77,8 @@ const structuredData = [organization, ...jsonLd];
     <meta name="author" content={ownerSupplied.founderName} />
     <link rel="canonical" href={canonical} />
     {noindex && <meta name="robots" content="noindex, nofollow" />}
-    <meta name="theme-color" content="#080A09" />
-    <meta name="color-scheme" content="dark light" />
+    <meta name="theme-color" content="#080B0A" />
+    <meta name="color-scheme" content="dark" />
 
     <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />

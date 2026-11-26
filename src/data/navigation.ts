@@ -7,12 +7,10 @@ export interface NavItem {
 
 export const primaryNav: NavItem[] = [
   { label: "Services", href: "/services" },
-  { label: "How it works", href: "/how-it-works" },
-  { label: "Digital audit", href: "/digital-audit" },
-  { label: "Pricing", href: "/pricing" },
+  { label: "Website packages", href: "/services/website-design-and-development#website-packages" },
   { label: "Bundles", href: "/bundles" },
+  { label: "Business Auditor", href: "/digital-audit" },
   { label: "About", href: "/about" },
-  { label: "Contact", href: "/contact" },
 ];
 
 export const footerNav: { title: string; items: NavItem[] }[] = [
@@ -31,10 +29,11 @@ export const footerNav: { title: string; items: NavItem[] }[] = [
       { label: "Pricing", href: "/pricing" },
       { label: "About", href: "/about" },
       { label: "Contact", href: "/contact" },
+      { label: "Download brand kit", href: "/downloads/straight-up-digital-logo-kit.zip", shortLabel: "Brand kit" },
     ],
   },
   {
-    title: "Legal",
+    title: "Policies",
     items: [
       { label: "Privacy notice", href: "/privacy", shortLabel: "Privacy" },
       { label: "Terms of use", href: "/terms", shortLabel: "Terms" },

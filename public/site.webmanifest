@@ -4,8 +4,8 @@
   "description": "Practical digital intelligence for small and growing businesses. Intelligence. Visibility. Growth.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#080A09",
-  "theme_color": "#080A09",
+  "background_color": "#080B0A",
+  "theme_color": "#080B0A",
   "icons": [
     {
       "src": "/icon-192.png",

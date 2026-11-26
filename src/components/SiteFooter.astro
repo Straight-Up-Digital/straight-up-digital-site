@@ -13,7 +13,7 @@ const year = new Date().getFullYear();
           <img
             src="/brand/logo-horizontal-dark.png"
             width="1800"
-            height="440"
+            height="450"
             alt="Straight Up Digital. Intelligence. Visibility. Growth."
           />
         </a>
@@ -40,8 +40,8 @@ const year = new Date().getFullYear();
       <div>
         <h2 class="site-footer__title">Enquiries</h2>
         <p class="small">
-          The enquiry form is the reliable route in. It is reviewed by a person,
-          not an autoresponder.
+          Tell us what your business needs. A person reviews the request and
+          confirms the next step in writing.
         </p>
         <p style="margin-top: 12px;">
           <a class="link-arrow" href="/contact">
@@ -54,7 +54,7 @@ const year = new Date().getFullYear();
         <h2 class="site-footer__title">Direct details</h2>
         <p class="small">{ownerSupplied.legalEntity}</p>
         <p class="small">
-          <a class="text-link" href={`mailto:${contact.email}`}>{contact.email}</a>
+          <a class="text-link" href={`mailto:${contact.email.toLowerCase()}`}>{contact.email.toLowerCase()}</a>
         </p>
         <p class="small">
           <a class="text-link" href={`tel:${contact.phoneInternational.replace(/[^\d+]/g, "")}`}>{contact.phoneInternational}</a>
@@ -64,7 +64,7 @@ const year = new Date().getFullYear();
     </div>
 
     <p class="site-footer__legal">
-      All digital audits are human-reviewed assessments of publicly visible information. Straight Up Digital does not guarantee search engine rankings, traffic volumes or financial returns. Services are governed by our Terms of Use and Privacy Notice under South African law, including POPIA.
+      All digital audits are human-reviewed assessments of publicly visible information. Straight Up Digital does not guarantee search engine rankings, traffic volumes or financial returns. Services are governed by our Terms of Use, Privacy Notice, and Delivery, Cancellations and Refunds Policy under South African law, including POPIA.
     </p>
 
     <div class="site-footer__bottom">
