@@ -197,18 +197,21 @@ test("services open dedicated pages and expose specialist build scopes and plan 
   assert.match(servicesData, /should not collect health details unless secure handling and legal requirements are separately assessed/i);
 });
 
-test("specialist website gallery uses local, accessible and credited photos", () => {
+test("specialist website gallery uses local, accessible and truthfully described concept images", () => {
   const serviceDetailPage = read("../src/pages/services/[slug].astro");
-  for (const file of ["web-design.webp", "ecommerce-shop.webp", "guest-accommodation.webp", "restaurant-cafe.webp", "clinic-wellness.webp"]) {
-    assert.ok(serviceDetailPage.includes(`/images/services/${file}`), `missing gallery asset: ${file}`);
-    assert.ok(imageCredits.includes(file), `missing image credit: ${file}`);
+  const files = ["website-design.webp", "online-shop.webp", "guest-house.webp", "restaurant.webp", "clinic-practice.webp"];
+  for (const file of files) {
+    assert.ok(serviceDetailPage.includes(`/images/art-directed/${file}`), `missing gallery asset reference: ${file}`);
+    assert.ok(readFileSync(new URL(`../public/images/art-directed/${file}`, import.meta.url)).length > 0, `missing gallery asset: ${file}`);
+    assert.ok(imageCredits.includes(file), `missing image provenance entry: ${file}`);
   }
   assert.match(serviceDetailPage, /alt=\{image\.alt\}/);
   assert.match(serviceDetailPage, /loading="lazy"/);
-  assert.match(imageCredits, /https:\/\/unsplash\.com\/license/);
-  assert.match(imageCredits, /https:\/\/www\.pexels\.com\/license/);
-  assert.match(imageCredits, /Tranmautritam/);
-  assert.match(imageCredits, /Amar Preciado/);
+  assert.match(serviceDetailPage, /alt:\s*"[^"]+"/);
+  assert.match(imageCredits, /AI-generated for this website/i);
+  assert.match(imageCredits, /illustrative concepts, not client work/i);
+  assert.match(imageCredits, /not photographs sourced from Unsplash, Pexels/i);
+  assert.doesNotMatch(imageCredits, /Photo page:|by \[[^\]]+\]\(https?:\/\//i);
 });
 
 test("WhatsApp offers audit, hosting, domain and general enquiry intents", () => {

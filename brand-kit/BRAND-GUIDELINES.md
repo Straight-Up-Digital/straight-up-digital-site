@@ -1,34 +1,40 @@
-# Straight Up Digital brand guidelines
+# Straight Up Digital — brand and image guidance
 
 ## Brand idea
-**Intelligence. Visibility. Growth.** A clear, capable digital partner for small and growing South African businesses. The identity should feel considered, direct, and dependable—not loud or futuristic for its own sake.
 
-## Logo system
-The angular S mark combines two continuous graphite/silver ribbons with an upward lime signal stroke. Use the horizontal lockup in headers and footers, the stacked lockup for square placements, and the standalone mark for favicons and avatars. Keep the mark and exact uppercase wordmark together when space permits. Do not redraw, distort, rotate, crop, or add effects to the mark. Leave clear space equal to at least one quarter of the symbol width. Minimum recommended size: 150 px wide for the horizontal lockup and 28 px for the standalone symbol.
+**Intelligence. Visibility. Growth.** The visual identity should feel capable, focused and dependable for small and growing South African businesses. Use confident charcoal surfaces, clear silver-white typography and a precise electric-lime signal rather than dense decoration.
 
-The wordmark is set as editable vector text in the SVG masters. The exact supplied spelling is **STRAIGHT UP DIGITAL**. For consistent rendering, the master CSS uses Montserrat with Arial/sans-serif fallback. Package artwork can be opened in a vector editor and converted to outlines if a print supplier requires outlined paths.
+## Official logo source
 
-## Colour palette
-- Deep background: `#080B0A`
-- Graphite: `#28312B`
-- Surface: `#101512` and `#151B17`
-- Electric lime: `#B6FF36`
-- Supporting green: `#8EDB28`
+`straight-up-digital-logo-kit.zip` is the owner-supplied exact-symbol kit and the single source of truth. It contains the exact 1254 × 1254 RGBA S symbol, transparent lockups, PNG sizes, SVG and PDF source files. The SVG and PDF lockups embed the supplied raster symbol; their wordmark text remains editable in SVG.
+
+The horizontal and stacked white/lime lockups are intended for dark backgrounds. Use them as supplied. Do not redraw, recolour, reshape, crop, distort, rotate, filter, add effects to, or place other artwork over the S symbol. Preserve its square proportions. Do not use the white/lime wordmark on a light background.
+
+Website exports are in `public/brand/`. The header/footer use `logo-horizontal-dark.png`; standalone brand uses `symbol.png` and its small SVG wrapper. The favicon and web-app icons are exact symbol exports or proportional size derivatives.
+
+## Palette
+
+- Supplied electric lime: `#B7FF00` (exact value in the official kit)
+- Obsidian UI background: `#080B0A`
+- Deep charcoal surfaces: `#101512` and `#151B17`
 - Light text: `#F5F7F4`
+- Supporting silver: `#D6DDD7`
 - Muted text: `#A5ADA6`
 
-Use lime as a focused signal for actions, links, and small data highlights. Keep body text light and legible. Do not use lime for long paragraphs or decorative glow effects over text.
+Use lime for primary actions, key links, small indicators and restrained edge light. Keep long text silver or white for readability. UI colors are separate from the logo artwork; never apply them to the supplied mark.
 
-## Typography
-Use Montserrat for display headings and the wordmark; use Inter for body copy and interface labels. Both are self-hosted on the website. Keep headings compact, clear and sentence case in page copy; the wordmark itself remains uppercase.
+## Typography and layout
 
-## Photography and illustration
-Use deliberate, locally hosted imagery with responsive sizes and descriptive alternative text. The existing Unsplash images represent business categories only; they are not client work. Interface mockups and auditor preview visuals must be labelled illustrative and must never be presented as live output or a real client result.
+The website self-hosts Montserrat Variable for display headings and Inter Variable for body copy. Keep page copy in plain English, with compact headings, comfortable line lengths, visible keyboard focus, responsive layouts and reduced-motion support.
 
-## Voice
-Write in direct, plain English. Explain scope, price, payment timing and third-party costs before asking someone to commit. Never add unsupported claims, testimonials, partnerships, awards, rankings or quantified results.
+## Photography and concepts
 
-## Files
-- `masters/`: clean SVG vector masters in colour and monochrome, horizontal and stacked.
-- `exports/`: transparent logo PNGs, favicons, app icon, social profile/cover images and Open Graph image.
-- `straight-up-digital-logo-kit.zip`: distributable bundle of masters, exports, and this guide.
+The coordinated service images in `public/images/art-directed/` were generated for this website. They are illustrative category visuals, not client projects, commissioned photography or evidence of completed work. Keep alt text accurate. Do not turn the images into claimed portfolio work or imply that a depicted interface is an operating customer site. The Business Auditor preview must remain clearly labelled illustrative and contain no invented score or customer findings.
+
+## Voice and claims
+
+Explain package scope, confirmed price, payment timing and third-party costs before asking a visitor to commit. Do not invent testimonials, partnerships, awards, case studies, search rankings, performance figures or revenue results.
+
+## Maintenance
+
+Run `python scripts/build-brand-kit.py` to refresh the website and download exports from the supplied ZIP. The exporter copies official logo files and makes proportional standard icon sizes only; it does not draw or recolour the symbol. The former synthetic masters and exports are retired. Keep the source ZIP intact as the authoritative kit.

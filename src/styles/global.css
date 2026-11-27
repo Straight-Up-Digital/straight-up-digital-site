@@ -2,9 +2,8 @@
    Straight Up Digital — global styles
    Tokens, reset, typography, layout, shared components.
 
-   Colour values are the approved brand palette. Silver and muted text are
-   proposed values awaiting owner approval and are kept here only, so they can
-   be changed in one place.
+   The electric-lime accent matches the owner-supplied exact-symbol logo kit;
+   charcoal and silver values define the website interface palette.
    ========================================================================== */
 
 /* --- Self-hosted brand typefaces ------------------------------------------
@@ -17,21 +16,21 @@
 
 :root {
   /* Approved palette */
-  --obsidian: #080a09;
-  --graphite: #252b27;
-  --ivory: #f2f4ef;
-  --lime: #a8ff65;
-  --silver: #c9cfcb; /* proposed */
-  --muted: #9aa39d; /* proposed */
+  --obsidian: #080B0A;
+  --graphite: #28312B;
+  --ivory: #F5F7F4;
+  --lime: #B7FF00;
+  --silver: #D6DDD7;
+  --muted: #A5ADA6;
 
   /* Derived surfaces and lines, all built from the palette */
-  --panel: #0d110e;
-  --panel-2: #111612;
-  --panel-3: #161c17;
-  --line: rgba(201, 207, 203, 0.14);
-  --line-strong: rgba(201, 207, 203, 0.28);
-  --line-soft: rgba(201, 207, 203, 0.08);
-  --on-ivory: #080a09;
+  --panel: #101512;
+  --panel-2: #151B17;
+  --panel-3: #1D2620;
+  --line: rgba(245, 247, 244, 0.12);
+  --line-strong: rgba(245, 247, 244, 0.25);
+  --line-soft: rgba(245, 247, 244, 0.08);
+  --on-ivory: #080B0A;
   --on-ivory-muted: #4b544d;
   --error: #ffb4a6;
   --success: #b9e8c6;
@@ -3740,7 +3739,7 @@ body.has-open-menu .floating-actions {
 }
 .package-icon {
   width: 42px;
-  height: 34px;
+  height: 42px;
   object-fit: contain;
   margin-bottom: -4px;
 }

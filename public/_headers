@@ -34,7 +34,7 @@
   Cache-Control: public, max-age=604800
 /icon-512.png
   Cache-Control: public, max-age=604800
-/og-image.png
+/og-image.jpg
   Cache-Control: public, max-age=604800
 
 # The /*.ico policy applies to the current root favicon.

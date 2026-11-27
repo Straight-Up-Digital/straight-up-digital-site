@@ -57,7 +57,7 @@ const formatZar = (amount: number): string => `R${amount.toLocaleString("en-US")
         {websiteHostingBundles.map((bundle) => (
           <article class:list={["package-slot", "package-slot--retainer", "hosting-card", bundle.hostingPlan.featured && "hosting-card--featured"]}>
             {bundle.hostingPlan.featured && <span class="package-badge">Most popular</span>}
-            <img class="package-icon" src="/brand/symbol.svg" alt="" width="42" height="34" loading="lazy" />
+            <img class="package-icon" src="/brand/symbol.svg" alt="" width="42" height="42" loading="lazy" />
             <p class="pricing-label">{bundleDiscountPercent}% annual bundle discount · request a quote</p>
             <h3>{bundle.name}</h3>
             <p class="hosting-card__headline">One-page starter website with {bundle.hostingPlan.name}.</p>
