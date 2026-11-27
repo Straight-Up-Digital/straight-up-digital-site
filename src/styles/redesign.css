@@ -1,4 +1,4 @@
-/* Straight Up Digital — premium technology brand layer.
+/* Straight Up Digital - premium technology brand layer.
    Loaded after global.css so existing routes and behaviours remain unchanged. */
 :root {
   --obsidian: #080B0A;
@@ -311,10 +311,12 @@ a.service-list__row:hover { background: rgba(183,255,0,.035); }
 .contact-aside .info-panel { padding:18px; border:1px solid var(--line); border-radius:12px; background:rgba(21,27,23,.55); }
 
 /* Safe motion, smaller screens, tablet and mobile */
-@media (max-width:1180px) {
+@media (max-width:960px) {
   .site-nav { display:none; }
   .header-cta { display:none; }
   .nav-toggle { display:inline-flex; }
+}
+@media (max-width:1180px) {
   .home-hero__grid { grid-template-columns:minmax(0,1fr) minmax(320px,.85fr); gap:28px; }
 }
 @media (max-width:900px) {
@@ -563,3 +565,29 @@ a.service-list__row:hover { background: rgba(183,255,0,.035); }
 @media (prefers-reduced-motion:reduce) {
   *,*::before,*::after { animation-duration:.01ms!important; animation-iteration-count:1!important; transition-duration:.01ms!important; scroll-behavior:auto!important; }
 }
+
+/* ---- 27 Nov fixes: nav dropdown, five-across cards on tablet, trust icons, footer icons ---- */
+.site-nav > ul > li { position: relative; display: flex; align-items: center; }
+.site-nav .sub-caret { width: 9px; height: 6px; margin-left: 6px; opacity: .8; }
+.site-nav .subnav { position: absolute; top: 100%; left: -14px; z-index: 40; display: none; flex-direction: column; gap: 2px; min-width: 250px; margin: 8px 0 0; padding: 8px; list-style: none; border: 1px solid var(--line-strong); border-radius: 12px; background: rgba(8,12,9,.97); box-shadow: 0 24px 60px -24px rgba(0,0,0,.8), 0 0 0 1px rgba(183,255,0,.06); }
+.site-nav .subnav::before { content: ""; position: absolute; inset: -10px 0 auto; height: 10px; }
+.site-nav .has-sub:hover > .subnav, .site-nav .has-sub:focus-within > .subnav { display: flex; }
+.site-nav .subnav a { display: block; padding: 10px 12px; border-radius: 8px; white-space: nowrap; }
+.site-nav .subnav a:hover { background: rgba(183,255,0,.09); color: var(--lime); }
+.site-nav .subnav a::after { display: none; }
+@media (min-width: 961px) and (max-width: 1180px) {
+  .site-nav ul { gap: 14px; }
+  .site-nav a { font-size: .82rem; }
+  .header-cta { padding-inline: 12px; font-size: .82rem; }
+  .home-solution-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 9px; }
+  .home-solution-tile__detail { display: none; }
+  .home-solution-tile strong { font-size: 1.02rem; }
+}
+.home-trust-item__mark svg { width: 16px; height: 16px; color: var(--lime); }
+.site-footer__social { display: flex; flex-wrap: wrap; gap: 10px; margin: 14px 0 0; padding: 0; list-style: none; }
+.site-footer__social a { display: grid; place-items: center; width: 40px; height: 40px; border: 1px solid var(--line-strong); border-radius: 50%; color: var(--lime); transition: border-color 150ms ease, background 150ms ease; }
+.site-footer__social a:hover { border-color: var(--lime); background: rgba(183,255,0,.1); }
+.site-footer__social svg { width: 18px; height: 18px; }
+.site-footer__social-text a { width: auto; padding: 0 14px; border-radius: 20px; font-size: .8rem; }
+.site-nav > ul > li > a { display: inline-flex; align-items: center; }
+.site-nav .subnav a { display: block; text-align: left; }

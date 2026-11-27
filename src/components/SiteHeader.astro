@@ -7,7 +7,7 @@ const brandImg = "/brand/logo-horizontal-dark.png";
 
 <header class="site-header" data-scroll-state="visible">
   <div class="container site-header__inner">
-    <a class="brand" href="/" aria-label="Straight Up Digital — home">
+    <a class="brand" href="/" aria-label="Straight Up Digital home">
       <img
         src={brandImg}
         width="1680"
@@ -20,21 +20,30 @@ const brandImg = "/brand/logo-horizontal-dark.png";
       <ul>
         {
           primaryNav.map((item) => (
-            <li>
+            <li class={item.children ? "has-sub" : undefined}>
               <a
                 href={item.href}
                 aria-current={isCurrent(pathname, item.href) ? "page" : undefined}
+                aria-haspopup={item.children ? "true" : undefined}
               >
                 {item.label}
+                {item.children && <svg class="sub-caret" viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" /></svg>}
               </a>
+              {item.children && (
+                <ul class="subnav">
+                  {item.children.map((child) => (
+                    <li><a href={child.href}>{child.label}</a></li>
+                  ))}
+                </ul>
+              )}
             </li>
           ))
         }
       </ul>
     </nav>
 
-    <a class="btn btn--primary header-cta" href="/contact#enquiry">
-      Get a quote
+    <a class="btn btn--primary header-cta" href="/digital-audit#request">
+      Get your free audit
     </a>
 
     <button
@@ -66,7 +75,7 @@ const brandImg = "/brand/logo-horizontal-dark.png";
   data-mobile-nav
 >
   <div class="mobile-nav__top">
-    <a class="brand" href="/" aria-label="Straight Up Digital — home">
+    <a class="brand" href="/" aria-label="Straight Up Digital home">
       <img src={brandImg} width="1680" height="500" alt="Straight Up Digital" />
     </a>
     <button class="nav-toggle" type="button" data-nav-close aria-label="Close menu">
@@ -77,13 +86,13 @@ const brandImg = "/brand/logo-horizontal-dark.png";
   </div>
 
   <div class="mobile-nav__body">
-    <a class="btn btn--primary mobile-nav__cta" href="/contact#enquiry">
-      Get a quote
+    <a class="btn btn--primary mobile-nav__cta" href="/digital-audit#request">
+      Get your free audit
     </a>
 
     <nav class="mobile-nav__links" aria-label="Mobile">
       {
-        primaryNav.map((item) => (
+        primaryNav.flatMap((item) => [item, ...(item.children ?? [])]).map((item) => (
           <a
             href={item.href}
             aria-current={isCurrent(pathname, item.href) ? "page" : undefined}
@@ -213,7 +222,7 @@ const brandImg = "/brand/logo-horizontal-dark.png";
       }
     });
 
-    const desktop = window.matchMedia("(min-width: 1081px)");
+    const desktop = window.matchMedia("(min-width: 961px)");
     desktop.addEventListener("change", (event) => {
       if (event.matches && panel.dataset.open === "true") close(false);
     });

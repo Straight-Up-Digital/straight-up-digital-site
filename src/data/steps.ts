@@ -13,7 +13,7 @@ export const steps: Step[] = [
     title: "Tell us about your business",
     client:
       "Share your business name, website and what you want to improve. Two minutes is enough to start.",
-    we: "Confirm what the audit covers, what it costs and when you will receive it — in writing, before any work starts.",
+    we: "Confirm what the audit covers, what it costs and when you will receive it, in writing, before any work starts.",
     short: "You tell us what the business does and what is not working.",
   },
   {

@@ -243,7 +243,7 @@ export const services: Service[] = [
       "A review request process",
       "Guidance on handling criticism",
     ],
-    note: "In development. Not offered yet — the audit already reports what public review signals it can verify.",
+    note: "In development. Not offered yet. The audit already reports what public review signals it can verify.",
   },
 ];
 

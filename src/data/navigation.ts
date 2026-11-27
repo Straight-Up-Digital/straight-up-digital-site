@@ -3,14 +3,27 @@ export interface NavItem {
   href: string;
   /** Short label used in the footer. */
   shortLabel?: string;
+  /** Optional dropdown links shown under this item. */
+  children?: NavItem[];
 }
 
 export const primaryNav: NavItem[] = [
-  { label: "Services", href: "/services" },
-  { label: "Website packages", href: "/services/website-design-and-development#website-packages" },
-  { label: "Bundles", href: "/bundles" },
-  { label: "Business Auditor", href: "/digital-audit" },
+  { label: "Home", href: "/" },
+  {
+    label: "Services",
+    href: "/services",
+    children: [
+      { label: "Website packages", href: "/services/website-design-and-development#website-packages" },
+      { label: "Website and hosting bundles", href: "/bundles" },
+      { label: "Hosting plans", href: "/pricing#hosting-packages" },
+      { label: "Free business audit", href: "/digital-audit" },
+      { label: "How it works", href: "/how-it-works" },
+    ],
+  },
+  { label: "Examples", href: "/#examples" },
+  { label: "Pricing", href: "/pricing" },
   { label: "About", href: "/about" },
+  { label: "Contact", href: "/contact" },
 ];
 
 export const footerNav: { title: string; items: NavItem[] }[] = [

@@ -7,7 +7,7 @@ export const auditFaqs: Faq[] = [
   {
     question: "What does the audit actually look at?",
     answer:
-      "Six categories: website structure, Google Business Profile, social profiles, content coverage, reputation and business identity. It uses public information only — the pages anyone can open, the listings anyone can search and the profiles anyone can find.",
+      "Six categories: website structure, Google Business Profile, social profiles, content coverage, reputation and business identity. It uses public information only: the pages anyone can open, the listings anyone can search and the profiles anyone can find.",
   },
   {
     question: "What does it not measure?",

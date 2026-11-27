@@ -77,13 +77,13 @@ const description =
         </p>
         <ul>
           <li>
-            <strong>Cloudflare</strong> — website hosting, form-processing Worker
+            <strong>Cloudflare</strong>: website hosting, form-processing Worker
             and security controls. Cloudflare receives the form request and
             technical data such as an IP address and may process requests at its
             global edge locations, including outside South Africa.
           </li>
           <li>
-            <strong>Google Cloud Firestore</strong> — the accepted enquiry and
+            <strong>Google Cloud Firestore</strong>: the accepted enquiry and
             private report records are stored in the production database region in
             Johannesburg, South Africa (<code>africa-south1</code>). The owner can
             retrieve an enquiry into the private local CRM; after successful
@@ -91,14 +91,14 @@ const description =
             records are short-lived and are used to reduce form abuse.
           </li>
           <li>
-            <strong>Zoho Mail</strong> — receives enquiry notifications at
+            <strong>Zoho Mail</strong>: receives enquiry notifications at
             straightupdigital@zohomail.com through the Zoho Mail API. The message
             includes the details you submit so the owner can respond. Zoho Mail for
             this account uses a United States data centre; mailbox copies are
             subject to Zoho's processing and retention practices.
           </li>
           <li>
-            <strong>Paystack</strong> — if a Paystack payment option is offered
+            <strong>Paystack</strong>: if a Paystack payment option is offered
             for an order, Paystack processes payment and transaction information
             to complete and manage that payment. Payment details are handled by
             Paystack; Straight Up Digital does not request or store your full
@@ -108,12 +108,12 @@ const description =
             notice.
           </li>
           <li>
-            <strong>The private local Business Auditor CRM</strong> — the owner may
+            <strong>The private local Business Auditor CRM</strong>: the owner may
             import enquiries from Firestore and runs the full audit on a private
             computer. The CRM and full audit are not served to website visitors.
           </li>
           <li>
-            <strong>Online customer reports</strong> — report publishing and client
+            <strong>Online customer reports</strong>: report publishing and client
             responses are currently disabled in production. If enabled, only the
             owner-reviewed customer-safe report would be stored in Johannesburg
             Firestore; its private link would expire after 30 days. A client's

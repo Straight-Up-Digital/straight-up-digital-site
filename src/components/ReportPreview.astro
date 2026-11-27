@@ -52,7 +52,7 @@ const actions = [
           <div class:list={["report__row", category.example === null && "report__row--unverified"]}>
             <span>{category.name}</span>
             <span style="text-align: right; font-variant-numeric: tabular-nums;">
-              {category.example ?? "—"}
+              {category.example ?? "Not shown"}
             </span>
             <div class="report__row-bar">
               {category.example !== null && (
@@ -61,7 +61,7 @@ const actions = [
             </div>
             {category.example === null && (
               <p style="grid-column: 1 / -1; margin-top: -6px; color: var(--on-ivory-muted); font-size: 0.75rem;">
-                Not verified — left out of the score.
+                Not verified, left out of the score.
               </p>
             )}
           </div>
