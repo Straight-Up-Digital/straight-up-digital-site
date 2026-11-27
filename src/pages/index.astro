@@ -1,197 +1,238 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import CtaBand from "../components/CtaBand.astro";
-import { websiteBuildPackages, hostingPlans, hostingBillingNotice } from "../data/pricing";
-import { services, serviceStatusMeta } from "../data/services";
+import { websiteBuildPackages } from "../data/pricing";
 import { site } from "../data/site";
 
 const description =
-  "Straight Up Digital helps small businesses make a clearer mark online with fixed-scope website packages, hosting options, annual bundles and human-reviewed digital presence audits.";
+  "Straight Up Digital offers clear-scope website packages, practical digital support and free, human-reviewed business presence audits for South African small businesses.";
 const zar = (amount: number) => `R${amount.toLocaleString("en-ZA")}`;
-const industries = [
-  { code: "01", name: "Restaurants & cafés", detail: "Menus, hours, maps and direct enquiry routes" },
-  { code: "02", name: "Guest houses & tourism", detail: "Rooms, facilities, location and booking links" },
-  { code: "03", name: "Bookings & appointments", detail: "Service information with one standard booking tool" },
-  { code: "04", name: "Shops & local retail", detail: "Product discovery and a straightforward way to order" },
-  { code: "05", name: "Trades & local services", detail: "Clear service pages and contact actions" },
-  { code: "06", name: "Clinics & wellness", detail: "Practitioner details and patient-facing information" },
+const packageBySlug = (slug: string) => websiteBuildPackages.find((item) => item.slug === slug);
+const starterPrice = packageBySlug("one-page-starter")!.priceZar;
+
+const solutionTiles = [
+  {
+    title: "Website design",
+    image: "/images/services/web-design.webp",
+    alt: "A computer display showing a web design project in progress.",
+    detail: "Mobile-ready pages with clear customer contact routes.",
+    price: `Packages from ${zar(starterPrice)} once-off`,
+    href: "/services/website-design-and-development#website-packages",
+  },
+  {
+    title: "Online shops",
+    image: "/images/services/ecommerce-shop.webp",
+    alt: "A customer using a laptop while holding a payment card.",
+    detail: "A small catalogue, basic cart and orders by WhatsApp or email.",
+    price: `${zar(packageBySlug("online-shop")!.priceZar)} once-off`,
+    href: "/services/website-design-and-development#package-online-shop",
+  },
+  {
+    title: "Guest houses & stays",
+    image: "/images/services/guest-accommodation.webp",
+    alt: "A neatly made guest bedroom with white bedding and a bedside table.",
+    detail: "Rooms, facilities, location and links to an existing booking site.",
+    price: `${zar(packageBySlug("guesthouse")!.priceZar)} once-off`,
+    href: "/services/website-design-and-development#package-guesthouse",
+  },
+  {
+    title: "Restaurants & cafés",
+    image: "/images/services/restaurant-cafe.webp",
+    alt: "A plated restaurant dish on a white plate.",
+    detail: "Menu, hours, map, gallery and a WhatsApp action.",
+    price: `${zar(packageBySlug("restaurant-cafe")!.priceZar)} once-off`,
+    href: "/services/website-design-and-development#package-restaurant-cafe",
+  },
+  {
+    title: "Clinics & professionals",
+    image: "/images/services/clinic-wellness.webp",
+    alt: "A bright dental treatment room with an orange treatment chair and equipment.",
+    detail: "Service information and contact or appointment routes, scoped to fit.",
+    price: "Scoped and quoted on request",
+    href: "/services/website-design-and-development#specialist-builds-title",
+  },
 ];
-const featuredServices = services.filter((service) => [
-  "digital-presence-audits",
-  "website-design-and-development",
-  "managed-hosting-and-domains",
-].includes(service.slug));
+
+const conceptCards = [
+  {
+    title: "Guest-stay information",
+    category: "Accommodation concept",
+    image: "/images/services/guest-accommodation.webp",
+    alt: "A guest-room photograph used to illustrate an accommodation website direction.",
+  },
+  {
+    title: "Menu and enquiries",
+    category: "Restaurant concept",
+    image: "/images/services/restaurant-cafe.webp",
+    alt: "A plated-food photograph used to illustrate a restaurant website direction.",
+  },
+  {
+    title: "Product catalogue",
+    category: "Online-shop concept",
+    image: "/images/services/ecommerce-shop.webp",
+    alt: "A laptop and payment-card photograph used to illustrate an online-shop direction.",
+  },
+  {
+    title: "Practice information",
+    category: "Professional-services concept",
+    image: "/images/services/clinic-wellness.webp",
+    alt: "A dental-clinic photograph used to illustrate a professional-services website direction.",
+  },
+];
 ---
+
 <BaseLayout title={site.name} description={description} canonicalPath="/">
   <section class="home-hero" aria-labelledby="home-title">
     <div class="container home-hero__grid">
       <div class="home-hero__copy">
-        <p class="home-hero__eyebrow">Digital intelligence for growing businesses</p>
-        <h1 id="home-title">Make your next digital move <em>clear.</em></h1>
+        <p class="home-hero__eyebrow">Digital intelligence for small businesses</p>
+        <h1 id="home-title"><span>Intelligence.</span><span>Visibility.</span><em>Growth.</em></h1>
+        <p class="home-hero__sub">Smarter digital foundations for a stronger business.</p>
         <p class="home-hero__lede">
-          Practical website packages, managed hosting and human-reviewed digital audits—explained in plain English, with scope and price made clear before work begins.
+          Website builds, practical digital support and business presence reviews—clearly scoped for South African businesses, with plain-language advice and no inflated promises.
         </p>
         <div class="home-hero__actions">
-          <a class="btn btn--primary" href="#website-packages">Explore website packages <span aria-hidden="true">↘</span></a>
-          <a class="btn btn--secondary" href="/digital-audit">Meet Business Auditor <span aria-hidden="true">↗</span></a>
+          <a class="btn btn--primary" href="/digital-audit#request">Request your free business audit <span aria-hidden="true">→</span></a>
+          <a class="btn btn--secondary" href="#website-packages">Explore website packages <span aria-hidden="true">↘</span></a>
         </div>
-        <div class="home-hero__proof" aria-label="Key information">
-          <span>Website builds from R1,500 once-off</span>
-          <span>Clear scope, written quote</span>
+        <div class="home-hero__proof" aria-label="Straight Up Digital at a glance">
+          <span>Fixed-scope website packages from {zar(starterPrice)}</span>
+          <span>Human-reviewed business audits</span>
           <span>Port Alfred, Eastern Cape</span>
         </div>
       </div>
       <figure class="home-hero__visual">
-        <img src="/illustrations/local-business-digital.svg" width="760" height="460" alt="Illustration of a local shop beside a sample digital dashboard. The dashboard is not live business data." fetchpriority="high" />
-        <figcaption>Illustrative artwork only. The dashboard is not live data or a customer result.</figcaption>
+        <img class="home-hero__globe" src="/illustrations/network-globe.svg" width="1000" height="740" alt="Abstract luminous digital globe with Africa at its centre and connected network points." fetchpriority="high" />
+        <div class="hero-laptop" aria-hidden="true">
+          <div class="hero-laptop__screen">
+            <div class="hero-laptop__brand"><img src="/brand/symbol.svg" width="34" height="32" alt="" /><span>Straight Up Digital</span></div>
+            <div class="hero-laptop__screen-copy"><strong>Intelligence.</strong><span>Visibility.</span><em>Growth.</em></div>
+            <div class="hero-laptop__screen-line"><i></i><i></i><i></i></div>
+          </div>
+          <div class="hero-laptop__base"></div>
+        </div>
+        <figcaption class="home-hero__art-note">Original illustrative brand artwork</figcaption>
       </figure>
     </div>
   </section>
 
-  <section class="section section--flush" id="website-packages" aria-labelledby="packages-title">
-    <div class="container" style="padding-top: var(--section);">
+  <section class="section home-solutions" id="website-packages" aria-labelledby="solutions-title">
+    <div class="container">
       <div class="home-section-head">
         <div>
           <p class="kicker"><span>01</span> Website solutions</p>
-          <h2 id="packages-title">A practical starting point for the way you work.</h2>
+          <h2 id="solutions-title">Choose a starting point built around your business.</h2>
         </div>
-        <p>Choose a defined package for your business type. Each price covers the scope shown; anything extra is discussed and quoted separately.</p>
+        <p>Explore the options that fit your work. Each package links to its exact scope; specialist features are discussed and quoted before work begins.</p>
       </div>
-      <div class="home-packages">
-        {websiteBuildPackages.map((item) => (
-          <a class="home-card" href={`/services/website-design-and-development#package-${item.slug}`}>
-            <span class="home-card__tag">{item.label}</span>
-            <h3>{item.title}</h3>
-            <p>{item.summary}</p>
-            <p class="home-card__price">{zar(item.priceZar)} <span>once-off</span></p>
-            <span class="home-card__link"><span>See full scope · {item.pageCount}</span><span aria-hidden="true">↗</span></span>
+      <div class="home-solution-grid">
+        {solutionTiles.map((tile, index) => (
+          <a class="home-solution-tile" href={tile.href}>
+            <img src={tile.image} width="1080" height="720" alt={tile.alt} loading="lazy" decoding="async" />
+            <span class="home-solution-tile__shade" aria-hidden="true"></span>
+            <span class="home-solution-tile__content">
+              <span class="home-solution-tile__number">0{index + 1} / BUILD OPTIONS</span>
+              <strong>{tile.title}</strong>
+              <span class="home-solution-tile__detail">{tile.detail}</span>
+              <span class="home-solution-tile__price">{tile.price}</span>
+              <span class="home-solution-tile__link">Explore option <span aria-hidden="true">↗</span></span>
+            </span>
           </a>
         ))}
       </div>
-      <p class="home-inline-note">
-        Standalone builds: 50% to start and 50% at launch after you have seen a preview. A discounted annual bundle is paid once-off and includes the build plus the first year of hosting; annual hosting renews after that included year. <a href="/bundles">Compare website + hosting bundles</a>.
-      </p>
-      <p class="home-inline-note">Payment note: online checkout is not active. We confirm scope, timing and payment arrangements in writing before an order begins.</p>
+      <div class="home-package-rail" id="hosting-and-bundles">
+        <div class="home-package-rail__copy">
+          <strong>Clear package, clear next step.</strong>
+          <span>Standalone builds are 50% to start and 50% at launch after preview. Discounted annual bundles are paid upfront and include the first hosting year.</span>
+        </div>
+        <a href="/services/website-design-and-development#website-packages">Compare all six website builds <span aria-hidden="true">↗</span></a>
+        <a href="/bundles#bundle-packages">View website + hosting bundles <span aria-hidden="true">↗</span></a>
+        <a href="/pricing#hosting-packages">Compare hosting plans <span aria-hidden="true">↗</span></a>
+      </div>
     </div>
   </section>
 
-  <section class="section" aria-labelledby="business-auditor-title">
-    <div class="container home-auditor">
-      <div class="home-auditor__copy">
-        <p class="kicker"><span>02</span> Business Auditor</p>
-        <h2 id="business-auditor-title">See your online presence with fresh eyes.</h2>
-        <p>Business Auditor is our digital intelligence service. A person reviews publicly visible business information and shares practical findings in a customer-ready report. It is a request-and-review service; this website does not run an instant public audit.</p>
-        <p>We state what could be checked, what remains uncertain and which improvements may be worth considering. No promised ranking, traffic figure or sales result.</p>
-        <div class="home-auditor__actions">
-          <a class="btn btn--primary" href="/digital-audit#request">Request a digital audit</a>
-          <a class="btn btn--secondary" href="/digital-audit#what-we-check">What the review covers</a>
-        </div>
-      </div>
-      <div>
-        <div class="audit-mock" aria-label="Illustrative interface artwork only; not a live audit">
-          <div class="audit-mock__bar">
-            <div class="audit-mock__brand"><img src="/brand/symbol.svg" alt="" width="26" height="24" /><span>Business Auditor</span></div>
-            <span class="audit-mock__badge">Illustrative view</span>
+  <section class="section home-auditor-section" aria-labelledby="business-auditor-title">
+    <div class="container">
+      <div class="home-auditor-band">
+        <div class="home-auditor-preview" aria-label="Illustrative report layout only; not a live audit or customer result">
+          <div class="home-auditor-preview__top">
+            <span class="home-auditor-preview__brand"><img src="/brand/symbol.svg" width="24" height="23" alt="" /> Business Auditor</span>
+            <span class="home-auditor-preview__badge">Illustrative only</span>
           </div>
-          <div class="audit-mock__body" aria-hidden="true">
-            <div class="audit-mock__dial"><span>Review<strong>Example only</strong></span></div>
-            <div class="audit-mock__rows">
-              <div class="audit-mock__row"><span>Website clarity</span><span>Example</span><div class="audit-mock__barline"><i style="--bar:72%"></i></div></div>
-              <div class="audit-mock__row"><span>Business details</span><span>Example</span><div class="audit-mock__barline"><i style="--bar:56%"></i></div></div>
-              <div class="audit-mock__row"><span>Local visibility</span><span>Example</span><div class="audit-mock__barline"><i style="--bar:83%"></i></div></div>
-              <div class="audit-mock__row"><span>Contact routes</span><span>Example</span><div class="audit-mock__barline"><i style="--bar:64%"></i></div></div>
+          <div class="home-auditor-preview__heading"><span>EXAMPLE REPORT LAYOUT</span><strong>Digital presence review</strong><small>No live business data shown</small></div>
+          <div class="home-auditor-preview__rows" aria-hidden="true">
+            <div><span>Website information</span><i>Evidence section</i></div>
+            <div><span>Business details</span><i>Evidence section</i></div>
+            <div><span>Contact routes</span><i>Evidence section</i></div>
+            <div><span>Public visibility</span><i>Evidence section</i></div>
+          </div>
+          <div class="home-auditor-preview__foot">A person reviews what can be verified and identifies what remains uncertain.</div>
+        </div>
+        <div class="home-auditor-copy">
+          <p class="kicker"><span>02</span> Business Auditor</p>
+          <h2 id="business-auditor-title">See your online presence with fresh eyes.</h2>
+          <p>Request a free, six-category business presence audit. A person reviews publicly visible information and shares evidence, confidence notes and practical next steps in a customer-ready report.</p>
+          <p class="home-auditor-copy__truth">This is a request-and-human-review service. The website does not run an instant public audit, and no ranking, traffic or sales outcome is promised.</p>
+          <div class="home-auditor__actions">
+            <a class="btn btn--primary" href="/digital-audit#request">Request a free audit <span aria-hidden="true">→</span></a>
+            <a class="text-link" href="/digital-audit#what-we-check">See what the review covers ↗</a>
+          </div>
+        </div>
+        <ul class="home-auditor-points" aria-label="What the audit helps you do">
+          <li><span aria-hidden="true">⌕</span><span><strong>Find gaps worth checking</strong><small>Evidence first, not guesswork.</small></span></li>
+          <li><span aria-hidden="true">↗</span><span><strong>Prioritise practical next steps</strong><small>Clear recommendations in plain English.</small></span></li>
+          <li><span aria-hidden="true">◎</span><span><strong>Talk it through with a person</strong><small>A human-reviewed report and walkthrough.</small></span></li>
+        </ul>
+      </div>
+      <p class="home-auditor-disclaimer">The report graphic above is illustrative only. It contains no live customer data, scores or audit findings.</p>
+    </div>
+  </section>
+
+  <section class="home-trust-strip" aria-label="How Straight Up Digital works">
+    <div class="container home-trust-strip__inner">
+      <div class="home-trust-strip__intro"><p class="kicker"><span>03</span> Straight answers</p><h2>Built on clear scope and honest advice.</h2></div>
+      <div class="home-trust-item"><span class="home-trust-item__mark">01</span><strong>Published package scope</strong><p>See what the stated price includes before you enquire.</p></div>
+      <div class="home-trust-item"><span class="home-trust-item__mark">02</span><strong>Human-reviewed audits</strong><p>Findings distinguish evidence from what could not be verified.</p></div>
+      <div class="home-trust-item"><span class="home-trust-item__mark">03</span><strong>Written quote first</strong><p>Paid work starts only after the scope is agreed in writing.</p></div>
+      <div class="home-trust-item"><span class="home-trust-item__mark">04</span><strong>Port Alfred roots</strong><p>Based in the Eastern Cape, South Africa.</p></div>
+    </div>
+  </section>
+
+  <section class="section home-concepts" aria-labelledby="concepts-title">
+    <div class="container">
+      <div class="home-section-head">
+        <div>
+          <p class="kicker"><span>04</span> Illustrative directions</p>
+          <h2 id="concepts-title">Examples of what a clear business website can organise.</h2>
+        </div>
+        <p>These are demonstration concepts—not client projects or case studies. The photographs are licensed stock images, and no business results are claimed.</p>
+      </div>
+      <div class="home-concept-grid">
+        {conceptCards.map((card) => (
+          <article class="home-concept-card">
+            <div class="home-concept-card__preview">
+              <div class="home-concept-card__browser" aria-hidden="true"><i></i><i></i><i></i><span>Illustrative concept</span></div>
+              <img src={card.image} width="1080" height="720" alt={card.alt} loading="lazy" decoding="async" />
+              <span class="home-concept-card__label">Demonstration</span>
             </div>
-          </div>
-          <div class="audit-mock__foot">A person checks the evidence. Anything that cannot be verified is identified as such.</div>
-        </div>
-        <p class="audit-mock__disclaimer">Illustrative interface artwork only. Example labels and graphics are not live customer data or a real audit result.</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="section" aria-labelledby="services-title">
-    <div class="container">
-      <div class="home-section-head">
-        <div><p class="kicker"><span>03</span> Practical services</p><h2 id="services-title">Good digital work starts with the right next step.</h2></div>
-        <p>See what is available now, what is scoped on request and what is still in development. We will not present planned work as an active service.</p>
-      </div>
-      <div class="home-services">
-        {featuredServices.map((service, index) => (
-          <a class="home-service" href={service.slug === "digital-presence-audits" ? "/digital-audit" : `/services#${service.slug}`}>
-            <span class="home-service__number">0{index + 1} · {serviceStatusMeta[service.status].label}</span>
-            <h3>{service.title}</h3>
-            <p>{service.summary}</p>
-            <span>Explore service <span aria-hidden="true">↗</span></span>
-          </a>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <section class="section" id="hosting-and-bundles" aria-labelledby="hosting-title">
-    <div class="container">
-      <div class="home-section-head">
-        <div><p class="kicker"><span>04</span> Hosting &amp; bundles</p><h2 id="hosting-title">Choose the plan that fits the way you work.</h2></div>
-        <p>Website build, hosting, domain and support are different services. Review each scope and billing period before choosing what to request.</p>
-      </div>
-      <div class="home-packages">
-        {hostingPlans.map((plan) => (
-          <article class="home-card">
-            <span class="home-card__tag">Hosting plan</span>
-            <h3>{plan.name}</h3>
-            <p>{plan.headline}</p>
-            <p class="home-card__price">{zar(plan.priceMonthlyZar)} <span>/ month</span></p>
-            <p>{zar(plan.priceAnnualZar)} per year. Annual plans recur annually; we confirm start date and first collection in writing.</p>
-            <a class="home-card__link" href={`/contact?plan=${plan.slug}&billing=monthly#enquiry`}><span>Ask about this plan</span><span aria-hidden="true">↗</span></a>
+            <div class="home-concept-card__copy"><span>{card.category}</span><h3>{card.title}</h3><p>Example content structure only. No customer work or performance result is represented.</p></div>
           </article>
         ))}
       </div>
-      <div class="home-inline-note">
-        {hostingBillingNotice} <a href="/pricing#hosting-packages">View hosting, support and domain prices</a>.
-      </div>
-      <p class="home-inline-note"><strong>Need a domain only?</strong> Ask us to check registration or renewal options. <a href="/contact?plan=domain#enquiry">Request a domain quote</a>.</p>
-      <div class="home-pricing-nav" style="margin-top: 28px;">
-        <a href="/pricing#website-packages"><strong>Website packages</strong><span>Compare the six fixed-scope builds.</span><i>Explore ↗</i></a>
-        <a href="/pricing#hosting-packages"><strong>Hosting plans</strong><span>Review monthly and annual hosting.</span><i>Explore ↗</i></a>
-        <a href="/pricing#support-packages"><strong>Care &amp; support</strong><span>See available monthly support levels.</span><i>Explore ↗</i></a>
-        <a href="/bundles#bundle-packages"><strong>Website + hosting bundles</strong><span>Build and first hosting year in one offer.</span><i>Explore ↗</i></a>
-      </div>
+      <p class="home-inline-note">Browse the fixed-scope builds and specialist website options <a href="/services/website-design-and-development#website-packages">on the website packages page</a>.</p>
     </div>
   </section>
 
-  <section class="section" aria-labelledby="industries-title">
-    <div class="container">
-      <div class="home-section-head home-section-head--single">
-        <div><p class="kicker"><span>05</span> Built around your business</p><h2 id="industries-title">Options for the work customers come to you for.</h2></div>
-        <p>From a clear starter page to niche-focused packages, we shape the website around the information your customers need. More complex integrations are scoped and quoted separately.</p>
-      </div>
-      <div class="home-industries">
-        {industries.map((industry) => (
-          <article class="industry-card">
-            <span class="industry-card__mark">{industry.code}</span>
-            <div><h3>{industry.name}</h3><p>{industry.detail}</p></div>
-          </article>
-        ))}
-      </div>
-      <p class="home-inline-note">We do not claim to have built sites for these industries. These are example project types based on our published packages and request-only build options.</p>
-    </div>
-  </section>
-
-  <section class="section" aria-labelledby="working-title">
-    <div class="container">
-      <div class="home-section-head">
-        <div><p class="kicker"><span>06</span> Straight answers</p><h2 id="working-title">Clear scope. Human review. No inflated promises.</h2></div>
-        <p>Useful work is built on clear communication. Here is what you can expect from our process.</p>
-      </div>
-      <div class="home-benefits">
-        <article class="home-benefit"><strong>Know what is included</strong><p>Package scope, revisions and third-party fees are shown before you commit.</p></article>
-        <article class="home-benefit"><strong>See a preview</strong><p>Standalone website builds are split 50% to start and 50% at launch after preview.</p></article>
-        <article class="home-benefit"><strong>Know what is verified</strong><p>Business Auditor notes the evidence checked and what could not be verified.</p></article>
-        <article class="home-benefit"><strong>Keep expectations grounded</strong><p>No guaranteed rankings, traffic, enquiries or revenue claims.</p></article>
-      </div>
-      <p class="home-inline-note"><a href="/how-it-works">Read the full process</a> · <a href="/terms">Terms of use</a> · <a href="/policies">Delivery, cancellations and refunds</a></p>
-    </div>
-  </section>
-
-  <CtaBand title="Ready for a clearer next step?" body="Tell us what your business needs. We will review your enquiry and reply with an appropriate option, scope and written quote before any paid work begins." />
+  <div class="home-cta-shell">
+    <CtaBand
+      title="Ready to take a clearer next step?"
+      body="Tell us what your business needs. We will review your enquiry, explain a suitable option and confirm the scope and price in writing before any paid work begins."
+      primaryLabel="Request your free business audit"
+      primaryHref="/digital-audit#request"
+      secondaryLabel="View website packages"
+      secondaryHref="/services/website-design-and-development#website-packages"
+      caption="The audit is free and reviewed by a person. Website work is agreed and quoted separately."
+    />
+  </div>
 </BaseLayout>

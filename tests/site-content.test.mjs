@@ -28,7 +28,7 @@ const digitalAudit = read("../src/pages/digital-audit.astro");
 const footerNavigation = read("../src/data/navigation.ts");
 const about = read("../src/pages/about.astro");
 const core = read("../src/components/Core.astro");
-const businessIllustration = read("../public/illustrations/local-business-digital.svg");
+const networkGlobeIllustration = read("../public/illustrations/network-globe.svg");
 
 test("public business identity and locality are owner-supplied", () => {
   assert.match(siteData, /St\. John Ritchie trading as Straight Up Digital/);
@@ -69,10 +69,10 @@ test("hosting tiers show both billing choices and prefill the requested plan", (
   ]) {
     assert.ok(pricing.includes(label), `missing package content: ${label}`);
   }
-  assert.match(home, /contact\?plan=\$\{plan\.slug\}&billing=monthly#enquiry/);
+  assert.match(home, /href="\/pricing#hosting-packages"/);
+  assert.match(home, /href="\/bundles#bundle-packages"/);
   assert.match(pricingPage, /contact\?plan=\$\{plan\.slug\}&billing=monthly#enquiry/);
   assert.match(pricingPage, /contact\?plan=\$\{plan\.slug\}&billing=annual#enquiry/);
-  assert.match(home, /contact\?plan=domain#enquiry/);
   assert.match(pricingPage, /contact\?plan=domain#enquiry/);
   assert.match(form, /Additional domain registration or renewal request/);
   assert.match(form, /data-plan-requests=\{JSON\.stringify\(planRequests\)\}/);
@@ -123,7 +123,8 @@ test("the R1,500 website price is limited to the one-page starter", () => {
   const servicesData = read("../src/data/services.ts");
   assert.match(servicesData, /One-Page Starter/);
   assert.match(servicesData, /Hosting is separate for standalone builds from R129\/month/);
-  assert.match(home, /service\.summary/);
+  assert.match(home, /packageBySlug\("one-page-starter"\)/);
+  assert.match(home, /Fixed-scope website packages from/);
   assert.doesNotMatch(servicesData, /five-page.*R1,500/i);
 });
 
@@ -151,8 +152,9 @@ test("owner-confirmed website packages show fixed rates, scopes, milestones and 
     assert.ok(faqs.includes(price), `FAQ is missing ${price}`);
   }
   assert.match(faqs, /Paystack checkout is not active/i);
-  assert.match(home, /websiteBuildPackages\.map/);
-  assert.match(home, /See full scope/);
+  assert.match(home, /websiteBuildPackages/);
+  assert.match(home, /packageBySlug\("online-shop"\)/);
+  assert.match(home, /Compare all six website builds/);
   assert.match(bundlesPage, /Build list price:<\/strong>/);
   assert.match(bundlesPage, /After the included first year:<\/strong>/);
   assert.match(bundlesPage, /first hosting year/);
@@ -197,14 +199,16 @@ test("services open dedicated pages and expose specialist build scopes and plan 
 
 test("specialist website gallery uses local, accessible and credited photos", () => {
   const serviceDetailPage = read("../src/pages/services/[slug].astro");
-  for (const file of ["ecommerce-shop.webp", "guest-accommodation.webp", "clinic-wellness.webp"]) {
+  for (const file of ["web-design.webp", "ecommerce-shop.webp", "guest-accommodation.webp", "restaurant-cafe.webp", "clinic-wellness.webp"]) {
     assert.ok(serviceDetailPage.includes(`/images/services/${file}`), `missing gallery asset: ${file}`);
     assert.ok(imageCredits.includes(file), `missing image credit: ${file}`);
   }
   assert.match(serviceDetailPage, /alt=\{image\.alt\}/);
   assert.match(serviceDetailPage, /loading="lazy"/);
   assert.match(imageCredits, /https:\/\/unsplash\.com\/license/);
-  assert.match(imageCredits, /Unsplash\+ or other premium/i);
+  assert.match(imageCredits, /https:\/\/www\.pexels\.com\/license/);
+  assert.match(imageCredits, /Tranmautritam/);
+  assert.match(imageCredits, /Amar Preciado/);
 });
 
 test("WhatsApp offers audit, hosting, domain and general enquiry intents", () => {
@@ -238,8 +242,21 @@ test("brand and founder treatments are larger, responsive and use only supplied 
   assert.match(core, /prefers-reduced-motion/);
   assert.match(core, /data-core-needle/);
   assert.match(core, /needle\.setAttribute\("transform"/);
-  assert.match(home, /local-business-digital\.svg/);
-  assert.match(businessIllustration, /<svg/);
+  assert.match(home, /network-globe\.svg/);
+  assert.doesNotMatch(home, /local-business-digital\.svg/);
+  assert.match(networkGlobeIllustration, /<svg/);
+});
+
+test("homepage follows the supplied visual sequence without invented portfolio claims", () => {
+  for (const phrase of ["Intelligence.", "Visibility.", "Growth.", "Business Auditor", "Illustrative directions", "not client projects or case studies", "Ready to take a clearer next step?"]) {
+    assert.ok(home.includes(phrase), `homepage is missing reference-led content: ${phrase}`);
+  }
+  assert.match(home, /network-globe\.svg/);
+  assert.match(home, /home-solution-grid/);
+  assert.match(home, /home-auditor-preview__badge/);
+  assert.match(home, /request-and-human-review/);
+  assert.match(home, /home-trust-strip/);
+  assert.match(home, /home-concept-grid/);
 });
 
 test("the intended custom domain is canonical and present in social/business metadata", () => {
