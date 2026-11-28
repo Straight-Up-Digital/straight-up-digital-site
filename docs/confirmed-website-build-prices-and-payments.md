@@ -15,7 +15,7 @@
 
 For each standalone website build, 50% is due to start and 50% at launch after the client has seen the preview. Current published-site enquiries are not payments. The payment flow must keep that distinction and must not collect the balance before the preview/launch milestone.
 
-## Confirmed discounted annual bundle exception — 25 November 2026
+## Confirmed discounted annual bundle exception - 25 November 2026
 
 SinJin confirmed that discounted annual bundles are paid in full once-off. The discounted bundle price includes the website build and the first year of hosting; the recurring annual hosting Plan begins after that included first year. This is a bundle-only exception. Standalone website builds retain the 50% start / 50% launch milestones above. SinJin approved a 5% discount on the listed build price plus first annual hosting term, rounded to the nearest R10.
 

@@ -54,14 +54,7 @@ const organization = {
   founder: { "@type": "Person", name: ownerSupplied.founderName },
   email: contact.email,
   telephone: contact.phoneInternational,
-  address: {
-    "@type": "PostalAddress",
-    streetAddress: "6 Jacks Close",
-    addressLocality: "Port Alfred",
-    addressRegion: "Eastern Cape",
-    postalCode: "6170",
-    addressCountry: "ZA",
-  },
+  areaServed: { "@type": "Country", name: "South Africa" },
 };
 
 const structuredData = [organization, ...jsonLd];

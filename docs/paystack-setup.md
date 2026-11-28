@@ -11,11 +11,11 @@ The public pricing page uses these owner-confirmed amounts. Annual hosting uses 
 | Starter Brand | R129 | R1,290/year | Monthly or annual recurring |
 | Business Pro | R249 | R2,490/year | Monthly or annual recurring |
 | Team Unlimited | R449 | R4,490/year | Monthly or annual recurring |
-| Basic Care | R249 | — | Monthly recurring |
-| Local Visibility | R449 | — | Monthly recurring |
-| Active Growth | R699 | — | Monthly recurring |
-| Lead Builder | R1,049 | — | Monthly recurring |
-| Full Digital Desk | R1,549 | — | Monthly recurring |
+| Basic Care | R249 | N/A | Monthly recurring |
+| Local Visibility | R449 | N/A | Monthly recurring |
+| Active Growth | R699 | N/A | Monthly recurring |
+| Lead Builder | R1,049 | N/A | Monthly recurring |
+| Full Digital Desk | R1,549 | N/A | Monthly recurring |
 
 The six website-build packages are fixed-price one-time projects. Standalone builds use a 50% start deposit and a 50% launch balance after the client has seen a preview. A discounted annual bundle is a separate offer: its full amount is paid once-off and includes the build plus the first year of hosting; annual hosting renews after that included year. SinJin approved a 5% discount on the build price plus first annual hosting term, rounded to the nearest R10. Current published bundle totals are Starter Brand one-page R2,650; Business Pro one-page R3,790; Team Unlimited one-page R5,690; Five-Page Business R4,550; Restaurant & Café R4,980; Guest House & Stay R6,640; Bookings & Appointments R7,590; and Small Online Shop R11,390. The hosting plan renews annually at its listed annual rate after the included first year. Do not create recurring Paystack Plans for one-time build or bundle prices. Use trusted server-catalogue amounts, never browser-supplied amounts.
 
@@ -59,7 +59,7 @@ The current test Worker has `PAYSTACK_SECRET_KEY` only; a separate test `whsec_.
 Sources: [Accept Payments](https://paystack.com/docs/payments/accept-payments/), [Transaction API](https://paystack.com/docs/api/transaction/), [Verify Payments](https://paystack.com/docs/payments/verify-payments/), [API currency table](https://paystack.com/docs/api/), [South Africa developer documentation](https://paystack.com/docs/v2/za), [general Webhooks guide](https://paystack.com/docs/payments/webhooks/), and [versioned Webhook signing documentation](https://paystack.com/docs/v2/ke/developer-tools/integration/webhooks).
 
 
-## Monthly Plan API verification — 25 November 2026
+## Monthly Plan API verification - 25 November 2026
 
 Paystack's official Plan API uses `POST /plan` with `name`, integer `amount` in the currency's subunit, and `interval: "monthly"`; `currency: "ZAR"` should be explicit because examples may default to NGN. Plan inventory is read with `GET /plan` and `perPage` / `page` pagination. Plan creation alone does not charge a customer: a customer charge/subscription requires a separate subscription flow or a transaction initialized with a plan code and paid. The subscription guide lists Card and Direct Debit (Nigeria) as supported recurring methods, so do not enable public recurring checkout until the South African merchant's card-subscription flow is verified.
 
@@ -69,14 +69,14 @@ The account inventory was inspected in Test Mode before Plan creation. The reque
 Official sources: [Plan API](https://paystack.com/docs/api/plan/), [Subscriptions](https://paystack.com/docs/payments/subscriptions/), [API currency table](https://paystack.com/docs/api/), and [South Africa developer documentation](https://paystack.com/docs/v2/za).
 
 
-Test-mode Plan created through the authenticated Paystack Dashboard on 25 November 2026: `Starter Brand (Monthly)` — ZAR 129.00/month, plan code `PLN_b4o4wglar2s1sne`. Dashboard showed the plan active, with 0 subscriptions, 0 subscribers, and 0 subscription pages; public subscription-page creation was left unchecked.
+Test-mode Plan created through the authenticated Paystack Dashboard on 25 November 2026: `Starter Brand (Monthly)` - ZAR 129.00/month, plan code `PLN_b4o4wglar2s1sne`. Dashboard showed the plan active, with 0 subscriptions, 0 subscribers, and 0 subscription pages; public subscription-page creation was left unchecked.
 
-Test-mode Plan created: `Business Pro (Monthly)` — ZAR 249.00/month, plan code `PLN_v6nnf5dpa4n1n7d`. Dashboard showed Monthly interval, maximum payments 0 (no limit), 0 subscriptions, 0 subscribers, and 0 subscription pages; the subscription-page option remained unchecked.
+Test-mode Plan created: `Business Pro (Monthly)` - ZAR 249.00/month, plan code `PLN_v6nnf5dpa4n1n7d`. Dashboard showed Monthly interval, maximum payments 0 (no limit), 0 subscriptions, 0 subscribers, and 0 subscription pages; the subscription-page option remained unchecked.
 
-Test-mode Plan created: `Team Unlimited (Monthly)` — ZAR 449.00/month, plan code `PLN_ae4ds5h07uvjrup`. Dashboard confirmed Monthly interval, no payment limit, 0 subscriptions, 0 subscribers, and 0 subscription pages; the subscription-page option was left unchecked.
+Test-mode Plan created: `Team Unlimited (Monthly)` - ZAR 449.00/month, plan code `PLN_ae4ds5h07uvjrup`. Dashboard confirmed Monthly interval, no payment limit, 0 subscriptions, 0 subscribers, and 0 subscription pages; the subscription-page option was left unchecked.
 
 
-### Test Mode dashboard inventory — verified 25 November 2026
+### Test Mode dashboard inventory - verified 25 November 2026
 
 The active Plans inventory includes eight monthly Plans and three annual hosting Plans. All are in Test Mode, show Active status and ZAR amounts, and have 0 subscriptions. Detail views checked show 0 subscribers and 0 subscription pages. Maximum payments is 0 (unlimited); subscription-page creation was left unchecked. No customer subscription or public subscription page was created.
 
@@ -102,7 +102,7 @@ All 11 current Plans show 0 subscriptions. The three annual Plans use the `Annua
 These metadata defects do not change the approved pricing, interval, or service scope in `src/data/pricing.ts`. Keep Paystack test-only: live checkout remains disabled until end-to-end verification is completed and the owner separately confirms launch. No key, live setting, CRM file, deployment, or repository history was changed.
 
 
-## Annual recurring hosting and bundle checkout research — 25 November 2026
+## Annual recurring hosting and bundle checkout research - 25 November 2026
 
 **This section supersedes earlier statements in this note that annual hosting must be a once-off prepayment or must not use recurring Plans.** Paystack supports annual Plan intervals (`annually`). Its Dashboard can create a Subscription Payment Page when creating a Plan, or a page can later be connected to an existing Plan. The subscription page collects the first subscription payment to start the subscription; the Plan then controls later recurring charges. [Paystack Subscriptions and Plans](https://support.paystack.com/en/articles/2133058) [Paystack Payment Pages](https://support.paystack.com/en/articles/2132546)
 
@@ -113,9 +113,9 @@ Paystack's ordinary hosted Subscription Payment Page initiates a subscription wh
 SinJin explicitly confirmed that discounted annual bundles are paid in full once-off, include the build and first hosting year, and renew annually after that year; the bundle discount is 5% of the build price plus first hosting year, rounded to the nearest R10. This is a bundle-only exception; standalone builds retain the 50% start / 50% launch milestones. The first-charge timing for standalone annual hosting is still unselected. The user has not authorized customer subscriptions, so none may be created for testing. Until the custom deferred-start flow is safely verified, keep subscription pages uncreated and all checkout in Test Mode.
 
 Official sources checked:
-- [Paystack Subscriptions and Plans](https://support.paystack.com/en/articles/2133058) — intervals include annually; the Plan flow can create or later attach a subscription page; Plans without subscriptions may be deleted.
-- [Paystack Payment Pages](https://support.paystack.com/en/articles/2132546) — subscription pages are recurring; first payment starts the subscription; page connects to a Plan.
-- [Paystack Subscriptions API](https://paystack.com/docs/payments/subscriptions/) — `plan_code` in transaction initialization overrides the transaction amount and charges the Plan amount.
-- [Paystack Subscription API](https://paystack.com/docs/api/subscription/) — the create-subscription endpoint accepts an optional ISO 8601 `start_date` for the first debit and requires an existing customer transaction/authorization.
-- [Paystack Transaction API](https://paystack.com/docs/api/transaction/) — adding a Plan code invalidates the amount supplied in transaction initialization.
-- [How subscriptions work](https://paystack.com/docs/v2/payments/recurring/subscriptions) — lifecycle and subscription start options.
+- [Paystack Subscriptions and Plans](https://support.paystack.com/en/articles/2133058) - intervals include annually; the Plan flow can create or later attach a subscription page; Plans without subscriptions may be deleted.
+- [Paystack Payment Pages](https://support.paystack.com/en/articles/2132546) - subscription pages are recurring; first payment starts the subscription; page connects to a Plan.
+- [Paystack Subscriptions API](https://paystack.com/docs/payments/subscriptions/) - `plan_code` in transaction initialization overrides the transaction amount and charges the Plan amount.
+- [Paystack Subscription API](https://paystack.com/docs/api/subscription/) - the create-subscription endpoint accepts an optional ISO 8601 `start_date` for the first debit and requires an existing customer transaction/authorization.
+- [Paystack Transaction API](https://paystack.com/docs/api/transaction/) - adding a Plan code invalidates the amount supplied in transaction initialization.
+- [How subscriptions work](https://paystack.com/docs/v2/payments/recurring/subscriptions) - lifecycle and subscription start options.

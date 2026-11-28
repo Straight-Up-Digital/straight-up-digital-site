@@ -24,8 +24,8 @@ Keep Cyber Circuit as the hosting candidate the owner selected, but do not activ
 
 ## Sources
 
-1. [Cyber Circuit — Reseller Hosting](https://cybercircuit.co.za/website-hosting/reseller/)
-2. [HostAfrica — Domain Reseller](https://hostafrica.co.za/reseller-program/domain-reseller/)
-3. [Domains.co.za — Domain Reseller](https://www.domains.co.za/domain-reseller)
-4. [Domains.co.za — Reseller Options](https://www.domains.co.za/knowledgebase/resellers/reseller-options/)
-5. [Straight Up Digital — Pricing](https://straightupdigital.co.za/pricing/)
+1. [Cyber Circuit - Reseller Hosting](https://cybercircuit.co.za/website-hosting/reseller/)
+2. [HostAfrica - Domain Reseller](https://hostafrica.co.za/reseller-program/domain-reseller/)
+3. [Domains.co.za - Domain Reseller](https://www.domains.co.za/domain-reseller)
+4. [Domains.co.za - Reseller Options](https://www.domains.co.za/knowledgebase/resellers/reseller-options/)
+5. [Straight Up Digital - Pricing](https://straightupdigital.co.za/pricing/)

@@ -3066,10 +3066,10 @@ a.service-catalog__card:focus-visible {
   border-color: var(--lime);
 }
 
-.back-to-top img {
-  width: 38px;
-  height: 38px;
-  object-fit: contain;
+.back-to-top__icon {
+  width: 26px;
+  height: 26px;
+  flex: none;
 }
 
 .back-to-top[hidden] {

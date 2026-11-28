@@ -42,7 +42,6 @@ export const footerNav: { title: string; items: NavItem[] }[] = [
       { label: "Pricing", href: "/pricing" },
       { label: "About", href: "/about" },
       { label: "Contact", href: "/contact" },
-      { label: "Download brand kit", href: "/downloads/straight-up-digital-logo-kit.zip", shortLabel: "Brand kit" },
     ],
   },
   {

@@ -14,7 +14,7 @@ export const websiteOffer = {
   hostingMonthlyZar: 129,
   maximumPages: 1,
   guardrail:
-    "The One-Page Starter is R1,500 once-off for one mobile page, one call or WhatsApp button, a contact form and one round of changes. All six listed website packages have fixed prices for the stated scope. Standalone builds are paid 50% to start and 50% at launch, after you have seen a preview. Discounted annual bundles are paid in full once-off and include the build plus the first year of hosting; annual hosting renews after that included year. Standalone hosting is billed monthly or on an annual recurring plan. We confirm standalone plan timing in writing before you choose a payment method. Online checkout is not active.",
+    "The One-Page Starter is R1,500 once-off for one mobile page, one call or WhatsApp button, a contact form and one round of changes. All six listed website packages have fixed prices for the stated scope. Standalone builds are paid 50% to start and 50% at launch, after you have seen a preview. Discounted annual bundles are paid in full once-off and include the build plus the first year of hosting; annual hosting renews after that included year. Standalone hosting is billed monthly or on an annual recurring plan. We confirm standalone plan timing in writing before you choose a payment method. For now, Buy now opens a no-charge order enquiry. Online checkout is not active, and no payment is taken here.",
 } as const;
 
 export const websiteBuildPaymentTerms = {
@@ -110,7 +110,7 @@ export const domainOffer = {
 } as const;
 
 export const hostingBillingNotice =
-  "Choose monthly billing or an annual recurring plan. Annual pricing is equivalent to two months free compared with 12 monthly payments. A plan enquiry does not charge you. We confirm availability, inclusions, the plan start and first collection date in writing before you choose a payment method.";
+  "Choose monthly billing or an annual recurring plan. Annual pricing is equivalent to two months free compared with 12 monthly payments. Buy now opens a no-charge plan enquiry; no payment is taken while online checkout is inactive. We confirm availability, inclusions, the plan start and first collection date in writing before you choose a payment method.";
 
 export interface MonthlyRetainer {
   level: number;
@@ -164,7 +164,7 @@ export const monthlyRetainers: MonthlyRetainer[] = [
     level: 3,
     name: "Active Growth",
     priceZarPerMonth: 699,
-    headline: "Answer real customer questions and reach nearby Eastern Cape towns every month.",
+    headline: "Answer real customer questions and reach customers across South Africa every month.",
     bestFor: "Guest houses, B&Bs, contractors and growing service businesses.",
     includedHosting: "Business Pro hosting, normally R249/month",
     whatYouGet: [

@@ -69,7 +69,7 @@ const productionEnv = {
   PUBLIC_REPORT_HOSTS: "reports.example.workers.dev",
 };
 const reportFixture = (businessName = "Example Business") => ({
-  schemaVersion: 1, businessName, website: "https://example.co.za/", location: "Port Alfred",
+  schemaVersion: 1, businessName, website: "https://example.co.za/", location: "South Africa",
   reportDate: "2026-11-16", summary: "A synthetic customer-safe summary.", scopeNote: "A preliminary public-signal review.",
   findings: [{ title: "Mobile text is hard to read", priority: "Start here", whatWeFound: "The text is too small.", whyItMatters: "Customers may leave.", whatToDo: "Increase type size and check contrast." }],
 });

@@ -2,6 +2,9 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 import { websiteBuildHostingBundles, websiteHostingBundles } from "../src/data/bundles.ts";
+import { readdirSync } from "node:fs";
+import { primaryNav } from "../src/data/navigation.ts";
+import { services } from "../src/data/services.ts";
 
 const read = (path) => readFileSync(new URL(path, import.meta.url), "utf8");
 
@@ -29,10 +32,15 @@ const footerNavigation = read("../src/data/navigation.ts");
 const about = read("../src/pages/about.astro");
 const core = read("../src/components/Core.astro");
 const networkGlobeIllustration = read("../public/illustrations/network-globe.svg");
+const backToTop = read("../src/components/BackToTopButton.astro");
 
-test("public business identity and locality are owner-supplied", () => {
+test("public business identity uses nationwide branding without exposing a street address", () => {
   assert.match(siteData, /St\. John Ritchie trading as Straight Up Digital/);
-  assert.match(siteData, /6 Jacks Close, Port Alfred, South Africa, 6170/);
+  assert.match(siteData, /locationLabel: "PROUDLY SOUTH AFRICAN"/);
+  const publicLocationCopy = `${siteData}\n${home}\n${about}\n${faqs}\n${layout}\n${footer}\n${terms}\n${privacy}\n${pricingPage}\n${bundlesPage}\n${pricing}\n${read("../src/pages/contact.astro")}\n${read("../src/pages/policies.astro")}\n${read("../src/pages/services/[slug].astro")}`;
+  assert.doesNotMatch(publicLocationCopy, /PostalAddress|streetAddress|addressLocality|postalCode|contact\.address/i);
+  assert.doesNotMatch(siteData, /^\s*address\s*:/m);
+  assert.match(layout, /areaServed: \{ "@type": "Country", name: "South Africa" \}/);
   assert.match(privacy, /ownerSupplied\.legalEntity/);
   assert.match(terms, /ownerSupplied\.legalEntity/);
   assert.match(footer, /ownerSupplied\.legalEntity/);
@@ -47,6 +55,7 @@ test("footer has a single navigation destination for legal and audit pages", () 
   }
   assert.doesNotMatch(footer, /site-footer__bottom[\s\S]*<ul>/);
   assert.doesNotMatch(footer, /href=\"\/(?:privacy|terms|digital-audit)\"/);
+  assert.doesNotMatch(footerNavigation, /downloads\/straight-up-digital-logo-kit\.zip|Brand kit/i);
 });
 
 test("hosting tiers show both billing choices and prefill the requested plan", () => {
@@ -94,7 +103,7 @@ test("website and hosting bundles separate one-time builds from recurring hostin
   assert.match(bundleData, /hostingAnnualZar: hostingPlan\.priceAnnualZar/);
   assert.match(bundleData, /roundToNearestTen\(listedTotalZar/);
   assert.match(bundleData, /savingZar: listedTotalZar - priceZar/);
-  assert.match(bundlesPage, /Online checkout is not active from\s+this page/);
+  assert.match(bundlesPage, /Buy now\s+opens a no-charge order enquiry; online checkout is not active and no\s+payment is taken here/);
   assert.match(bundlesPage, /Build list price:<\/strong> .*once-off/s);
   assert.match(bundlesPage, /Discounted bundle total:<\/strong> \{formatZar\(bundle\.annual\.priceZar\)\} once-off, paid in full/s);
   assert.match(bundlesPage, /bundleDiscountPercent/);
@@ -163,6 +172,23 @@ test("owner-confirmed website packages show fixed rates, scopes, milestones and 
   assert.doesNotMatch(bundlesPage, /bundle total:<\/strong> From/);
 });
 
+test("fixed-price Buy now buttons are clear that checkout is not active", () => {
+  const servicePackages = read("../src/pages/services/[slug].astro");
+  assert.match(home, /Buy now opens a no-charge order enquiry/);
+  assert.match(servicePackages, />Buy now<\/a>/);
+  assert.match(bundlesPage, />Buy now<\/a>/);
+  assert.match(pricingPage, />Buy now, monthly<\/a>/);
+  assert.match(pricingPage, />Buy now, annually<\/a>/);
+  assert.match(pricingPage, />Buy now<\/a>/);
+  assert.match(servicePackages, /Buy now\s+starts a no-charge order enquiry/);
+  assert.match(servicePackages, /Buy now starts a no-charge plan enquiry/);
+  assert.match(bundlesPage, /Buy now\s+opens a no-charge order enquiry/);
+  assert.match(pricingPage, /Buy now opens a no-charge order enquiry/);
+  assert.match(pricing, /For now, Buy now opens a no-charge order enquiry/);
+  assert.match(pricing, /Buy now opens a no-charge plan enquiry/);
+  assert.match(faqs, /Paystack checkout is not active/i);
+});
+
 test("delivery, cancellation and refunds policy is linked and preserves legal rights", () => {
   assert.match(footerNavigation, /href: "\/policies"/);
   assert.match(policies, /do not ship physical\s+products/);
@@ -181,6 +207,9 @@ test("services open dedicated pages and expose specialist build scopes and plan 
   const serviceDetailPage = read("../src/pages/services/[slug].astro");
 
   assert.match(servicesPage, /href=\{`\/services\/\$\{service\.slug\}`\}/);
+  assert.match(servicesPage, /href="#digital-presence-audits"/);
+  assert.match(servicesPage, /id=\{service\.slug\} class="service-catalog__card"/);
+  assert.match(servicesData, /slug: "digital-presence-audits"/);
   assert.match(servicesPage, /href="\/pricing#monthly-support"/);
   assert.match(servicesPage, /href="\/pricing#hosting-packages"/);
   assert.match(form, /Object\.fromEntries\(services\.map/);
@@ -235,6 +264,17 @@ test("mobile floating actions clear the sticky audit bar and preserve touch targ
   assert.match(layout, /class="floating-actions" role="group"/);
 });
 
+test("back-to-top control has a clear arrow, scrolls to zero and clears a stale anchor", () => {
+  assert.match(backToTop, /aria-label="Back to top"/);
+  assert.match(backToTop, /class="back-to-top__icon"/);
+  assert.match(backToTop, /window\.history\.replaceState/);
+  assert.match(backToTop, /window\.location\.pathname/);
+  assert.match(backToTop, /window\.location\.search/);
+  assert.match(backToTop, /window\.scrollTo\(\{\s*top: 0,/);
+  assert.match(styles, /\.back-to-top__icon\s*\{[^}]*width:\s*26px/s);
+  assert.match(styles, /\.back-to-top\[hidden\]\s*\{\s*display:\s*none\s*!important;/);
+});
+
 test("brand and founder treatments are larger, responsive and use only supplied imagery", () => {
   assert.match(styles, /\.brand img\s*\{[^}]*height: 40px/s);
   assert.match(styles, /\.brand img\s*\{[^}]*height: 36px/s);
@@ -245,7 +285,7 @@ test("brand and founder treatments are larger, responsive and use only supplied 
   assert.match(core, /prefers-reduced-motion/);
   assert.match(core, /data-core-needle/);
   assert.match(core, /needle\.setAttribute\("transform"/);
-  assert.match(home, /network-globe\.svg/);
+  assert.match(home, /images\/art-directed\/africa-network-hero\.webp/);
   assert.doesNotMatch(home, /local-business-digital\.svg/);
   assert.match(networkGlobeIllustration, /<svg/);
 });
@@ -254,7 +294,7 @@ test("homepage follows the supplied visual sequence without invented portfolio c
   for (const phrase of ["Intelligence.", "Visibility.", "Growth.", "Business Auditor", "Illustrative directions", "not client projects or case studies", "Ready to take a clearer next step?"]) {
     assert.ok(home.includes(phrase), `homepage is missing reference-led content: ${phrase}`);
   }
-  assert.match(home, /network-globe\.svg/);
+  assert.match(home, /images\/art-directed\/africa-network-hero\.webp/);
   assert.match(home, /home-solution-grid/);
   assert.match(home, /home-auditor-preview__badge/);
   assert.match(home, /request-and-human-review/);
@@ -262,15 +302,94 @@ test("homepage follows the supplied visual sequence without invented portfolio c
   assert.match(home, /home-concept-grid/);
 });
 
+test("homepage Products section shows priced product families and exact plan destinations", () => {
+  for (const phrase of ["Products and plans", "Fixed-price website packages", "Website and business email", "Professional email plans", "Care and support plans"]) {
+    assert.ok(home.includes(phrase), `homepage Products section is missing: ${phrase}`);
+  }
+  assert.match(home, /id="products"/);
+  assert.match(home, /href="#products">Explore products and plans/);
+  assert.match(home, /homeProductCards\.map/);
+  assert.match(home, /websiteBuildPackages\.map/);
+  assert.match(home, /websiteHostingBundles, \.\.\.websiteBuildHostingBundles/);
+  assert.match(home, /zar\(hostingAnnualFrom\)\} per year, recurring annually/);
+  assert.match(home, /50% to start and 50% at launch, after preview/);
+  assert.match(home, /Online checkout is not active/);
+  for (const href of [
+    "/services/website-design-and-development#website-packages",
+    "/bundles#bundle-packages",
+    "/pricing#hosting-packages",
+    "/pricing#support-packages",
+  ]) {
+    assert.ok(home.includes(href), `homepage product card must link to ${href}`);
+  }
+  const redesignStyles = read("../src/styles/redesign.css");
+  assert.match(redesignStyles, /\.home-product-grid\s*\{[^}]*repeat\(auto-fit/s);
+  assert.match(redesignStyles, /\.home-product-card:hover\s*\{[^}]*border-color:[^}]*183,255,0/s);
+});
+
+test("mobile hero keeps the Africa globe layered with centered, concise copy", () => {
+  const redesignStyles = read("../src/styles/redesign.css");
+  const mobileHero = redesignStyles.slice(redesignStyles.lastIndexOf("@media (max-width:960px) {"));
+  assert.match(mobileHero, /\.home-hero__visual\s*\{[^}]*position:absolute/s);
+  assert.match(mobileHero, /\.home-hero__globe\s*\{[^}]*left:50%/s);
+  assert.match(mobileHero, /\.home-hero__visual\s*\{[^}]*justify-self:stretch/s);
+  assert.match(mobileHero, /\.home-hero__copy\s*\{[^}]*text-align:center/s);
+  assert.match(mobileHero, /\.page-hero__inner\s*\{[^}]*align-items:center/s);
+  assert.match(mobileHero, /\.page-hero\s*\{[^}]*background-image:[\s\S]*?africa-network-hero\.webp/s);
+  assert.match(mobileHero, /\.page-hero\s*\{[^}]*right -100px center/s);
+  assert.match(mobileHero, /right -30px center/);
+  assert.match(home, /Website builds, digital support and human-reviewed online audits for South African small businesses\./);
+});
+
 test("the intended custom domain is canonical and present in social/business metadata", () => {
   assert.match(astro, /https:\/\/straightupdigital\.co\.za/);
   assert.match(layout, /<link rel="canonical" href=\{canonical\}/);
   assert.match(layout, /property="og:url" content=\{canonical\}/);
   assert.match(layout, /name="twitter:card"/);
-  assert.match(layout, /"@type": "PostalAddress"/);
-  assert.match(layout, /streetAddress: "6 Jacks Close"/);
-  assert.match(layout, /addressLocality: "Port Alfred"/);
-  assert.match(layout, /postalCode: "6170"/);
+  assert.match(layout, /areaServed: \{ "@type": "Country", name: "South Africa" \}/);
+  assert.doesNotMatch(layout, /PostalAddress|streetAddress|addressLocality|postalCode/i);
+  assert.match(robots, /Sitemap:/);
+  assert.match(robots, /Disallow: \/thank-you/);
+});
+
+test("Services dropdown routes and section targets resolve", () => {
+  const servicesMenu = primaryNav.find((item) => item.label === "Services");
+  assert.ok(servicesMenu, "the primary Services menu should exist");
+  const children = servicesMenu.children ?? [];
+  assert.deepEqual(children.map((item) => item.href), [
+    "/services/website-design-and-development#website-packages",
+    "/bundles",
+    "/pricing#hosting-packages",
+    "/digital-audit",
+    "/how-it-works",
+  ]);
+
+  for (const item of children) {
+    const [path, fragment] = item.href.split("#");
+    const isServiceRoute = path.startsWith("/services/");
+    if (isServiceRoute) {
+      assert.ok(services.some((service) => path === `/services/${service.slug}`), `${path} must be generated from the service catalog`);
+    }
+    const pageSource = isServiceRoute
+      ? read("../src/pages/services/[slug].astro")
+      : read(path === "/" ? "../src/pages/index.astro" : `../src/pages${path}.astro`);
+    if (fragment) assert.ok(pageSource.includes(`id="${fragment}"`), `${item.label} must target a real section ID`);
+  }
+});
+
+test("public website copy contains no em dashes or HTML em-dash entities", () => {
+  const collectTextFiles = (directory) =>
+    readdirSync(new URL(directory, import.meta.url), { withFileTypes: true }).flatMap((entry) => {
+      const path = `${directory}/${entry.name}`;
+      if (entry.isDirectory()) return collectTextFiles(path);
+      return /\.(astro|ts|tsx|html|css|svg|json|txt|md)$/i.test(entry.name) ? [path] : [];
+    });
+  const siteTextFiles = [...collectTextFiles("../src"), ...collectTextFiles("../public"), ...collectTextFiles("../docs")];
+  const emDash = /(?:\u2014|&mdash;|&#0*8212;|&#x0*2014;|\\u2014)/i;
+
+  for (const path of siteTextFiles) {
+    assert.doesNotMatch(read(path), emDash, `${path} must use ordinary punctuation instead of an em dash`);
+  }
 });
 
 
@@ -283,7 +402,7 @@ test("Paystack readiness copy does not promise recurring Capitec Pay", () => {
 test("public audit copy describes reviewed reports without promising the disabled online report feature", () => {
   assert.match(faqs, /After review, we share a customer-ready report/);
   assert.doesNotMatch(`${faqs}\n${digitalAudit}`, /private online report|report page|link expires after 30 days/);
-  assert.match(faqs, /based in Port Alfred, Eastern Cape, South Africa/);
+  assert.match(faqs, /proudly South African and supports businesses across South Africa online/i);
   assert.match(faqs, /How do I request a hosting plan/);
   assert.match(digitalAudit, /After review, we\s+share a customer-ready report/);
   assert.match(digitalAudit, /Ask a question or arrange a discussion with us/);

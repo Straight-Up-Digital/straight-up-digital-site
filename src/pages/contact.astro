@@ -9,7 +9,7 @@ const description =
 const details = [
   { key: "email", label: "Email", value: contact.email, href: `mailto:${contact.email}` },
   { key: "phone", label: "Phone", value: contact.phone, href: `tel:${contact.phoneInternational.replace(/[^\d+]/g, "")}` },
-  { key: "address", label: "Address", value: contact.address, href: "" },
+  { key: "location", label: "Location", value: contact.locationLabel, href: "" },
 ] as const;
 ---
 

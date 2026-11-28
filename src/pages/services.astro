@@ -83,8 +83,8 @@ const serviceJsonLd = services.map((service) => ({
 
       <div class="service-catalog" aria-label="Service options">
         {
-          services.map((service) => (
-            <a class="service-catalog__card" href={`/services/${service.slug}`}>
+        services.map((service) => (
+            <a id={service.slug} class="service-catalog__card" href={`/services/${service.slug}`}>
               <span class:list={["status", `status--${service.status}`]}>
                 {serviceStatusMeta[service.status].label}
               </span>

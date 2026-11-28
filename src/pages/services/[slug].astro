@@ -17,7 +17,7 @@ export function getStaticPaths() {
 }
 
 const { service } = Astro.props;
-const description = `${service.summary} Straight Up Digital serves small businesses in Port Alfred and across South Africa.`;
+const description = `${service.summary} Proudly South African, Straight Up Digital serves small businesses across South Africa.`;
 const serviceJsonLd = {
   "@context": "https://schema.org",
   "@type": "Service",
@@ -45,7 +45,7 @@ const primaryHref = isAudit
 const primaryLabel = isAudit
   ? "Get your free audit"
   : isHosting
-    ? "Check plan availability"
+    ? "Buy now"
   : isWebsiteBuild
     ? "Compare website packages"
   : service.status === "planned"
@@ -171,7 +171,7 @@ const websiteBuildImages = [
               </details>
               <p class="hosting-card__best-for"><strong>Suggested hosting:</strong> {hostingPlans.find((plan) => plan.slug === websitePackage.recommendedHostingPlanSlug)?.name}. Hosting is priced separately.</p>
               <div class="package-actions">
-                <a class="btn btn--primary btn--on-ivory" href={`/contact?plan=website-${websitePackage.slug}#enquiry`}>Request a written quote</a>
+                <a class="btn btn--primary btn--on-ivory" href={`/contact?plan=website-${websitePackage.slug}#enquiry`}>Buy now</a>
                 <a class="link-arrow" href={websitePackage.slug === "one-page-starter" ? "/bundles#bundle-packages" : `/bundles#bundle-build-${websitePackage.slug}`}>See hosting bundle</a>
               </div>
             </article>
@@ -180,8 +180,9 @@ const websiteBuildImages = [
         <p class="pricing-guardrail" style="margin-top: 24px;">
           Prices are fixed for the listed package scope. Hosting begins at
           R129/month. We confirm the selected package, delivery date, applicable
-          taxes, licences and exclusions in writing before you commit. These
-          cards send an enquiry only; online checkout is not active.
+          taxes, licences and exclusions in writing before you commit. Buy now
+          starts a no-charge order enquiry; online checkout is not active, and no
+          payment is taken here.
         </p>
       </div>
     </section>
@@ -228,7 +229,7 @@ const websiteBuildImages = [
             <p class="kicker">Hosting choices</p>
             <h2 class="h2" id="hosting-plans-title" style="margin-top: 14px;">Choose the plan that fits your team.</h2>
           </div>
-          <p class="body">A plan request does not charge you. We confirm availability and the written terms before sending the approved payment option.</p>
+          <p class="body">Buy now starts a no-charge plan enquiry. Online checkout is not active; we confirm availability and written terms before any payment.</p>
         </div>
         <div class="service-catalog service-catalog--plans">
           {hostingPlans.map((plan) => (
@@ -239,7 +240,7 @@ const websiteBuildImages = [
               <p>{plan.headline}</p>
               <p><strong>Best for:</strong> {plan.bestFor}</p>
               <ul>{plan.whatYouGet.map((item) => <li>{item}</li>)}</ul>
-              <a class="link-arrow" href={`/contact?plan=${plan.slug}&billing=monthly#enquiry`}>Check {plan.name} availability</a>
+              <a class="link-arrow" href={`/contact?plan=${plan.slug}&billing=monthly#enquiry`}>Buy now</a>
             </article>
           ))}
         </div>

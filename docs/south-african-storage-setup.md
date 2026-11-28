@@ -78,10 +78,10 @@ This checklist is an implementation aid, not legal advice. A South African priva
 
 ## Official sources
 
-- [Cloud Firestore locations](https://firebase.google.com/docs/firestore/locations) — Johannesburg `africa-south1`; database location is immutable.
-- [Cloud Firestore pricing and free quota](https://firebase.google.com/docs/firestore/pricing) — limits, one free database per project, and paid-only features.
-- [Manage Firestore databases](https://firebase.google.com/docs/firestore/manage-databases) — database creation and security modes.
-- [Firestore REST document PATCH](https://firebase.google.com/docs/firestore/reference/rest/v1/projects.databases.documents/patch), [runQuery](https://firebase.google.com/docs/firestore/reference/rest/v1/projects.databases.documents/runQuery), and [commit](https://firebase.google.com/docs/firestore/reference/rest/v1/projects.databases.documents/commit) — API operations used by the Worker.
-- [Google service-account OAuth](https://developers.google.com/identity/protocols/oauth2/service-account) — server-to-server JWT bearer flow.
-- [Google Datastore IAM](https://cloud.google.com/datastore/docs/access/iam) — `roles/datastore.user` description.
-- [POPIA section 72](https://inforegulator.org.za/knowledge-base/popia-section-72/) and [Cloudflare Customer DPA](https://www.cloudflare.com/cloudflare-customer-dpa/) — sources for a separate transfer/operator review.
+- [Cloud Firestore locations](https://firebase.google.com/docs/firestore/locations) - Johannesburg `africa-south1`; database location is immutable.
+- [Cloud Firestore pricing and free quota](https://firebase.google.com/docs/firestore/pricing) - limits, one free database per project, and paid-only features.
+- [Manage Firestore databases](https://firebase.google.com/docs/firestore/manage-databases) - database creation and security modes.
+- [Firestore REST document PATCH](https://firebase.google.com/docs/firestore/reference/rest/v1/projects.databases.documents/patch), [runQuery](https://firebase.google.com/docs/firestore/reference/rest/v1/projects.databases.documents/runQuery), and [commit](https://firebase.google.com/docs/firestore/reference/rest/v1/projects.databases.documents/commit) - API operations used by the Worker.
+- [Google service-account OAuth](https://developers.google.com/identity/protocols/oauth2/service-account) - server-to-server JWT bearer flow.
+- [Google Datastore IAM](https://cloud.google.com/datastore/docs/access/iam) - `roles/datastore.user` description.
+- [POPIA section 72](https://inforegulator.org.za/knowledge-base/popia-section-72/) and [Cloudflare Customer DPA](https://www.cloudflare.com/cloudflare-customer-dpa/) - sources for a separate transfer/operator review.

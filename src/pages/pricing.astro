@@ -21,7 +21,7 @@ import {
 import { pricingFaqs } from "../data/faqs";
 
 const description =
-  "Compare Straight Up Digital website package prices, hosting bundles, free digital audits, score-based fixes and monthly support for Eastern Cape businesses.";
+  "Compare Straight Up Digital website package prices, hosting bundles, free digital audits, score-based fixes and monthly support for businesses across South Africa.";
 const formatZar = (amount: number): string =>
   `R${amount.toLocaleString("en-US")}`;
 const exampleScore = 70;
@@ -214,7 +214,8 @@ const exampleFixPrice =
           the balance. Discounted annual bundles are a separate offer: the full
           bundle price is paid once-off, includes the first year of hosting, and
           annual renewal begins after that year. Every order is confirmed in
-          writing before work starts. Online checkout is not active.
+          writing before work starts. Buy now opens a no-charge order enquiry;
+          online checkout is not active, and no payment is taken here.
         </p>
       </div>
 
@@ -247,7 +248,7 @@ const exampleFixPrice =
               {websiteBuildDeliverables.map((item) => <li>{item}</li>)}
             </ul>
             <p>Requires a hosting plan from {formatZar(websiteOffer.hostingMonthlyZar)}/month.</p>
-            <a class="link-arrow" href="/contact?plan=website-one-page-starter&billing=once-off#enquiry">Request the one-page starter</a>
+            <a class="link-arrow" href="/contact?plan=website-one-page-starter&billing=once-off#enquiry">Buy now</a>
           </article>
         </div>
       </div>
@@ -286,8 +287,8 @@ const exampleFixPrice =
                 </ul>
               </details>
               <div class="package-actions">
-                <a class="btn btn--primary btn--on-ivory" href={`/contact?plan=${plan.slug}&billing=monthly#enquiry`}>Request monthly</a>
-                <a class="link-arrow" href={`/contact?plan=${plan.slug}&billing=annual#enquiry`}>Ask about annual recurring billing</a>
+                <a class="btn btn--primary btn--on-ivory" href={`/contact?plan=${plan.slug}&billing=monthly#enquiry`}>Buy now, monthly</a>
+                <a class="link-arrow" href={`/contact?plan=${plan.slug}&billing=annual#enquiry`}>Buy now, annually</a>
               </div>
             </article>
           ))}
@@ -330,7 +331,7 @@ const exampleFixPrice =
                   {plan.deliverables.map((item) => <li>{item}</li>)}
                 </ul>
               </details>
-              <a class="btn btn--primary btn--on-ivory" href={`/contact?plan=retainer-level-${plan.level}&billing=monthly#enquiry`}>Ask about Level {plan.level}</a>
+              <a class="btn btn--primary btn--on-ivory" href={`/contact?plan=retainer-level-${plan.level}&billing=monthly#enquiry`}>Buy now</a>
             </article>
           ))}
         </div>
@@ -349,7 +350,7 @@ const exampleFixPrice =
             <article class="edit-rate">
               <h4>{item.title}</h4>
               <p>{formatZar(item.priceZar)}</p>
-              <a class="link-arrow" href={`/contact?plan=${item.slug}&billing=once-off#enquiry`}>Request this edit</a>
+              <a class="link-arrow" href={`/contact?plan=${item.slug}&billing=once-off#enquiry`}>Buy now</a>
             </article>
           ))}
         </div>

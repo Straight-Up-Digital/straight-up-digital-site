@@ -5,7 +5,7 @@ import { bundleDiscountPercent, websiteBuildHostingBundles, websiteHostingBundle
 import { websiteBuildDeliverables } from "../data/pricing";
 
 const description =
-  "Compare affordable website and hosting bundles for small businesses, restaurants, guest houses, booking services and shops across the Eastern Cape.";
+  "Compare affordable website and hosting bundles for small businesses, restaurants, guest houses, booking services and shops across South Africa.";
 const formatZar = (amount: number): string => `R${amount.toLocaleString("en-US")}`;
 ---
 
@@ -58,7 +58,7 @@ const formatZar = (amount: number): string => `R${amount.toLocaleString("en-US")
           <article class:list={["package-slot", "package-slot--retainer", "hosting-card", bundle.hostingPlan.featured && "hosting-card--featured"]}>
             {bundle.hostingPlan.featured && <span class="package-badge">Most popular</span>}
             <img class="package-icon" src="/brand/symbol.svg" alt="" width="42" height="42" loading="lazy" />
-            <p class="pricing-label">{bundleDiscountPercent}% annual bundle discount · request a quote</p>
+            <p class="pricing-label">{bundleDiscountPercent}% annual bundle discount</p>
             <h3>{bundle.name}</h3>
             <p class="hosting-card__headline">One-page starter website with {bundle.hostingPlan.name}.</p>
             <p class="hosting-card__best-for"><strong>Best for:</strong> {bundle.hostingPlan.bestFor}</p>
@@ -84,7 +84,7 @@ const formatZar = (amount: number): string => `R${amount.toLocaleString("en-US")
             </details>
 
             <div class="package-actions">
-              <a class="btn btn--primary btn--on-ivory" href={`/contact?plan=bundle-${bundle.slug}&billing=annual#enquiry`}>Request discounted bundle quote</a>
+              <a class="btn btn--primary btn--on-ivory" href={`/contact?plan=bundle-${bundle.slug}&billing=annual#enquiry`}>Buy now</a>
               <a class="link-arrow" href="/pricing#hosting-packages">See monthly hosting plans</a>
             </div>
           </article>
@@ -128,7 +128,7 @@ const formatZar = (amount: number): string => `R${amount.toLocaleString("en-US")
               {bundle.websitePackage.includes.slice(0, 3).map((item) => <li>{item}</li>)}
             </ul>
             <div class="package-actions">
-              <a class="btn btn--primary btn--on-ivory" href={`/contact?plan=bundle-build-${bundle.slug}&billing=annual#enquiry`}>Request discounted bundle quote</a>
+              <a class="btn btn--primary btn--on-ivory" href={`/contact?plan=bundle-build-${bundle.slug}&billing=annual#enquiry`}>Buy now</a>
               <a class="link-arrow" href="/pricing#hosting-packages">See monthly hosting plans</a>
               <a class="link-arrow" href={`/services/website-design-and-development#package-${bundle.slug}`}>See full package scope</a>
             </div>
@@ -140,8 +140,9 @@ const formatZar = (amount: number): string => `R${amount.toLocaleString("en-US")
         website build plus the first year of hosting. Annual hosting then recurs
         at the listed plan rate after the included first year. Standalone website
         builds remain 50% to start and 50% at launch after preview. A written
-        quote confirms the bundle price, scope and any third-party fees. A request
-        does not charge you; online checkout is not active from this page.
+          quote confirms the bundle price, scope and any third-party fees. Buy now
+          opens a no-charge order enquiry; online checkout is not active and no
+          payment is taken here.
       </p>
     </div>
   </section>

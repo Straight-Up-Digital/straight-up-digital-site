@@ -70,7 +70,7 @@ export const pricingFaqs: Faq[] = [
   {
     question: "Do you work outside South Africa?",
     answer:
-      "Straight Up Digital is based in Port Alfred, Eastern Cape, South Africa. If your business is elsewhere, send an enquiry and we will confirm whether the work can be supported remotely or in your area.",
+      "Straight Up Digital is proudly South African and supports businesses across South Africa online. If your business is outside South Africa, send an enquiry and we will confirm whether we can support it remotely.",
   },
   {
     question: "How do I request a hosting plan?",

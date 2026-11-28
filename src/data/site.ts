@@ -22,8 +22,8 @@ export const contact = {
   email: "hello@straightupdigital.co.za",
   phone: "062 065 3503",
   phoneInternational: "+27 62 065 3503",
-  /** Owner-approved public street and postal address. */
-  address: "6 Jacks Close, Port Alfred, South Africa, 6170",
+  /** Public nationwide position, not a storefront address. */
+  locationLabel: "PROUDLY SOUTH AFRICAN",
   /** Business hours, free text. */
   hours: "",
 } as const;
@@ -48,8 +48,8 @@ export const ownerSupplied = {
     "His approach is straightforward: understand what customers see online, show where opportunities may be slipping away, and focus effort on clear, useful improvements.",
   ] as const,
   founderPhoto: "",
-  /** Approved service areas. Empty means no location claims are made. */
-  serviceAreas: [] as string[],
+  /** Approved public service area. This does not imply a storefront. */
+  serviceAreas: ["South Africa"] as const,
 } as const;
 
 /**
@@ -66,7 +66,6 @@ export const analytics = {
 export const placeholderKeys = {
   email: "business-email",
   phone: "business-phone",
-  address: "public-address",
   founder: "founder-profile",
   serviceAreas: "service-areas",
   social: "social-profiles",
