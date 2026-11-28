@@ -217,7 +217,7 @@ a.service-list__row:hover { background: rgba(183,255,0,.035); }
 .faq__item, .faq { border-color: var(--line); }
 .faq__answer { color: var(--silver); }
 .sticky-audit { background: rgba(8,11,10,.97); }
-.whatsapp-button { background: var(--lime); border-color: var(--lime); color: var(--obsidian); }
+  .whatsapp-button { background: linear-gradient(145deg,#181f1a,#080b0a); border-color: rgba(168,255,101,.72); color: var(--ivory); }
 .back-to-top { border-color: rgba(183,255,0,.58); background: rgba(16,21,18,.98); }
 
 /* Homepage-specific visual system. */
@@ -726,7 +726,7 @@ body {
     background-position:center,center,right -100px center;
   }
   .floating-actions { right:16px; left:auto; width:auto; justify-content:flex-end; gap:10px; }
-  .whatsapp-button { min-height:48px; width:48px; height:48px; padding:0; gap:0; font-size:0; }
+  .whatsapp-button { min-height:52px; width:52px; height:52px; padding:0; gap:0; font-size:0; }
   .whatsapp-menu__panel { right:0; left:auto; }
   .page-hero__inner { align-items:center; text-align:center; }
   .page-hero__title, .page-hero__lede { margin-inline:auto; text-align:center; }

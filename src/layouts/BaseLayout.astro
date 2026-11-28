@@ -30,13 +30,15 @@ const {
   jsonLd = [],
 } = Astro.props;
 
-const siteUrl = Astro.site ?? new URL("http://localhost:4321");
+if (!Astro.site) throw new Error("Set the public site origin in astro.config.mjs before rendering metadata.");
+const siteUrl = Astro.site;
 const normalizedPath =
   canonicalPath === "/"
     ? "/"
     : canonicalPath.endsWith("/")
       ? canonicalPath
       : `${canonicalPath}/`;
+
 const canonical = new URL(normalizedPath, siteUrl).toString();
 const ogImage = new URL("/og-image.jpg", siteUrl).toString();
 
@@ -46,8 +48,9 @@ const pageTitle =
 const organization = {
   "@context": "https://schema.org",
   "@type": "Organization",
+  "@id": new URL("/#organization", siteUrl).toString(),
   name: site.name,
-  url: siteUrl.toString(),
+  url: new URL("/", siteUrl).toString(),
   logo: new URL("/brand/logo-horizontal-dark.png", siteUrl).toString(),
   description: site.description,
   slogan: site.tagline,
@@ -99,7 +102,7 @@ const structuredData = [organization, ...jsonLd];
       structuredData.map((data) => (
         <script
           type="application/ld+json"
-          set:html={JSON.stringify(data)}
+          set:html={JSON.stringify(data).replace(/</g, "\\u003c")}
         />
       ))
     }

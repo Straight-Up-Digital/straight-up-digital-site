@@ -6,7 +6,7 @@ import { websiteBuildHostingBundles, websiteHostingBundles } from "../data/bundl
 import { site } from "../data/site";
 
 const description =
-  "Straight Up Digital offers clear-scope website packages, practical digital support and free, human-reviewed business presence audits for South African small businesses.";
+  "Fixed-scope websites, digital support and free human-reviewed business audits for small businesses across South Africa.";
 const zar = (amount: number) => `R${amount.toLocaleString("en-ZA")}`;
 const packageBySlug = (slug: string) => websiteBuildPackages.find((item) => item.slug === slug);
 const starterPrice = packageBySlug("one-page-starter")!.priceZar;

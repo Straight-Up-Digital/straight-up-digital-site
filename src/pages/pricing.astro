@@ -2,6 +2,7 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import CtaBand from "../components/CtaBand.astro";
 import FaqList from "../components/FaqList.astro";
+import PlanShare from "../components/PlanShare.astro";
 import {
   auditFixPackage,
   auditPricing,
@@ -21,7 +22,7 @@ import {
 import { pricingFaqs } from "../data/faqs";
 
 const description =
-  "Compare Straight Up Digital website package prices, hosting bundles, free digital audits, score-based fixes and monthly support for businesses across South Africa.";
+  "Compare fixed-price website packages, hosting and support for South African businesses. Start with a free digital audit if you are unsure what you need.";
 const formatZar = (amount: number): string =>
   `R${amount.toLocaleString("en-US")}`;
 const exampleScore = 70;
@@ -31,7 +32,7 @@ const exampleFixPrice =
 ---
 
 <BaseLayout
-  title="Pricing"
+  title="Website packages and pricing"
   description={description}
   canonicalPath="/pricing"
 >
@@ -43,17 +44,16 @@ const exampleFixPrice =
           Clear scope. Written quotes. No surprise invoices.
         </h1>
         <div class="page-hero__actions">
-          <a class="btn btn--primary" href="/contact">
-            Get a quote
+          <a class="btn btn--primary" href="#website-build-packages">
+            See fixed-price websites
             <svg class="btn__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg>
           </a>
-          <a class="btn btn--secondary" href="#hosting-packages">See hosting plans</a>
+          <a class="btn btn--secondary" href="#hosting-packages">Compare hosting plans</a>
         </div>
       </div>
       <p class="page-hero__lede">
-        Choose a clear starting point: a free audit, one-off website work,
-        monthly hosting or a growth retainer. Pick monthly billing or annual
-        recurring hosting; we confirm your order and payment schedule in writing before you choose a payment method.
+        Choose a website package, hosting plan or support option. Not sure where
+        to start? Request a free audit.
       </p>
     </div>
   </section>
@@ -193,7 +193,7 @@ const exampleFixPrice =
         </div>
         <div class="package-grid package-grid--retainers">
           {websiteBuildPackages.map((websitePackage) => (
-            <article class:list={["package-slot", "package-slot--retainer", "hosting-card", websitePackage.slug === "five-page-business" && "hosting-card--featured"]}>
+            <article class:list={["package-slot", "package-slot--retainer", "hosting-card", websitePackage.slug === "five-page-business" && "hosting-card--featured"]} id={`plan-website-${websitePackage.slug}`}>
               {websitePackage.slug === "five-page-business" && <span class="package-badge">Popular choice</span>}
               <p class="pricing-label">{websitePackage.label}</p>
               <h3>{websitePackage.title}</h3>
@@ -204,6 +204,7 @@ const exampleFixPrice =
               <div class="package-actions">
                 <a class="btn btn--primary btn--on-ivory" href={`/services/website-design-and-development#package-${websitePackage.slug}`}>See included scope</a>
                 <a class="link-arrow" href={websitePackage.slug === "one-page-starter" ? "/bundles#bundle-packages" : `/bundles#bundle-build-${websitePackage.slug}`}>See hosting bundle</a>
+                <PlanShare title={websitePackage.title} details={`${formatZar(websitePackage.priceZar)} once-off. Standalone builds are paid 50% to start and 50% at launch after preview.`} href={`/pricing/#plan-website-${websitePackage.slug}`} />
               </div>
             </article>
           ))}
@@ -267,9 +268,8 @@ const exampleFixPrice =
         </div>
         <div class="package-grid package-grid--retainers">
           {hostingPlans.map((plan) => (
-            <article class:list={["package-slot", "package-slot--retainer", "hosting-card", plan.featured && "hosting-card--featured"]}>
+            <article class:list={["package-slot", "package-slot--retainer", "hosting-card", plan.featured && "hosting-card--featured"]} id={`plan-hosting-${plan.slug}`}>
               {plan.featured && <span class="package-badge">Most popular</span>}
-              <img class="package-icon" src="/brand/symbol.svg" alt="" width="42" height="42" loading="lazy" />
               <p class="pricing-label">Hosting plan</p>
               <h3>{plan.name}</h3>
               <p class="hosting-card__headline">{plan.headline}</p>
@@ -289,6 +289,7 @@ const exampleFixPrice =
               <div class="package-actions">
                 <a class="btn btn--primary btn--on-ivory" href={`/contact?plan=${plan.slug}&billing=monthly#enquiry`}>Buy now, monthly</a>
                 <a class="link-arrow" href={`/contact?plan=${plan.slug}&billing=annual#enquiry`}>Buy now, annually</a>
+                <PlanShare title={plan.name} details={`${formatZar(plan.priceMonthlyZar)} per month, or ${formatZar(plan.priceAnnualZar)} per year, recurring.`} href={`/pricing/#plan-hosting-${plan.slug}`} />
               </div>
             </article>
           ))}
@@ -313,7 +314,7 @@ const exampleFixPrice =
         </div>
         <div class="package-grid package-grid--retainers">
           {monthlyRetainers.map((plan) => (
-            <article class:list={["package-slot", "package-slot--retainer", "retainer-card", plan.featured && "hosting-card--featured"]}>
+            <article class:list={["package-slot", "package-slot--retainer", "retainer-card", plan.featured && "hosting-card--featured"]} id={`plan-support-${plan.level}`}>
               {plan.featured && <span class="package-badge">Most popular</span>}
               <p class="pricing-label">Level {plan.level} · Monthly retainer</p>
               <h3>{plan.name}</h3>
@@ -331,7 +332,10 @@ const exampleFixPrice =
                   {plan.deliverables.map((item) => <li>{item}</li>)}
                 </ul>
               </details>
-              <a class="btn btn--primary btn--on-ivory" href={`/contact?plan=retainer-level-${plan.level}&billing=monthly#enquiry`}>Buy now</a>
+              <div class="package-actions">
+                <a class="btn btn--primary btn--on-ivory" href={`/contact?plan=retainer-level-${plan.level}&billing=monthly#enquiry`}>Buy now</a>
+                <PlanShare title={plan.name} details={`${formatZar(plan.priceZarPerMonth)} per month, recurring.`} href={`/pricing/#plan-support-${plan.level}`} />
+              </div>
             </article>
           ))}
         </div>

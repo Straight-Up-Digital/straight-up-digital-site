@@ -28,10 +28,15 @@ const messages = [
     aria-label={`Choose a WhatsApp message topic for Straight Up Digital at ${contact.phoneInternational}`}
     title="Choose what to ask about on WhatsApp"
   >
-    <svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
-      <path d="M26.6 5.4A14.55 14.55 0 0 0 3.9 22.95L2 30l7.2-1.88A14.56 14.56 0 0 0 16.45 30h.01A14.56 14.56 0 0 0 26.6 5.4Z" fill="currentColor" />
-      <path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2.1z" fill="var(--lime)" />
-    </svg>
+    <span class="whatsapp-button__mark" aria-hidden="true">
+      <img src="/brand/symbol.png" width="28" height="28" alt="" decoding="async" />
+      <span class="whatsapp-button__badge">
+        <svg viewBox="0 0 32 32" fill="none">
+          <path d="M26.6 5.4A14.55 14.55 0 0 0 3.9 22.95L2 30l7.2-1.88A14.56 14.56 0 0 0 16.45 30h.01A14.56 14.56 0 0 0 26.6 5.4Z" fill="#25d366" />
+          <path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2.1z" fill="white" />
+        </svg>
+      </span>
+    </span>
     <span>Chat on WhatsApp</span>
   </summary>
   <div class="whatsapp-menu__panel" aria-label="Choose a WhatsApp message topic">

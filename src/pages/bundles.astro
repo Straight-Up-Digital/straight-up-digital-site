@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import CtaBand from "../components/CtaBand.astro";
+import PlanShare from "../components/PlanShare.astro";
 import { bundleDiscountPercent, websiteBuildHostingBundles, websiteHostingBundles } from "../data/bundles";
 import { websiteBuildDeliverables } from "../data/pricing";
 
@@ -55,9 +56,8 @@ const formatZar = (amount: number): string => `R${amount.toLocaleString("en-US")
 
       <div class="package-grid package-grid--retainers">
         {websiteHostingBundles.map((bundle) => (
-          <article class:list={["package-slot", "package-slot--retainer", "hosting-card", bundle.hostingPlan.featured && "hosting-card--featured"]}>
+          <article class:list={["package-slot", "package-slot--retainer", "hosting-card", bundle.hostingPlan.featured && "hosting-card--featured"]} id={`plan-bundle-${bundle.slug}`}>
             {bundle.hostingPlan.featured && <span class="package-badge">Most popular</span>}
-            <img class="package-icon" src="/brand/symbol.svg" alt="" width="42" height="42" loading="lazy" />
             <p class="pricing-label">{bundleDiscountPercent}% annual bundle discount</p>
             <h3>{bundle.name}</h3>
             <p class="hosting-card__headline">One-page starter website with {bundle.hostingPlan.name}.</p>
@@ -86,6 +86,7 @@ const formatZar = (amount: number): string => `R${amount.toLocaleString("en-US")
             <div class="package-actions">
               <a class="btn btn--primary btn--on-ivory" href={`/contact?plan=bundle-${bundle.slug}&billing=annual#enquiry`}>Buy now</a>
               <a class="link-arrow" href="/pricing#hosting-packages">See monthly hosting plans</a>
+              <PlanShare title={bundle.name} details={`${formatZar(bundle.annual.priceZar)} once-off, paid in full. Includes the build and first hosting year. Hosting then renews at ${formatZar(bundle.annual.hostingAnnualZar)} per year.`} href={`/bundles/#plan-bundle-${bundle.slug}`} />
             </div>
           </article>
         ))}
@@ -131,6 +132,7 @@ const formatZar = (amount: number): string => `R${amount.toLocaleString("en-US")
               <a class="btn btn--primary btn--on-ivory" href={`/contact?plan=bundle-build-${bundle.slug}&billing=annual#enquiry`}>Buy now</a>
               <a class="link-arrow" href="/pricing#hosting-packages">See monthly hosting plans</a>
               <a class="link-arrow" href={`/services/website-design-and-development#package-${bundle.slug}`}>See full package scope</a>
+              <PlanShare title={bundle.name} details={`${formatZar(bundle.annual.priceZar)} once-off, paid in full. Includes the build and first hosting year. Hosting then renews at ${formatZar(bundle.annual.hostingAnnualZar)} per year.`} href={`/bundles/#bundle-build-${bundle.slug}`} />
             </div>
           </article>
         ))}

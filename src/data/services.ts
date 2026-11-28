@@ -144,15 +144,17 @@ export const services: Service[] = [
     title: "Website design and development",
     status: "on-request",
     summary:
-      "Confirmed once-off packages: One-Page Starter R1,500; Five-Page Business R3,500; Restaurant & Café R3,950; Guest House & Stay R4,500; Bookings & Appointments R5,500; and Small Online Shop R7,500. Standalone builds are paid 50% to start and 50% at launch, after a preview. Discounted annual bundles are paid in full upfront and include the build plus the first year of hosting; annual renewals begin after that year. Hosting is separate for standalone builds from R129/month.",
+      "Choose a fixed-scope website package, from a one-page starter to a small online shop. Custom features can be scoped separately.",
     forWho:
       "Businesses with an outdated site, a template that no longer fits, or no site at all.",
     value:
       "A credible first impression, a clear structure and a site that works on the phone your customers actually use.",
     receive: [
       "The pages, buttons, content types and revision rounds listed for the selected package",
+      "Fixed prices range from the R1,500 One-Page Starter to the R7,500 Small Online Shop",
       "Client-supplied words, logo and photos for the Five-Page Business package",
       "Standalone builds: 50% to start and 50% at launch after a preview; discounted annual bundles are paid in full and include the first hosting year",
+      "Hosting is separate for standalone builds from R129/month",
       "Booking-tool fees paid by the client for the Bookings & Appointments package",
       "Small Online Shop orders by WhatsApp or email; live Paystack checkout is not active and needs successful end-to-end testing and SinJin's confirmation",
     ],

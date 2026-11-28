@@ -4,7 +4,7 @@ import EnquiryForm from "../components/EnquiryForm.astro";
 import { contact, has, site } from "../data/site";
 
 const description =
-  "Contact Straight Up Digital. Tell us what is not working, send the website address, and a person will reply with a clear next step. Audit requests, projects and questions all start here.";
+  "Contact Straight Up Digital about a free digital audit, website package, hosting plan or support. A person will review your enquiry and reply.";
 
 const details = [
   { key: "email", label: "Email", value: contact.email, href: `mailto:${contact.email}` },
@@ -14,7 +14,7 @@ const details = [
 ---
 
 <BaseLayout
-  title="Contact"
+  title="Contact and enquiries"
   description={description}
   canonicalPath="/contact"
   showStickyAudit={false}

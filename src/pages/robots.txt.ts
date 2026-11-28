@@ -1,12 +1,13 @@
 import type { APIRoute } from "astro";
 
 export const GET: APIRoute = ({ site }) => {
-  const base = site ?? new URL("http://localhost:4321");
+  if (!site) throw new Error("Set the public site origin in astro.config.mjs before rendering robots.txt.");
+  const base = site;
   const sitemap = new URL("sitemap-index.xml", base).toString();
 
   const body = `User-agent: *
 Allow: /
-Disallow: /thank-you
+Disallow: /api/
 
 Sitemap: ${sitemap}
 `;

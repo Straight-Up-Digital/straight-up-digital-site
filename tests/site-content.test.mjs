@@ -19,6 +19,7 @@ const bundlesPage = read("../src/pages/bundles.astro");
 const bundleData = read("../src/data/bundles.ts");
 const form = read("../src/components/EnquiryForm.astro");
 const whatsapp = read("../src/components/WhatsAppButton.astro");
+const planShare = read("../src/components/PlanShare.astro");
 const styles = read("../src/styles/global.css");
 const layout = read("../src/layouts/BaseLayout.astro");
 const footer = read("../src/components/SiteFooter.astro");
@@ -118,6 +119,42 @@ test("website and hosting bundles separate one-time builds from recurring hostin
   assert.match(form, /hosting renews at .*recurring annually/s);
   assert.match(styles, /\.bundle-prices\s*\{[^}]*display:\s*grid/s);
   assert.match(footerNavigation, /label: "Bundles", href: "\/bundles"/);
+});
+
+test("all named website, hosting, support and bundle plans offer WhatsApp sharing", () => {
+  assert.match(planShare, /https:\/\/wa\.me\/\?text=\$\{encodeURIComponent\(shareText\)\}/);
+  assert.match(planShare, /new URL\(href, Astro\.site\)/);
+  assert.match(planShare, /aria-label=\{`Share \$\{title\} on WhatsApp`\}/);
+  assert.match(planShare, /target="_blank"[\s\S]*rel="noopener noreferrer"/);
+  assert.equal((pricingPage.match(/<PlanShare\b/g) ?? []).length, 3);
+  assert.equal((bundlesPage.match(/<PlanShare\b/g) ?? []).length, 2);
+  const serviceDetail = read("../src/pages/services/[slug].astro");
+  assert.equal((serviceDetail.match(/<PlanShare\b/g) ?? []).length, 2);
+  for (const snippet of [
+    "websiteBuildPackages.map((websitePackage) => (",
+    "title={websitePackage.title}",
+    "hostingPlans.map((plan) => (",
+    "title={plan.name}",
+    "monthlyRetainers.map((plan) => (",
+    "href={`/pricing/#plan-website-${websitePackage.slug}`}",
+    "href={`/pricing/#plan-hosting-${plan.slug}`}",
+    "href={`/pricing/#plan-support-${plan.level}`}",
+  ]) assert.ok(pricingPage.includes(snippet), `pricing page is missing ${snippet}`);
+  for (const snippet of [
+    "websiteHostingBundles.map((bundle) => (",
+    "websiteBuildHostingBundles.map((bundle) => (",
+    "href={`/bundles/#plan-bundle-${bundle.slug}`}",
+    "href={`/bundles/#bundle-build-${bundle.slug}`}",
+  ]) assert.ok(bundlesPage.includes(snippet), `bundles page is missing ${snippet}`);
+  assert.match(serviceDetail, /href=\{`\/services\/website-design-and-development\/#package-\$\{websitePackage\.slug\}`\}/);
+  assert.match(serviceDetail, /href=\{`\/services\/managed-hosting-and-domains\/#plan-\$\{plan\.slug\}`\}/);
+});
+
+test("plan cards no longer display the old decorative logo", () => {
+  assert.doesNotMatch(pricingPage, /package-icon|brand\/symbol\.svg/);
+  assert.doesNotMatch(bundlesPage, /package-icon|brand\/symbol\.svg/);
+  assert.match(layout, /logo-horizontal-dark\.png/);
+  assert.match(whatsapp, /src="\/brand\/symbol\.png"/);
 });
 
 test("the R1,500 website price is limited to the one-page starter", () => {
@@ -252,12 +289,16 @@ test("WhatsApp offers audit, hosting, domain and general enquiry intents", () =>
   assert.match(whatsapp, /wa\.me\/\$\{whatsappNumber\}/);
   assert.match(whatsapp, /aria-label=/);
   assert.match(whatsapp, /Chat on WhatsApp/);
+  assert.match(whatsapp, /src="\/brand\/symbol\.png"/);
+  assert.match(whatsapp, /class="whatsapp-button__badge"/);
+  assert.match(styles, /\.whatsapp-button__mark\s*\{[^}]*background:\s*#f5f7f4/is);
+  assert.match(styles, /\.whatsapp-button__badge\s*\{[^}]*background:\s*#25d366/is);
   assert.match(styles, /\.whatsapp-menu__panel\s*\{[^}]*max-height:[^}]*overflow-y:\s*auto/s);
 });
 
 test("mobile floating actions clear the sticky audit bar and preserve touch targets", () => {
   assert.match(styles, /body\.has-sticky-audit \.floating-actions\s*\{\s*bottom: calc\(92px \+ env\(safe-area-inset-bottom\)\)/);
-  assert.match(styles, /\.whatsapp-button\s*\{[^}]*min-height: 48px/s);
+  assert.match(styles, /\.whatsapp-button\s*\{[^}]*min-height: 52px[^}]*width: 52px/s);
   assert.match(styles, /\.back-to-top\s*\{[^}]*width: 48px/s);
   assert.match(styles, /\.whatsapp-menu__panel\s*\{[^}]*left: 0/s);
   assert.doesNotMatch(styles.match(/\.whatsapp-menu__panel\s*\{[^}]*\}/s)?.[0] ?? "", /right:\s*0/);
@@ -349,7 +390,10 @@ test("the intended custom domain is canonical and present in social/business met
   assert.match(layout, /areaServed: \{ "@type": "Country", name: "South Africa" \}/);
   assert.doesNotMatch(layout, /PostalAddress|streetAddress|addressLocality|postalCode/i);
   assert.match(robots, /Sitemap:/);
-  assert.match(robots, /Disallow: \/thank-you/);
+  assert.match(robots, /Disallow: \/api\//);
+  assert.doesNotMatch(robots, /Disallow: \/thank-you/);
+  assert.match(read("../src/pages/404.astro"), /noindex/);
+  assert.match(read("../src/pages/thank-you.astro"), /noindex/);
 });
 
 test("Services dropdown routes and section targets resolve", () => {

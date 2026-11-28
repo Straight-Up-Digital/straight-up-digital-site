@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import CtaBand from "../../components/CtaBand.astro";
+import PlanShare from "../../components/PlanShare.astro";
 import { services, serviceStatusMeta, websiteBuildOptions } from "../../data/services";
 import { hostingPlans, websiteBuildPackages } from "../../data/pricing";
 import type { Service } from "../../data/services";
@@ -17,7 +18,7 @@ export function getStaticPaths() {
 }
 
 const { service } = Astro.props;
-const description = `${service.summary} Proudly South African, Straight Up Digital serves small businesses across South Africa.`;
+const description = `${service.summary} Proudly South African.`;
 const serviceJsonLd = {
   "@context": "https://schema.org",
   "@type": "Service",
@@ -47,11 +48,9 @@ const primaryLabel = isAudit
   : isHosting
     ? "Buy now"
   : isWebsiteBuild
-    ? "Compare website packages"
+    ? "Choose a package"
   : service.status === "planned"
     ? "Start with the available audit"
-    : isWebsiteBuild
-      ? "Discuss your website"
       : "Ask about this service";
 const websiteBuildImages = [
   {
@@ -98,8 +97,8 @@ const websiteBuildImages = [
             {primaryLabel}
             <svg class="btn__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"></path></svg>
           </a>
-          <a class="btn btn--secondary" href={isHosting ? "/pricing#hosting-packages" : "/pricing#packages"}>
-            {isHosting ? "Compare hosting plans" : "See pricing"}
+          <a class="btn btn--secondary" href={isWebsiteBuild ? "/pricing#website-build-packages" : isHosting ? "/pricing#hosting-packages" : "/pricing#packages"}>
+            {isWebsiteBuild ? "See fixed prices" : isHosting ? "Compare hosting plans" : "See pricing"}
           </a>
         </div>
       </div>
@@ -173,6 +172,7 @@ const websiteBuildImages = [
               <div class="package-actions">
                 <a class="btn btn--primary btn--on-ivory" href={`/contact?plan=website-${websitePackage.slug}#enquiry`}>Buy now</a>
                 <a class="link-arrow" href={websitePackage.slug === "one-page-starter" ? "/bundles#bundle-packages" : `/bundles#bundle-build-${websitePackage.slug}`}>See hosting bundle</a>
+                <PlanShare title={websitePackage.title} details={`R${websitePackage.priceZar.toLocaleString("en-ZA")} once-off. Standalone builds are paid 50% to start and 50% at launch after preview.`} href={`/services/website-design-and-development/#package-${websitePackage.slug}`} />
               </div>
             </article>
           ))}
@@ -241,6 +241,7 @@ const websiteBuildImages = [
               <p><strong>Best for:</strong> {plan.bestFor}</p>
               <ul>{plan.whatYouGet.map((item) => <li>{item}</li>)}</ul>
               <a class="link-arrow" href={`/contact?plan=${plan.slug}&billing=monthly#enquiry`}>Buy now</a>
+              <PlanShare title={plan.name} details={`R${plan.priceMonthlyZar.toLocaleString("en-ZA")} per month, or R${plan.priceAnnualZar.toLocaleString("en-ZA")} per year, recurring.`} href={`/services/managed-hosting-and-domains/#plan-${plan.slug}`} />
             </article>
           ))}
         </div>
