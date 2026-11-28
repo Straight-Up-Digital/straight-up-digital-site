@@ -3,7 +3,7 @@ import {
   normalizeCustomerReport, readJsonBodyLimited, reportFlowReady, renderMissingPage,
   renderReportPage, renderResponseConfirmation, renderResponseError, renderUnavailablePage,
 } from "../shared/client-report.mts";
-import { EmailConfigError } from "./email.ts";
+import { EmailConfigError, safeZohoFailure } from "./email.ts";
 import { enquiryErrorHtml, htmlResponse, jsonResponse, readEnquiryBody, readUrlEncodedLimited, textField, validEmail } from "./http.ts";
 import { FirestoreError, hasFirestoreConfiguration } from "./firestore.ts";
 import { rateLimit, RateLimitUnavailable } from "./security.ts";
@@ -147,7 +147,16 @@ export async function handleSubmitEnquiry(request: Request, env: CloudflareWorke
       const message = "The enquiry form is not connected to an email provider yet. Nothing was sent. Please try again later, or use the contact route on the Contact page.";
       return acceptsHtml ? enquiryErrorHtml(message, 503) : jsonResponse({ ok: false, code: "email_not_configured", message }, 503);
     }
-    console.log(JSON.stringify({ event: "enquiry_failed", form_type: enquiry.formType }));
+    const zohoFailure = (env.EMAIL_PROVIDER || "").trim().toLowerCase() === "zoho-mail-api" ? safeZohoFailure(error) : null;
+    console.log(JSON.stringify({
+      event: "enquiry_failed",
+      form_type: enquiry.formType,
+      ...(zohoFailure ? {
+        zoho_failure_stage: zohoFailure.stage,
+        zoho_failure_category: zohoFailure.category,
+        ...(zohoFailure.httpStatus ? { zoho_http_status: zohoFailure.httpStatus } : {}),
+      } : {}),
+    }));
     const message = "The message could not be sent. Nothing was sent, so please try again, or use the contact route on the Contact page.";
     return acceptsHtml ? enquiryErrorHtml(message, 502) : jsonResponse({ ok: false, code: "delivery_failed", message }, 502);
   }

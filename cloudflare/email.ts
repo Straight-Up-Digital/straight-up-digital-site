@@ -136,6 +136,25 @@ async function sendZoho(input: { from: string; to: string; replyTo?: string; sub
 const ZOHO_MAIL_SCOPES = "ZohoMail.accounts.READ,ZohoMail.messages.CREATE";
 const ZOHO_API_TIMEOUT_MS = 5_000;
 
+export type SafeZohoFailure = { stage: "oauth" | "accounts" | "sender" | "message"; category: string; httpStatus?: number };
+
+export function safeZohoFailure(error: unknown): SafeZohoFailure | null {
+  if (!(error instanceof Error)) return null;
+  const message = error.message;
+  if (message === "zoho_sender_identity_not_authorized") return { stage: "sender", category: "identity_not_authorized" };
+  if (message === "zoho_oauth_token_missing") return { stage: "oauth", category: "token_missing" };
+  if (message === "zoho_message_rejected") return { stage: "message", category: "rejected" };
+  const match = /^zoho_(oauth|accounts|message)_(timeout|network_error|invalid_response|http_(\d{3}))$/.exec(message);
+  if (!match) return null;
+  const stage = match[1] as "oauth" | "accounts" | "message";
+  if (match[2] === "http_" + match[3]) {
+    const status = Number(match[3]);
+    if (status < 100 || status > 599) return null;
+    return { stage, category: "http_error", httpStatus: status };
+  }
+  return { stage, category: match[2] };
+}
+
 async function zohoJson(url: string, init: RequestInit, stage: string): Promise<Record<string, unknown>> {
   let response: Response;
   try {

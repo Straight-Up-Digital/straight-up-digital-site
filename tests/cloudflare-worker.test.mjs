@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { handleSubmitEnquiry, handleClientReport } from "../cloudflare/public-routes.ts";
 import { handleCrmEnquiries, handlePublishReport } from "../cloudflare/private-routes.ts";
 import { createReportKey } from "../cloudflare/storage.ts";
-import { EmailConfigError, sendEnquiryEmail } from "../cloudflare/email.ts";
+import { EmailConfigError, safeZohoFailure, sendEnquiryEmail } from "../cloudflare/email.ts";
 import { runDailyCleanup } from "../cloudflare/scheduled.ts";
 import { applySiteSecurityHeaders } from "../cloudflare/response-headers.ts";
 import { FirestoreError } from "../cloudflare/firestore.ts";
@@ -102,6 +102,34 @@ test("enquiry failure does not create a CRM copy; storage failure does not undo 
   const store = new MemoryStore(); store.failEnquiryWrites = true; let mailed = 0;
   const accepted = await handleSubmitEnquiry(requestJson("https://site.example/api/enquiries", enquiryPayload(), { "cf-connecting-ip": "192.0.2.3" }), { APP_ENV: "test", RATE_LIMIT_HASH_SECRET: "unit-test-salt", FIRESTORE_PROJECT_ID: "synthetic-test", GOOGLE_FIRESTORE_SERVICE_ACCOUNT_JSON: "synthetic-test" }, publicDeps(store, { sendEnquiryEmail: async () => { mailed += 1; return { provider: "synthetic" }; } }));
   assert.equal(accepted.status, 200); assert.equal(mailed, 1); assert.equal(store.enquiries.size, 0);
+});
+
+test("Zoho delivery diagnostics are allowlisted, sanitized, and private from the public response", async () => {
+  const store = new MemoryStore(); const logs = []; const originalLog = console.log;
+  console.log = (...args) => logs.push(args.join(" "));
+  try {
+    const response = await handleSubmitEnquiry(
+      requestJson("https://site.example/api/enquiries", enquiryPayload(), { Accept: "application/json", "cf-connecting-ip": "192.0.2.34" }),
+      { APP_ENV: "production", RATE_LIMIT_HASH_SECRET: "unit-test-salt", EMAIL_PROVIDER: "zoho-mail-api" },
+      publicDeps(store, { sendEnquiryEmail: async () => { throw new Error("zoho_message_http_403"); } }),
+    );
+    assert.equal(response.status, 502);
+    const body = await response.json();
+    assert.equal(body.code, "delivery_failed");
+    assert.match(body.message, /Nothing was sent/);
+    assert.doesNotMatch(JSON.stringify(body), /zoho_|403/);
+    const entry = logs.map((line) => JSON.parse(line)).find((item) => item.event === "enquiry_failed");
+    assert.deepEqual(entry, {
+      event: "enquiry_failed", form_type: "contact", zoho_failure_stage: "message",
+      zoho_failure_category: "http_error", zoho_http_status: 403,
+    });
+    assert.doesNotMatch(logs.join(" "), /zoho_message_http_403|Bearer synthetic-secret|ada@example\.co\.za/);
+  } finally { console.log = originalLog; }
+
+  assert.deepEqual(safeZohoFailure(new Error("zoho_message_http_403")), { stage: "message", category: "http_error", httpStatus: 403 });
+  assert.equal(safeZohoFailure(new Error("zoho_message_http_403 Bearer synthetic-secret")), null);
+  assert.equal(safeZohoFailure(new Error("zoho_accounts_http_999")), null);
+  assert.equal(safeZohoFailure(new Error("arbitrary upstream response")), null);
 });
 
 test("valid enquiry emails and returns success when Firestore service-account JSON is absent", async () => {
