@@ -301,6 +301,7 @@ test("Zoho SMTP adapter negotiates implicit TLS and sends escaped MIME through a
     formType: "contact", source: "/contact", turnstileToken: "", startedAt: Date.now() - 5_000,
   }, { EMAIL_PROVIDER: "zoho-smtp", ENQUIRY_TO_EMAIL: owner, ENQUIRY_FROM_EMAIL: owner, ZOHO_SMTP_USERNAME: owner, ZOHO_SMTP_PASSWORD: "synthetic-app-password", ZOHO_SMTP_HOST: "smtp.zoho.com", ZOHO_SMTP_PORT: "465" }, connectFake);
   assert.equal(result.provider, "zoho-smtp"); assert.equal(options.address.port, 465); assert.equal(options.config.secureTransport, "on");
+  assert.match(message, /^Reply-To: ada@example\.co\.za$/m);
   const htmlPart = /Content-Type: text\/html; charset=UTF-8\r\nContent-Transfer-Encoding: base64\r\n\r\n([A-Za-z0-9+/=\r\n]+)/.exec(message);
   assert.ok(htmlPart); const decodedHtml = Buffer.from(htmlPart[1], "base64").toString("utf8");
   assert.match(decodedHtml, /&lt;script&gt;client&lt;\/script&gt;/); assert.match(decodedHtml, /&lt;b&gt;this&lt;\/b&gt;/);
@@ -327,7 +328,12 @@ test("Zoho Mail API sends via HTTPS token, account lookup and create-message cal
     if (url.hostname === "mail.zoho.com" && url.pathname === "/api/accounts/synthetic-account-id/messages") {
       const body = JSON.parse(String(init.body));
       assert.equal(body.fromAddress, owner); assert.equal(body.toAddress, owner); assert.equal(body.mailFormat, "html");
+      assert.equal(body.replyTo, undefined);
+      assert.equal(body.subject, "New enquiry: TEST - ignore");
       assert.match(body.content, /New enquiry/);
+      assert.match(body.content, /href="mailto:synthetic@example\.co\.za\?subject=Re%3A%20New%20enquiry%3A%20TEST%20-%20ignore"/);
+      assert.match(body.content, /Reply to this enquiry/);
+      assert.doesNotMatch(body.content, /[—–]/);
       return Response.json({ status: { code: 200, description: "success" } });
     }
     throw new Error("unexpected synthetic API request");

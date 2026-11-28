@@ -9,7 +9,8 @@ const validAddress = (value: string): boolean => /^[^\s<>@]+@[^\s<>@]+\.[^\s<>@]
 
 function buildEnquiry(enquiry: CleanEnquiry) {
   const label = enquiry.service === "Online audit report response" ? "online audit report response" : enquiry.formType === "audit" ? "audit request" : "enquiry";
-  const subject = cleanHeader(`New ${label} — ${enquiry.businessName || "website visitor"}`);
+  const subject = cleanHeader(`New ${label}: ${enquiry.businessName || "website visitor"}`);
+  const replyLink = `mailto:${enquiry.email}?subject=${encodeURIComponent(`Re: ${subject}`)}`;
   const rows: [string, string][] = [
     ["Business", enquiry.businessName], ["Website", enquiry.websiteUrl || "Not supplied"],
     ["Email", enquiry.email], ["Phone", enquiry.phone || "Not supplied"],
@@ -17,8 +18,8 @@ function buildEnquiry(enquiry: CleanEnquiry) {
     ["Consent", `${enquiry.consentTextVersion} at ${enquiry.consentTimestamp}`], ["Source", enquiry.source],
   ];
   if (enquiry.name) rows.unshift(["Name", enquiry.name]);
-  const text = [`New ${label} from the Straight Up Digital website.`, "", ...rows.map(([key, value]) => `${key}: ${value}`)].join("\n");
-  const html = `<div style="font-family:Arial,Helvetica,sans-serif;color:#111;line-height:1.5"><h1>New ${escapeHtml(label)}</h1><table cellpadding="0" cellspacing="0" style="border-collapse:collapse;width:100%;max-width:640px">${rows.map(([key, value]) => `<tr><th style="text-align:left;padding:8px 12px 8px 0;vertical-align:top;width:120px;border-bottom:1px solid #eee">${escapeHtml(key)}</th><td style="padding:8px 0;border-bottom:1px solid #eee;white-space:pre-wrap">${escapeHtml(value)}</td></tr>`).join("")}</table></div>`;
+  const text = [`New ${label} from the Straight Up Digital website.`, "", ...rows.map(([key, value]) => `${key}: ${value}`), "", `Reply to this enquiry: ${replyLink}`].join("\n");
+  const html = `<div style="font-family:Arial,Helvetica,sans-serif;color:#111;line-height:1.5"><h1>New ${escapeHtml(label)}</h1><p><a href="${escapeHtml(replyLink)}" style="display:inline-block;padding:10px 16px;background:#132b50;color:#fff;text-decoration:none;border-radius:6px">Reply to this enquiry</a></p><table cellpadding="0" cellspacing="0" style="border-collapse:collapse;width:100%;max-width:640px">${rows.map(([key, value]) => `<tr><th style="text-align:left;padding:8px 12px 8px 0;vertical-align:top;width:120px;border-bottom:1px solid #eee">${escapeHtml(key)}</th><td style="padding:8px 0;border-bottom:1px solid #eee;white-space:pre-wrap">${escapeHtml(value)}</td></tr>`).join("")}</table></div>`;
   return { subject, text, html };
 }
 
