@@ -47,7 +47,7 @@ export const ownerSupplied = {
     "He founded Straight Up Digital to make professional digital intelligence and practical growth support more accessible to small and growing South African businesses.",
     "His approach is straightforward: understand what customers see online, show where opportunities may be slipping away, and focus effort on clear, useful improvements.",
   ] as const,
-  founderPhoto: "",
+  founderPhoto: "/images/founder-stjohn-ritchie.webp",
   /** Approved public service area. This does not imply a storefront. */
   serviceAreas: ["South Africa"] as const,
 } as const;

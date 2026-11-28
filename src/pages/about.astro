@@ -202,8 +202,11 @@ const working = [
             <img
               class="founder-panel__photo"
               src={ownerSupplied.founderPhoto}
+              width={1664}
+              height={2080}
               alt={`${ownerSupplied.founderName}, founder of Straight Up Digital`}
               loading="lazy"
+              decoding="async"
             />
           ) : (
             <div class="founder-panel__brand" aria-hidden="true">
