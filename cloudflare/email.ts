@@ -154,6 +154,22 @@ async function zohoJson(url: string, init: RequestInit, stage: string): Promise<
   }
 }
 
+function zohoSenderMatchesAccount(item: Record<string, unknown>, requestedFrom: string): boolean {
+  const target = requestedFrom.trim().toLowerCase();
+  if (typeof item.primaryEmailAddress === "string" && item.primaryEmailAddress.trim().toLowerCase() === target) return true;
+  const mailboxAlias = Array.isArray(item.emailAddress) && item.emailAddress.some((entry) => {
+    if (!entry || typeof entry !== "object" || Array.isArray(entry)) return false;
+    const address = entry as Record<string, unknown>;
+    return address.isAlias === true && address.isConfirmed === true && typeof address.mailId === "string" && address.mailId.trim().toLowerCase() === target;
+  });
+  const verifiedSendAs = Array.isArray(item.sendMailDetails) && item.sendMailDetails.some((entry) => {
+    if (!entry || typeof entry !== "object" || Array.isArray(entry)) return false;
+    const sender = entry as Record<string, unknown>;
+    return typeof sender.fromAddress === "string" && sender.fromAddress.trim().toLowerCase() === target && sender.validated === true && sender.status === true;
+  });
+  return mailboxAlias || verifiedSendAs;
+}
+
 async function sendZohoMailApi(input: { from: string; to: string; replyTo?: string; subject: string; text: string; html: string }, env: CloudflareWorkerEnv): Promise<void> {
   const clientId = (env.ZOHO_API_CLIENT_ID || "").trim();
   const clientSecret = (env.ZOHO_API_CLIENT_SECRET || "").trim();
@@ -177,10 +193,10 @@ async function sendZohoMailApi(input: { from: string; to: string; replyTo?: stri
   const accounts = await zohoJson("https://mail.zoho.com/api/accounts", { headers: authHeaders }, "accounts");
   const data = accounts.data;
   const account = Array.isArray(data)
-    ? data.find((item) => item && typeof item === "object" && String((item as Record<string, unknown>).primaryEmailAddress || "").toLowerCase() === input.from.toLowerCase()) as Record<string, unknown> | undefined
+    ? data.find((item) => item && typeof item === "object" && !Array.isArray(item) && zohoSenderMatchesAccount(item as Record<string, unknown>, input.from)) as Record<string, unknown> | undefined
     : undefined;
   const accountId = account?.accountId;
-  if (typeof accountId !== "string" && typeof accountId !== "number") throw new Error("zoho_sender_account_not_found");
+  if (typeof accountId !== "string" && typeof accountId !== "number") throw new Error("zoho_sender_identity_not_authorized");
 
   const message = await zohoJson(`https://mail.zoho.com/api/accounts/${encodeURIComponent(String(accountId))}/messages`, {
     method: "POST",

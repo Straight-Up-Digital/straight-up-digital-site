@@ -49,6 +49,14 @@ test("public business identity uses nationwide branding without exposing a stree
   assert.doesNotMatch(`${privacy}\n${terms}`, /Draft for review|Owner to confirm|placeholder-note|privacy-draft|terms-draft/);
 });
 
+test("privacy notice names the live enquiry destination and Zoho routing path", () => {
+  assert.match(privacy, /Version 1\.3 · Last updated 28 November 2026/);
+  assert.match(siteData, /email: "hello@straightupdigital\.co\.za"/);
+  assert.match(privacy, /<strong>Zoho Mail<\/strong>:[\s\S]*?<code>\{contact\.email\}<\/code> through the Zoho Mail API/);
+  assert.match(privacy, /Cloudflare\s+Email Routing delivers this address to the verified Zoho mailbox/);
+  assert.doesNotMatch(privacy, /straightupdigital@zohomail\.com/);
+});
+
 test("footer has a single navigation destination for legal and audit pages", () => {
   const footerNavData = footerNavigation.split("export const footerNav:")[1].split("export const isCurrent")[0];
   for (const [path, label] of [["/privacy", "Privacy"], ["/terms", "Terms"], ["/digital-audit", "Digital audit"]]) {

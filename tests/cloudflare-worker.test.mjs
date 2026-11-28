@@ -353,6 +353,83 @@ test("Zoho Mail API sends via HTTPS token, account lookup and create-message cal
   } finally { globalThis.fetch = originalFetch; }
 });
 
+test("Zoho Mail API selects an exact confirmed mailbox alias from account metadata", async () => {
+  const originalFetch = globalThis.fetch; const alias = "hello@straightupdigital.co.za";
+  globalThis.fetch = async (input, init = {}) => {
+    const url = new URL(input);
+    if (url.hostname === "accounts.zoho.com") return Response.json({ access_token: "synthetic-access-token" });
+    if (url.hostname === "mail.zoho.com" && url.pathname === "/api/accounts") return Response.json({ status: { code: 200 }, data: [{
+      accountId: "synthetic-account-id", primaryEmailAddress: owner,
+      emailAddress: [
+        { mailId: owner, isAlias: false, isPrimary: true, isConfirmed: true },
+        { mailId: alias, isAlias: true, isPrimary: false, isConfirmed: true },
+      ],
+    }] });
+    if (url.hostname === "mail.zoho.com" && url.pathname === "/api/accounts/synthetic-account-id/messages") {
+      const body = JSON.parse(String(init.body));
+      assert.equal(body.fromAddress, alias); assert.equal(body.toAddress, owner);
+      return Response.json({ status: { code: 200, description: "success" } });
+    }
+    throw new Error("unexpected synthetic API request");
+  };
+  try {
+    const result = await sendEnquiryEmail({
+      name: "Synthetic", businessName: "Alias test", websiteUrl: "", email: "synthetic@example.co.za", phone: "",
+      service: "Contact", message: "Synthetic alias authorization test", consentGiven: true, consentTextVersion: "v1", consentTimestamp: "2026-11-28T00:00:00.000Z",
+      formType: "contact", source: "/contact", turnstileToken: "", startedAt: Date.now() - 5_000,
+    }, { EMAIL_PROVIDER: "zoho-mail-api", ENQUIRY_TO_EMAIL: owner, ENQUIRY_FROM_EMAIL: alias, ZOHO_API_CLIENT_ID: "synthetic-client-id", ZOHO_API_CLIENT_SECRET: "synthetic-client-secret" });
+    assert.equal(result.provider, "zoho-mail-api");
+  } finally { globalThis.fetch = originalFetch; }
+});
+
+test("Zoho Mail API accepts a verified active external Send Mail As identity", async () => {
+  const originalFetch = globalThis.fetch; const alias = "hello@straightupdigital.co.za";
+  globalThis.fetch = async (input, init = {}) => {
+    const url = new URL(input);
+    if (url.hostname === "accounts.zoho.com") return Response.json({ access_token: "synthetic-access-token" });
+    if (url.hostname === "mail.zoho.com" && url.pathname === "/api/accounts") return Response.json({ status: { code: 200 }, data: [{
+      accountId: "synthetic-account-id", primaryEmailAddress: owner,
+      sendMailDetails: [{ fromAddress: alias, mode: "extfrom", status: true, validated: true }],
+    }] });
+    if (url.hostname === "mail.zoho.com" && url.pathname === "/api/accounts/synthetic-account-id/messages") {
+      const body = JSON.parse(String(init.body));
+      assert.equal(body.fromAddress, alias); assert.equal(body.toAddress, owner);
+      return Response.json({ status: { code: 200, description: "success" } });
+    }
+    throw new Error("unexpected synthetic API request");
+  };
+  try {
+    const result = await sendEnquiryEmail({
+      name: "Synthetic", businessName: "Verified external sender test", websiteUrl: "", email: "synthetic@example.co.za", phone: "",
+      service: "Contact", message: "Synthetic verified external identity test", consentGiven: true, consentTextVersion: "v1", consentTimestamp: "2026-11-28T00:00:00.000Z",
+      formType: "contact", source: "/contact", turnstileToken: "", startedAt: Date.now() - 5_000,
+    }, { EMAIL_PROVIDER: "zoho-mail-api", ENQUIRY_TO_EMAIL: owner, ENQUIRY_FROM_EMAIL: alias, ZOHO_API_CLIENT_ID: "synthetic-client-id", ZOHO_API_CLIENT_SECRET: "synthetic-client-secret" });
+    assert.equal(result.provider, "zoho-mail-api");
+  } finally { globalThis.fetch = originalFetch; }
+});
+
+test("Zoho Mail API refuses an unverified external From identity before sending", async () => {
+  const originalFetch = globalThis.fetch; const alias = "hello@straightupdigital.co.za"; let calls = 0;
+  globalThis.fetch = async (input) => {
+    calls += 1; const url = new URL(input);
+    if (url.hostname === "accounts.zoho.com") return Response.json({ access_token: "synthetic-access-token" });
+    if (url.hostname === "mail.zoho.com" && url.pathname === "/api/accounts") return Response.json({ status: { code: 200 }, data: [{
+      accountId: "synthetic-account-id", primaryEmailAddress: owner,
+      emailAddress: [{ mailId: alias, isAlias: true, isPrimary: false, isConfirmed: false }],
+      sendMailDetails: [{ fromAddress: alias, mode: "extfrom", status: true, validated: false }],
+    }] });
+    throw new Error("unverified sender must not reach the send endpoint");
+  };
+  try {
+    await assert.rejects(() => sendEnquiryEmail({
+      name: "Synthetic", businessName: "Unverified alias test", websiteUrl: "", email: "synthetic@example.co.za", phone: "",
+      service: "Contact", message: "Synthetic negative authorization test", consentGiven: true, consentTextVersion: "v1", consentTimestamp: "2026-11-28T00:00:00.000Z",
+      formType: "contact", source: "/contact", turnstileToken: "", startedAt: Date.now() - 5_000,
+    }, { EMAIL_PROVIDER: "zoho-mail-api", ENQUIRY_TO_EMAIL: owner, ENQUIRY_FROM_EMAIL: alias, ZOHO_API_CLIENT_ID: "synthetic-client-id", ZOHO_API_CLIENT_SECRET: "synthetic-client-secret" }), (error) => error.message === "zoho_sender_identity_not_authorized");
+    assert.equal(calls, 2, "the send API must not be called for an unverified sender");
+  } finally { globalThis.fetch = originalFetch; }
+});
+
 test("Zoho Mail API token failure stops before account lookup and does not disclose response body", async () => {
   const originalFetch = globalThis.fetch; let calls = 0;
   globalThis.fetch = async () => { calls += 1; return new Response("private upstream details", { status: 401 }); };

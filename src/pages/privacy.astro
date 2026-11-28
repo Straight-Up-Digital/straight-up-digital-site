@@ -11,10 +11,10 @@ const description =
   description={description}
   canonicalPath="/privacy"
 >
-  <section class="legal">
+      <section class="legal">
         <div class="container legal__inner">
           <h1>Privacy notice</h1>
-          <p class="legal__meta">Version 1.2 · Last updated 25 November 2026</p>
+          <p class="legal__meta">Version 1.3 · Last updated 28 November 2026</p>
 
       <div class="prose">
         <p>
@@ -92,9 +92,10 @@ const description =
           </li>
           <li>
             <strong>Zoho Mail</strong>: receives enquiry notifications at
-            straightupdigital@zohomail.com through the Zoho Mail API. The message
-            includes the details you submit so the owner can respond. Zoho Mail for
-            this account uses a United States data centre; mailbox copies are
+            <code>{contact.email}</code> through the Zoho Mail API. Cloudflare
+            Email Routing delivers this address to the verified Zoho mailbox. The
+            message includes the details you submit so the owner can respond. The
+            Zoho account uses a United States data centre; mailbox copies are
             subject to Zoho's processing and retention practices.
           </li>
           <li>
